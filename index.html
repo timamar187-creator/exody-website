@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Exody — The router that pays for itself</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1024' y2='1024'%3E%3Cstop offset='0%25' stop-color='%2338bdf8'/%3E%3Cstop offset='55%25' stop-color='%23818cf8'/%3E%3Cstop offset='100%25' stop-color='%23c084fc'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='1024' rx='220' fill='%2308080a'/%3E%3Cpath fill-rule='evenodd' fill='url(%23g)' d='M 215.8 252.3 L 384.1 507.8 L 383.5 517.5 L 216.7 772.0 L 444.9 772.0 L 585.9 566.0 L 593.1 566.0 L 596.7 570.2 L 681.8 690.4 L 690.9 704.1 L 690.9 711.2 L 608.7 711.5 L 568.4 653.0 L 534.3 704.7 L 580.1 772.0 L 807.9 771.7 L 629.2 518.2 L 627.2 508.4 L 808.2 252.0 L 581.4 252.0 L 533.6 320.6 L 568.4 370.9 L 608.7 312.4 L 690.9 312.8 L 690.9 319.9 L 688.3 323.8 L 593.1 458.7 L 585.9 458.7 L 583.0 455.1 L 443.6 252.0 Z M 329.8 312.4 L 415.0 312.4 L 551.2 509.1 L 550.5 516.9 L 416.3 711.5 L 330.5 711.5 L 330.2 704.1 L 435.5 542.9 L 490.4 541.9 L 510.9 511.7 L 489.7 482.1 L 436.4 482.1 L 434.8 480.5 L 329.5 319.9 Z'/%3E%3C/svg%3E">
+
+<meta name="description" content="Exody is a local-first AI workbench for Mac. Smart code router, personal assistant, and visual design studio — all in one place. Save up to 65–68% versus running everything on the most expensive model." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS — lifted from Exody desktop app + website (global.css /
+   index.css): near-black canvas, glass islands, sky→indigo→violet
+   accent spine. Extended here for a dedicated marketing surface,
+   never diverging from the source palette.
+   ============================================================ */
+:root{
+  color-scheme: dark;
+  --bg: #08080a;
+  --bg-elevated: #0e0e11;
+  --panel: #121215;
+  --panel-2: rgba(18,18,22,.72);
+  --border: rgba(255,255,255,.08);
+  --border-strong: rgba(255,255,255,.16);
+  --text: #f4f4f5;
+  --muted: #9a9aa2;
+  --muted-2: #87878f;
+  --fast: #38bdf8;
+  --strong: #a78bfa;
+  --ultra: #fb923c;
+  --grad: linear-gradient(135deg,#38bdf8 0%,#818cf8 55%,#c084fc 100%);
+  --grad-text: linear-gradient(135deg,#7dd3fc 0%,#a5b4fc 50%,#e2b8fc 100%);
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+
+  /* type scale */
+  --step--1: clamp(0.8rem, 0.78rem + 0.05vw, 0.86rem);
+  --step-0:  clamp(0.95rem, 0.92rem + 0.1vw, 1rem);
+  --step-1:  clamp(1.1rem, 1.05rem + 0.2vw, 1.25rem);
+  --step-2:  clamp(1.4rem, 1.25rem + 0.6vw, 1.75rem);
+  --step-3:  clamp(1.9rem, 1.5rem + 1.6vw, 2.6rem);
+  --step-4:  clamp(2.6rem, 1.9rem + 3vw, 4.2rem);
+  --step-5:  clamp(3.4rem, 2.2rem + 5vw, 6rem);
+
+  /* spacing scale, 4px base */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px;
+  --sp-6: 32px; --sp-7: 48px; --sp-8: 64px; --sp-9: 96px; --sp-10: 140px;
+
+  --radius-sm: 10px; --radius-md: 16px; --radius-lg: 24px; --radius-xl: 32px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+html,body{ margin:0; padding:0; }
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+}
+img{ max-width:100%; display:block; }
+a{ color: inherit; text-decoration:none; }
+button{ font: inherit; color: inherit; background:none; border:none; cursor:pointer; }
+ul{ margin:0; padding:0; list-style:none; }
+h1,h2,h3,p{ margin:0; }
+h1,h2,h3{ text-wrap: balance; }
+p{ text-wrap: pretty; }
+::selection{ background: rgba(129,140,248,.35); color:#fff; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* focus-visible — real ring, never suppressed */
+a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+  outline: 2px solid #7dd3fc;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.mono{ font-family: var(--mono); }
+.serif{ font-family: var(--font-display); font-style: italic; }
+.container{ max-width: 1180px; margin: 0 auto; padding: 0 var(--sp-5); }
+.grad-text{
+  background: var(--grad-text);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.eyebrow{
+  display:inline-flex; align-items:center; gap: var(--sp-2);
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted-2);
+}
+.eyebrow::before{ content:""; width:6px; height:6px; border-radius:50%; background: var(--fast); box-shadow: 0 0 10px var(--fast); }
+
+/* ---------- ambient background ---------- */
+.ambient{
+  position: fixed; inset: -20%; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(40% 32% at 82% 2%, rgba(56,130,246,.14), transparent 68%),
+    radial-gradient(36% 30% at 8% 96%, rgba(147,100,250,.11), transparent 66%),
+    radial-gradient(24% 20% at 50% 45%, rgba(56,189,248,.045), transparent 70%);
+  animation: drift 32s ease-in-out infinite alternate;
+}
+@keyframes drift{ from{ transform: translate3d(0,0,0) scale(1); } to{ transform: translate3d(2%,-2%,0) scale(1.05); } }
+
+.grid-mesh{
+  position:absolute; inset-inline:0; top:0; height: 620px; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(60% 55% at 50% 0%, #000 0%, transparent 75%);
+}
+
+/* ---------- glass primitives ---------- */
+.glass{
+  position: relative;
+  background: rgba(16,16,20,.58);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(22px) saturate(1.3);
+  -webkit-backdrop-filter: blur(22px) saturate(1.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 0 0 .5px rgba(255,255,255,.03),
+    0 20px 60px rgba(0,0,0,.45);
+  transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+  overflow: hidden;
+}
+.glass-strong{
+  background: rgba(18,18,23,.82);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(30px) saturate(1.4);
+  -webkit-backdrop-filter: blur(30px) saturate(1.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.09),
+    inset 0 0 0 .5px rgba(255,255,255,.04),
+    0 30px 80px rgba(0,0,0,.55);
+}
+.glass::before, .glass-strong::before{
+  /* top rim catching light — the primary Liquid Glass cue */
+  content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none;
+  background: linear-gradient(180deg, rgba(255,255,255,.10), transparent 30%);
+  opacity: .7;
+}
+.sheen{
+  position:absolute; inset:-40%; pointer-events:none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,.12) 48%, rgba(255,255,255,.03) 54%, transparent 62%);
+  transform: translateX(-60%);
+  transition: transform .9s var(--ease);
+}
+.glass:hover .sheen, .glass-strong:hover .sheen{ transform: translateX(60%); }
+
+.btn{
+  display:inline-flex; align-items:center; gap: var(--sp-2);
+  padding: 12px 22px; border-radius: 999px;
+  font-size: var(--step--1); font-weight: 600;
+  transition: transform .16s var(--ease), box-shadow .16s var(--ease), background .16s var(--ease), border-color .16s var(--ease);
+  min-height: 44px;
+}
+.btn-primary{
+  background: var(--grad); color:#04070d;
+  box-shadow: 0 8px 30px rgba(129,140,248,.28);
+}
+.btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 12px 36px rgba(129,140,248,.4); }
+.btn-primary:active{ transform: translateY(0); }
+.btn-ghost{
+  border: 1px solid var(--border-strong); color: var(--text);
+  background: rgba(255,255,255,.02);
+}
+.btn-ghost:hover{ background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.24); }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position: sticky; top:0; z-index: 50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px var(--sp-5);
+  background: rgba(8,8,10,.6);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand{ display:flex; align-items:center; gap:9px; font-weight:700; font-size: 15px; letter-spacing:-.01em; }
+.nav-mark{
+  width: 24px; height:24px; display:block; flex-shrink:0;
+  filter: drop-shadow(0 0 10px rgba(129,140,248,.45));
+}
+.footer-mark{ width:22px; height:22px; display:block; flex-shrink:0; }
+
+.nav-links{ display:flex; align-items:center; gap: var(--sp-6); }
+.nav-links a{
+  font-size: 13.5px; color: var(--muted); transition: color .15s var(--ease);
+  padding: 4px 2px;
+}
+.nav-links a:hover, .nav-links a.active{ color: var(--text); }
+.nav-cta{ display:flex; align-items:center; gap: var(--sp-3); }
+.nav-toggle{
+  display:none; align-items:center; justify-content:center;
+  width:44px; height:44px; border:1px solid var(--border-strong); border-radius:10px;
+  background: rgba(255,255,255,.03); color:#fff;
+}
+@media (max-width: 860px){
+  .nav-links{
+    position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; align-items:stretch; gap:0;
+    background: rgba(10,10,13,.94); backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    max-height:0; overflow:hidden; transition: max-height .25s var(--ease);
+  }
+  .nav-links.open{ max-height: 320px; }
+  .nav-links a{ padding: 14px var(--sp-5); border-top:1px solid var(--border); min-height:44px; display:flex; align-items:center; }
+  .nav-toggle{ display:inline-flex; }
+}
+
+/* ============================================================
+   HERO — Cline-style split: copy left, sculpture right
+   ============================================================ */
+.hero{ position: relative; padding: 20px 0 40px; overflow: visible; }
+.hero > .container{ max-width: 1320px; }
+.hero-split{
+  display: grid;
+  grid-template-columns: minmax(300px, 0.78fr) minmax(420px, 1.32fr);
+  align-items: center;
+  gap: 8px 4px;
+  min-height: min(78vh, 780px);
+}
+.hero-copy{
+  position: relative;
+  z-index: 2;
+  text-align: left;
+  max-width: 520px;
+  padding-block: var(--sp-6);
+}
+.ascii-stage{
+  position: relative;
+  z-index: 1;
+  height: min(86vh, 880px);
+  width: calc(100% + 48px);
+  margin: 0 -40px 0 -8px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+.ascii-stage::before{
+  content:"";
+  position:absolute; inset: 4% 2%;
+  background:
+    radial-gradient(ellipse at 48% 50%, rgba(56,189,248,.22), transparent 62%),
+    radial-gradient(ellipse at 68% 38%, rgba(192,132,252,.14), transparent 56%);
+  pointer-events:none; z-index:0; filter: blur(10px);
+}
+.ascii-stage.is-drag{ cursor: grabbing; }
+.ascii-stage:focus-visible{
+  outline: 2px solid #7dd3fc;
+  outline-offset: -8px;
+  border-radius: 12px;
+}
+.ascii-stage canvas{ position:relative; z-index:1; display:block; width:100%; height:100%; }
+.ascii-hint{
+  position:absolute; z-index:2; left:50%; bottom: 18px;
+  transform: translateX(-50%);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted-2); pointer-events:none; white-space:nowrap;
+  transition: opacity .4s var(--ease);
+}
+.hero h1{
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 1.7rem + 3.2vw, 4.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin-top: var(--sp-4);
+}
+.hero p.lede{
+  margin: var(--sp-5) 0 0;
+  max-width: 34em;
+  font-size: var(--step-1);
+  color: var(--muted);
+  line-height: 1.6;
+}
+.hero-cta{ display:flex; justify-content:flex-start; gap: var(--sp-3); margin-top: var(--sp-6); flex-wrap:wrap; }
+.hero-note{ margin-top: var(--sp-4); font-size: 12.5px; color: var(--muted-2); max-width: 36em; }
+@media (max-width: 960px){
+  .hero-split{ grid-template-columns: 1fr; min-height: 0; gap: 8px; }
+  .hero-copy{ max-width: none; padding-block: var(--sp-4); }
+  .ascii-stage{ height: min(56vh, 520px); margin: 0; order: -1; }
+}
+@media (max-width: 700px){
+  .ascii-stage{ height: min(48vh, 420px); }
+}
+
+.reveal{ opacity:0; transform: translateY(16px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+.reveal.in{ opacity:1; transform: translateY(0); }
+
+/* provider marquee */
+.marquee-wrap{ margin-top: var(--sp-7); overflow:hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 88%, transparent); }
+.marquee-track{ display:flex; gap: 36px; width: max-content; animation: mq 48s linear infinite; padding: 4px 0; }
+@keyframes mq{ from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+.marquee-track span{ font-family: var(--mono); font-size: 12.5px; color: var(--muted-2); white-space:nowrap; }
+
+/* ============================================================
+   ROUTER DEMO — the flagship interactive hero
+   ============================================================ */
+.router-demo{
+  margin-top: var(--sp-9);
+  padding: var(--sp-7);
+  display:grid; gap: var(--sp-8); grid-template-columns: 1.1fr 1fr;
+  align-items:center;
+}
+@media (max-width: 900px){ .router-demo{ grid-template-columns: 1fr; padding: var(--sp-5); gap: var(--sp-6); } }
+
+.task-chips{ display:flex; flex-wrap:wrap; gap: 8px; margin-top: var(--sp-4); }
+.chip{
+  border: 1px solid var(--border-strong);
+  background: rgba(255,255,255,.02);
+  color: var(--muted);
+  font-size: 12.8px; font-weight: 500;
+  padding: 8px 15px; border-radius: 999px;
+  transition: all .16s var(--ease);
+  min-height: 36px;
+}
+.chip:hover{ border-color: rgba(255,255,255,.3); color: var(--text); background: rgba(255,255,255,.05); }
+.chip[aria-pressed="true"]{ border-color: rgba(255,255,255,.4); background: rgba(255,255,255,.1); color:#fff; }
+
+.task-why{ margin-top: var(--sp-5); font-size: 13.5px; color: var(--muted); line-height:1.6; min-height: 42px; }
+.cost-row{ display:flex; align-items:baseline; gap: var(--sp-3); margin-top: var(--sp-3); flex-wrap:wrap; }
+.cost-now{ font-size: var(--step-2); font-weight: 700; color:#fff; font-family: var(--mono); }
+.cost-was{ font-size: 12.5px; color: var(--muted-2); }
+.cost-was s{ color: var(--muted); }
+
+.flow{ display:flex; flex-direction:column; align-items:center; gap: 12px; }
+.flow-node{
+  border: 1px solid var(--border-strong);
+  background: rgba(255,255,255,.035);
+  padding: 10px 18px; border-radius: 14px;
+  font-size: 12px; color: var(--muted); text-align:center;
+  transition: box-shadow .3s var(--ease), border-color .3s var(--ease);
+}
+.flow-line{
+  width: 2px; height: 26px;
+  background: rgba(255,255,255,.1);
+  position:relative; overflow:hidden;
+}
+.flow-line::after{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, transparent, var(--pulse-color, #38bdf8), transparent);
+  transform: translateY(-100%);
+  opacity:0;
+  transition: opacity .2s;
+}
+.flow-line.active::after{ opacity:1; animation: flowpulse 1s var(--ease) infinite; }
+@keyframes flowpulse{ from{ transform: translateY(-100%); } to{ transform: translateY(100%); } }
+
+.router-core{
+  border: 1px solid var(--border-strong);
+  background: rgba(255,255,255,.06);
+  padding: 14px 26px; border-radius: 18px;
+  text-align:center; position:relative;
+}
+.router-core .rc-label{ font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-2); }
+.router-core .rc-sub{ font-size: 13px; font-weight:600; color:#fff; margin-top:2px; }
+
+.tier-row{ display:flex; gap: 10px; }
+.tier-node{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap: 6px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+  padding: 12px 10px; border-radius: 14px;
+  min-width: 84px;
+  transition: all .25s var(--ease), transform .3s var(--ease);
+  opacity: .45;
+  transform: translateZ(0px);
+}
+.tier-node.active{ opacity:1; border-color: var(--tier-color); box-shadow: 0 0 24px -4px var(--tier-color); background: color-mix(in oklch, var(--tier-color) 12%, transparent); transform: translateZ(26px); }
+
+/* ---------- 3D hero stage — the router demo floats as a tiltable glass slab,
+   its nodes staggered in real depth (translateZ) so the panel's rotation
+   reveals actual parallax, not a flat card pretending to be 3D. ---------- */
+.hero-3d-stage{ perspective: 1800px; }
+.router-demo{
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform .5s var(--ease);
+  will-change: transform;
+}
+.router-demo > div{ transform-style: preserve-3d; }
+.flow{ transform-style: preserve-3d; }
+.tier-row{ transform-style: preserve-3d; }
+.flow-node{ transform: translateZ(14px); }
+.router-core{ transform: translateZ(46px); }
+.tier-node .tn-label{ font-size: 12.5px; font-weight:700; color:#fff; }
+.tier-node .tn-sub{ font-size: 10.5px; color: var(--muted-2); text-align:center; }
+.tier-dot{ width:8px; height:8px; border-radius:50%; }
+
+/* ---------- 3D tilt for Assistant & Design Studio ---------- */
+.assistant-hero, .design-hero{
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform .5s var(--ease);
+  will-change: transform;
+}
+.assistant-hero > div, .design-hero > div{ transform-style: preserve-3d; }
+.assistant-card{ transform: translateZ(20px); }
+.design-card{ transform: translateZ(24px); }
+.design-preview{ transform: translateZ(48px); }
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.section{ position: relative; padding: var(--sp-9) 0; }
+.section.bordered{ border-top: 1px solid var(--border); }
+.section-head{ max-width: 640px; margin-bottom: var(--sp-7); }
+.section-head h2{
+  font-size: var(--step-3); font-weight:700; letter-spacing:-0.02em; color:#fff; margin-top: var(--sp-3);
+}
+.section-head p{ margin-top: var(--sp-3); color: var(--muted); font-size: var(--step-0); line-height:1.65; }
+.section-head.center{ margin-inline:auto; text-align:center; }
+
+/* pillars grid */
+.grid-cards{ display:grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); }
+@media (max-width: 980px){ .grid-cards{ grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 600px){ .grid-cards{ grid-template-columns: 1fr; } }
+.pillar{ padding: var(--sp-5); }
+.pillar .pi-num{ font-family: var(--mono); font-size: 11px; color: var(--muted-2); }
+.pillar h3{ margin-top: var(--sp-3); font-size: 16px; font-weight:600; color:#fff; }
+.pillar p{ margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6; }
+
+/* tier deep-dive cards */
+.tier-cards{ display:grid; grid-template-columns: repeat(3,1fr); gap: var(--sp-4); }
+@media (max-width: 860px){ .tier-cards{ grid-template-columns:1fr; } }
+.tier-card{ padding: var(--sp-6); position:relative; }
+.tier-card .tc-glow{ position:absolute; top:-40px; left:50%; width:200px; height:160px; transform:translateX(-50%); border-radius:50%; filter: blur(50px); opacity:.28; pointer-events:none; }
+.tier-card h3{ font-size: 19px; font-weight:700; color:#fff; display:flex; align-items:center; gap:8px; }
+.tier-card .tc-price{ font-family: var(--mono); font-size: 12px; color: var(--muted-2); margin-top: 4px; }
+.tier-card ul{ margin-top: var(--sp-4); display:flex; flex-direction:column; gap: 9px; }
+.tier-card li{ font-size: 13.3px; color: var(--muted); display:flex; gap:8px; line-height:1.5; }
+.tier-card li b{ color:#e4e4e7; font-weight:600; }
+.tier-card .tc-tag{ position:absolute; top:22px; right:22px; font-family: var(--mono); font-size: 10px; letter-spacing:.1em; text-transform:uppercase; padding: 4px 9px; border-radius: 999px; border:1px solid var(--border-strong); }
+
+/* compare table */
+.compare-wrap{ overflow-x:auto; }
+table.compare{ width:100%; min-width: 680px; border-collapse: collapse; font-size: 13.4px; }
+table.compare th, table.compare td{ padding: 16px 18px; text-align:left; border-bottom: 1px solid var(--border); vertical-align: top; }
+table.compare th{ color: var(--muted-2); font-weight:500; font-size:12.5px; }
+table.compare td.feat{ color:#f2f2f4; font-weight:600; }
+table.compare td.feat span{ display:block; margin-top:4px; font-weight:400; font-size:12px; color: var(--muted-2); max-width: 280px; line-height:1.5; }
+table.compare td.exody{ color:#a7d8ff; font-weight:600; background: linear-gradient(180deg, rgba(99,132,255,.08), transparent); }
+table.compare td.dim{ color: var(--muted); }
+table.compare th:nth-child(4){ color:#dbeafe; }
+table.compare tbody tr:hover{ background: rgba(255,255,255,.02); }
+
+/* ---------- 3D terminal hero — real depth via translateZ layers, tilts
+   with the same cursor-driven engine as the router stage above. ---------- */
+.terminal-scene{ perspective: 1700px; display:flex; justify-content:center; padding: var(--sp-6) 0 var(--sp-4); }
+.terminal-body{
+  position:relative; width:min(100%, 640px); transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform .5s var(--ease);
+  will-change: transform;
+}
+.terminal-chrome{
+  display:flex; align-items:center; gap:8px;
+  background: rgba(255,255,255,.045); border:1px solid var(--border-strong);
+  border-bottom:none; border-radius: 14px 14px 0 0; padding: 12px 16px;
+  transform: translateZ(18px);
+}
+.tl-dot{ width:11px; height:11px; border-radius:50%; flex-shrink:0; }
+.terminal-title{ margin-left:8px; font-size:11.5px; color: var(--muted-2); }
+.terminal-body-inner{
+  background: rgba(8,8,10,.86); border:1px solid var(--border-strong); border-top:none;
+  border-radius: 0 0 14px 14px; padding: 22px 20px 26px; font-size:12.8px; line-height:2;
+  transform: translateZ(4px);
+  box-shadow: 0 40px 80px -30px rgba(0,0,0,.6);
+}
+.t-line{ color: var(--muted); white-space:pre-wrap; }
+.t-prompt{ color:#7dd3fc; margin-right:8px; }
+.t-dim{ color: var(--muted-2); }
+.t-out-strong{ color:#c4b5fd; font-weight:600; }
+.t-out-ok{ color:#86efac; font-weight:600; }
+.t-cursor{ display:inline-block; width:7px; height:14px; background:#e4e4e7; margin-left:6px; animation: caret 1s step-end infinite; vertical-align: -2px; }
+@keyframes caret{ 50%{ opacity:0; } }
+.terminal-float-card{
+  position:absolute; right:-18px; bottom:-22px; transform: translateZ(64px);
+  background: rgba(20,20,24,.92); border:1px solid var(--border-strong); border-radius: 12px;
+  padding: 10px 16px; font-size:11.5px; color: var(--muted); backdrop-filter: blur(16px);
+  box-shadow: 0 20px 40px -14px rgba(0,0,0,.55); display:flex; align-items:center; gap:7px;
+  white-space:nowrap;
+}
+@media (max-width: 700px){
+  .terminal-float-card{ right:8px; bottom:-16px; font-size:10.5px; padding:8px 12px; }
+  .terminal-body-inner{ font-size:11.8px; padding:18px 14px 22px; }
+}
+
+/* 3D phone */
+.phone-scene{ perspective: 1600px; display:flex; justify-content:center; padding: var(--sp-6) 0; }
+.phone-body{
+  width: 240px; height: 486px; transform-style: preserve-3d;
+  transform: rotateX(8deg) rotateY(-22deg) rotateZ(1.5deg);
+  transition: transform .3s var(--ease);
+}
+.phone-face, .phone-back{ position:absolute; inset:0; width:240px; height:486px; border-radius: 34px; border: 6px solid #17171b; overflow:hidden; }
+.phone-face{ background: linear-gradient(160deg, #131317, #06060a); transform: translateZ(8px); }
+.phone-back{ background: linear-gradient(155deg,#1c1c20,#0c0c0e); transform: translateZ(-8px) rotateY(180deg); }
+.phone-spine{ position:absolute; width:16px; height:486px; left:50%; top:0; margin-left:-8px; background: linear-gradient(90deg,#0c0c0e,#1a1a1e); transform: rotateY(90deg) translateZ(120px); border-radius: 8px; }
+.phone-screen{ position:absolute; inset:0; padding: 22px 16px; display:flex; flex-direction:column; gap: 10px; }
+.phone-notch{ width:70px; height:6px; background:#000; border-radius:6px; margin: 0 auto 8px; }
+.phone-msg{ align-self:flex-start; max-width:80%; background: rgba(255,255,255,.06); border:1px solid var(--border); border-radius: 12px; padding: 8px 11px; font-size: 11.5px; color: var(--muted); }
+.phone-msg.me{ align-self:flex-end; background: rgba(56,189,248,.14); color:#e0f2fe; border-color: rgba(56,189,248,.24); }
+.phone-chip-row{ display:flex; gap:6px; margin-top:auto; }
+.phone-chip{ font-size: 9.5px; font-family: var(--mono); border:1px solid var(--border-strong); border-radius:999px; padding: 5px 9px; color: var(--muted); }
+.phone-glow{ position:absolute; inset:-60px; background: radial-gradient(circle at 50% 30%, rgba(56,189,248,.24), transparent 65%); filter: blur(40px); z-index:-1; }
+
+/* pricing */
+.pricing-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap: var(--sp-4); }
+@media (max-width: 900px){ .pricing-grid{ grid-template-columns:1fr; } }
+.plan{ padding: var(--sp-6); display:flex; flex-direction:column; }
+.plan.highlight{ border-color: rgba(129,140,248,.35); }
+.plan h3{ font-size:18px; font-weight:700; color:#fff; }
+.plan .price{ margin-top: var(--sp-3); display:flex; align-items:baseline; gap:4px; }
+.plan .price b{ font-size: 30px; color:#fff; font-weight:700; }
+.plan .price span{ color: var(--muted-2); font-size:13px; }
+.plan p.blurb{ margin-top: var(--sp-3); font-size:13px; color: var(--muted); line-height:1.6; }
+.plan ul{ margin-top: var(--sp-5); display:flex; flex-direction:column; gap:8px; flex:1; }
+.plan li{ font-size:12.8px; color: var(--muted); display:flex; gap:8px; }
+.plan .dot{ width:5px; height:5px; margin-top:6px; border-radius:50%; background: var(--grad); flex-shrink:0; }
+.plan .btn{ margin-top: var(--sp-5); justify-content:center; }
+.plan-tag{ font-family: var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#7dd3fc; margin-bottom: 6px; }
+
+/* faq / states */
+.faq-item{ border-bottom: 1px solid var(--border); padding: var(--sp-4) 0; }
+.faq-q{ display:flex; justify-content:space-between; align-items:center; width:100%; text-align:left; font-size:14.5px; font-weight:600; color:#fff; min-height:44px; }
+.faq-q .plus{ font-size:18px; color: var(--muted-2); transition: transform .2s var(--ease); flex-shrink:0; }
+.faq-item[aria-expanded="true"] .plus{ transform: rotate(45deg); }
+.faq-a{ max-height:0; overflow:hidden; transition: max-height .25s var(--ease); }
+.faq-a p{ padding-top: var(--sp-3); font-size:13.5px; color: var(--muted); line-height:1.65; max-width:640px; }
+
+/* footer */
+footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); }
+.footer-grid{ display:grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: var(--sp-6); }
+@media (max-width:760px){ .footer-grid{ grid-template-columns: 1fr 1fr; } }
+
+.mobile-split{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+@media (max-width: 860px){ .mobile-split{ grid-template-columns:1fr; gap:32px; } .mobile-split > div:last-child{ order:-1; } }
+.footer-col h4{ font-size:12px; color: var(--muted-2); text-transform:uppercase; letter-spacing:.08em; margin-bottom: var(--sp-3); }
+.footer-col a{ display:block; font-size:13px; color: var(--muted); padding: 5px 0; transition:color .15s; }
+.footer-col a:hover{ color:#fff; }
+.footer-bottom{ margin-top: var(--sp-7); padding-top: var(--sp-5); border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap: var(--sp-3); font-size:12px; color: var(--muted-2); }
+
+/* skip link */
+.skip-link{ position:absolute; left:-9999px; top:0; background:#fff; color:#000; padding:8px 14px; border-radius:8px; z-index:100; }
+.skip-link:focus{ left: 16px; top:16px; }
+
+@media (max-width: 640px){
+  .nav{ padding: 12px 16px; }
+  #navDownload{ padding: 10px 14px; font-size: 12.5px; }
+  #navDownload svg{ display:none; }
+}
+
+@media (max-width: 375px){
+  .container{ padding: 0 16px; }
+  .hero{ padding-top: 64px; }
+  #navDownload{ padding: 9px 11px; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="ambient" aria-hidden="true"></div>
+
+<!-- Exody mark, defined once, reused via <use> in nav / hero / footer -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="exody-mark" viewBox="0 0 1024 1024">
+      <path fill-rule="evenodd" d="M 215.8 252.3 L 384.1 507.8 L 383.5 517.5 L 216.7 772.0 L 444.9 772.0 L 585.9 566.0 L 593.1 566.0 L 596.7 570.2 L 681.8 690.4 L 690.9 704.1 L 690.9 711.2 L 608.7 711.5 L 568.4 653.0 L 534.3 704.7 L 580.1 772.0 L 807.9 771.7 L 629.2 518.2 L 627.2 508.4 L 808.2 252.0 L 581.4 252.0 L 533.6 320.6 L 568.4 370.9 L 608.7 312.4 L 690.9 312.8 L 690.9 319.9 L 688.3 323.8 L 593.1 458.7 L 585.9 458.7 L 583.0 455.1 L 443.6 252.0 Z M 329.8 312.4 L 415.0 312.4 L 551.2 509.1 L 550.5 516.9 L 416.3 711.5 L 330.5 711.5 L 330.2 704.1 L 435.5 542.9 L 490.4 541.9 L 510.9 511.7 L 489.7 482.1 L 436.4 482.1 L 434.8 480.5 L 329.5 319.9 Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ================= NAV ================= -->
+<nav class="nav" aria-label="Primary">
+  <a href="#top" class="nav-brand">
+    <svg class="nav-mark" viewBox="0 0 1024 1024" aria-hidden="true"><use href="#exody-mark" fill="currentColor"/></svg>
+    Exody
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="#router" class="active">Router</a>
+    <a href="#assistant">Assistant</a>
+    <a href="#design-studio">Design</a>
+    <a href="#new-features">New</a>
+    <a href="#local-first">Local‑first</a>
+    <a href="#compare">Compare</a>
+    <a href="#mobile">Mobile</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="nav-cta">
+    <button class="btn btn-primary" id="navDownload" type="button">Download for Mac</button>
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle menu">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main id="main">
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="grid-mesh" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-split">
+      <div class="hero-copy">
+        <p class="eyebrow reveal">Local‑first coding agent for Mac</p>
+        <h1 class="reveal">Stop paying <span class="serif grad-text">flagship prices</span><br>for a typo fix.</h1>
+        <p class="lede reveal">Exody reads every task before it runs it, and sends it to the model that actually fits — cheap and fast for the mechanical work, strong only when a problem earns it. Same agent, same terminal. Save up to 65–68% versus using the most expensive model for everything.</p>
+        <div class="hero-cta reveal">
+          <button class="btn btn-primary" id="heroDownload" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 22C7.78997 22.05 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+            Download for Mac
+          </button>
+          <a href="#router" class="btn btn-ghost">See the router think</a>
+        </div>
+        <p class="hero-note reveal">macOS Universal (Intel + Apple Silicon) · BYOK — Anthropic, Google, OpenAI, Kimi, xAI, DeepSeek · no subscription markup</p>
+      </div>
+      <div class="ascii-stage reveal" id="asciiStage" tabindex="0" role="img" aria-label="Interactive Exody mark. Drag to rotate, or use arrow keys.">
+        <canvas id="asciiHero" aria-hidden="true"></canvas>
+        <p class="ascii-hint">Drag to rotate</p>
+      </div>
+    </div>
+    <div class="reveal marquee-wrap">
+      <p class="eyebrow" style="margin-bottom:14px;">The router picks between</p>
+      <div class="marquee-track" id="marquee"></div>
+    </div>
+
+    <!-- ============ ROUTER DEMO — flagship interactive hero, tilts in real 3D on cursor ============ -->
+    <div class="hero-3d-stage reveal" style="margin-top:64px;">
+    <div class="glass-strong router-demo" id="router" data-tilt-stage>
+      <span class="sheen" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow">Click a task — watch it route</p>
+        <div class="task-chips" id="taskChips" role="group" aria-label="Example tasks"></div>
+        <p class="task-why" id="taskWhy" aria-live="polite"></p>
+        <div class="cost-row">
+          <span class="cost-now" id="costNow">$0.003</span>
+          <span class="cost-was" id="costWas"></span>
+        </div>
+      </div>
+      <div>
+        <div class="flow">
+          <div class="flow-node">Task</div>
+          <div class="flow-line active" id="flowToRouter"></div>
+          <div class="router-core">
+            <div class="rc-label">Router</div>
+            <div class="rc-sub">reads complexity</div>
+          </div>
+          <div class="tier-row" style="width:100%; margin-top:2px;">
+            <div class="flow-line active" style="height:18px;justify-self:center;"></div>
+          </div>
+          <div class="tier-row" id="tierRow">
+            <div class="tier-node" data-tier="fast" style="--tier-color:#38bdf8;">
+              <span class="tier-dot" style="background:#38bdf8;"></span>
+              <span class="tn-label">Fast</span>
+              <span class="tn-sub">cheap &amp; quick</span>
+            </div>
+            <div class="tier-node" data-tier="strong" style="--tier-color:#a78bfa;">
+              <span class="tier-dot" style="background:#a78bfa;"></span>
+              <span class="tn-label">Strong</span>
+              <span class="tn-sub">earns it</span>
+            </div>
+            <div class="tier-node" data-tier="ultra" style="--tier-color:#fb923c;">
+              <span class="tier-dot" style="background:#fb923c;"></span>
+              <span class="tn-label">Ultra</span>
+              <span class="tn-sub">your call only</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOCAL-FIRST 3D TERMINAL HERO ================= -->
+<section class="section bordered" id="local-first">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Where the code actually runs</p>
+      <h2>Your Mac. Your terminal. Nothing leased.</h2>
+      <p style="margin-inline:auto;">No cloud IDE in the loop. The agent opens a real shell on your machine, and every routing decision surfaces right where the work happens.</p>
+    </div>
+    <div class="terminal-scene reveal">
+      <div class="terminal-body" id="terminalBody" data-tilt-stage>
+        <div class="terminal-chrome">
+          <span class="tl-dot" style="background:#ff5f57"></span>
+          <span class="tl-dot" style="background:#febc2e"></span>
+          <span class="tl-dot" style="background:#28c840"></span>
+          <span class="terminal-title mono">exody — zsh — 82×24</span>
+        </div>
+        <div class="terminal-body-inner mono">
+          <div class="t-line"><span class="t-prompt">❯</span> exody "refactor the auth flow across the API and mobile client"</div>
+          <div class="t-line t-dim">Reading task — cross‑file scope, 12 files touched, architecture terms detected</div>
+          <div class="t-line"><span class="t-out-strong">→ routed: Strong tier</span> <span class="t-dim">(Claude Sonnet 5)</span></div>
+          <div class="t-line t-dim">Editing 3 files… tests running…</div>
+          <div class="t-line"><span class="t-out-ok">✓ tests green</span> <span class="t-dim">· $0.24 spent</span></div>
+          <div class="t-line t-caret"><span class="t-prompt">❯</span><span class="t-cursor"></span></div>
+        </div>
+        <div class="terminal-float-card" aria-hidden="true">
+          <span class="tier-dot" style="background:#a78bfa;"></span> Strong · Sonnet 5 · vs Fable at 5× the output rate
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PILLARS ================= -->
+<section class="section bordered">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Why it's built this way</p>
+      <h2>Four decisions, one honest bill.</h2>
+    </div>
+    <div class="grid-cards">
+      <div class="glass pillar reveal"><p class="pi-num">01</p><h3>Local‑first, not cloud‑leased</h3><p>The agent runs on your Mac. Your project, terminal, and secrets never leave the machine for someone else's cloud IDE.</p></div>
+      <div class="glass pillar reveal"><p class="pi-num">02</p><h3>A router that pays for itself</h3><p>Auto mode sends simple work to a fast model, escalates to strong on real complexity, and <strong>Auto-Ultra</strong> detects genuinely extreme tasks and picks the frontier model — with learned suppression so it never runs away. Versus sending every prompt to the most expensive model, that mix saves up to 65–68%.</p></div>
+      <div class="glass pillar reveal"><p class="pi-num">03</p><h3>BYOK with an honest meter</h3><p>Bring keys for Anthropic, Google, OpenAI, Kimi, xAI, or DeepSeek. Session and monthly spend are tracked locally — cache discounts included, no markup hidden in the number.</p></div>
+      <div class="glass pillar reveal"><p class="pi-num">04</p><h3>A phone that shares the run</h3><p>Pair once with a QR scan. Approve tools, send follow‑ups mid‑turn, talk over Voice Live — the Mac stays the execution authority. Now with <strong>transparent terminal</strong> and native <strong>Ask Question</strong> panels that stay in the chat history.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ASSISTANT ================= -->
+<section class="section bordered" id="assistant">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Personal assistant</p>
+      <h2>A second brain for your day.</h2>
+      <p style="max-width: 620px; margin: var(--sp-3) auto 0; color: var(--muted);">Not a coding agent wearing a hat. A real assistant with its own chat — mail, calendar, documents, errands, and the small research that keeps them moving.</p>
+    </div>
+    <div class="hero-3d-stage reveal" style="margin-top:var(--sp-6);">
+      <div class="glass-strong assistant-hero" data-tilt-stage style="padding: var(--sp-6);">
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4);" class="assistant-grid">
+          <div class="assistant-card" style="padding: var(--sp-4);">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #f87171 0%, #fb923c 100%); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <h3 style="font-size: 16px; font-weight:600; color:#fff;">Mail &amp; Calendar</h3>
+            <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Connect Gmail or Outlook via MCP. The assistant reads, drafts, and schedules — but never sends without your eyes on it. You set the red line: ask every time, whitelist trusted contacts, or lock it to read-only.</p>
+          </div>
+          <div class="assistant-card" style="padding: var(--sp-4);">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <h3 style="font-size: 16px; font-weight:600; color:#fff;">Errands &amp; Research</h3>
+            <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Book flights, compare prices, fill forms, track deliveries. The assistant has a real browser (Chrome control), web search, and persistent memory — so it remembers how you like to fly, who matters, and how you sign off.</p>
+          </div>
+          <div class="assistant-card" style="padding: var(--sp-4);">
+            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #34d399 0%, #38bdf8 100%); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-3);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <h3 style="font-size: 16px; font-weight:600; color:#fff;">Documents &amp; Memory</h3>
+            <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Write docs, update spreadsheets, create canvases. Everything is saved locally in your .exody folder. The assistant learns what matters and writes it to memory automatically — so it never starts from zero.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top: var(--sp-6); text-align: center;">
+      <p class="mono" style="font-size: 12px; color: var(--muted-2);">Four rules: Summarise never relay. Propose, do not act silently. Show the thing. Remember without being asked.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DESIGN STUDIO ================= -->
+<section class="section bordered" id="design-studio">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Design studio</p>
+      <h2>Design websites. Not just code them.</h2>
+      <p style="max-width: 640px; margin: var(--sp-3) auto 0; color: var(--muted); font-size: var(--step-0);">A full visual design surface inside Exody. Prompt a landing page, pick a design system, iterate with the agent — then export clean HTML/CSS or hand off to your codebase. Same local-first engine, same smart router, zero cloud IDE lock-in.</p>
+    </div>
+    <div class="grid-cards" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🎨 Visual Editor + Inspector</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Multi-file projects with a live preview, element inspector, and visual edit mode. Select anything on the page and edit it directly — the agent writes the CSS, you see the result instantly.</p>
+      </div>
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">📐 Design System Presets</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Start from Apple, Material, or custom tokens. The agent generates a full design system with colors, typography, spacing, and components — then builds pages that stay consistent.</p>
+      </div>
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🖼️ Render & Animate</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Generate real images for mockups and product shots. Preview CSS animations frame-by-frame with real screenshots. No placeholders — every pixel is real.</p>
+      </div>
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">📤 Export Ready</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">One ZIP with clean HTML, CSS, and assets. Or keep iterating — the design project lives in <code style="font-family:var(--mono);font-size:12px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;">.exody/designs/</code> alongside your code.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHAT'S NEW ================= -->
+<section class="section bordered" id="new-features">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">What's new</p>
+      <h2>Shipped in the latest build.</h2>
+    </div>
+    <div class="grid-cards" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🎯 Auto-Ultra</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">The router now detects genuinely extreme tasks and auto-escalates to the frontier model — with learned suppression so it never runs away. You can still pick Ultra explicitly; the agent just got smarter at knowing when you would have.</p>
+      </div>
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">❓ Ask Question v2</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Multi-question panels with up to 4 questions, free-text answers, and a persistent Q&A record that stays in the chat history. The panel no longer vanishes after you answer.</p>
+      </div>
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">📝 Changes Card</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Every file edit is shown as a diff card with author, timestamp, and undo. No more invisible writes — you see exactly what changed and can roll it back.</p>
+      </div>
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🖥️ Transparent Terminal</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">The xterm sidebar now has real transparency and vibrancy, matching the macOS aesthetic. Dark/light theme aware, with proper backdrop blur.</p>
+      </div>
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🗓️ Plan Mode</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Read-only planning first. The agent lays out the approach, you approve it, then it implements. No surprise rewrites. Toggle with ⇧Tab.</p>
+      </div>
+      <div class="glass reveal" style="padding: var(--sp-5);">
+        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🔌 Universal Binary</h3>
+        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">One DMG runs on both Apple Silicon and Intel Macs. Ad-hoc signed and verified, so gatekeeper warnings are manageable with a single xattr command.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ROUTER DEEP DIVE ================= -->
+<section class="section bordered">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Inside the flagship feature</p>
+      <h2>Three tiers. One rule: earn the upgrade.</h2>
+      <p>The router scores every message for real signal — architecture words, cross‑file scope, message length, UI‑implementation intent — before a single token is spent on a model. Nothing escalates by accident.</p>
+    </div>
+    <div class="tier-cards">
+      <div class="glass tier-card reveal">
+        <div class="tc-glow" style="background:#38bdf8;"></div>
+        <span class="tc-tag" style="color:#7dd3fc;border-color:rgba(56,189,248,.35);">Default</span>
+        <h3><span style="width:9px;height:9px;border-radius:50%;background:#38bdf8;display:inline-block;"></span>Fast</h3>
+        <p class="tc-price">Haiku 4.5 · Luna · Gemini 3.7 Flash · Kimi K2.7 Code · Grok Build · DeepSeek V4 Flash</p>
+        <ul>
+          <li><b>Trivial edits</b> — rename, typo, one‑line copy fix</li>
+          <li><b>Explore &amp; explain</b> — "where is…", "what does this do"</li>
+          <li><b>Short targeted fixes</b> — under ~800 characters, no architecture terms</li>
+          <li>Also the model for background explore sub‑agents mapping a repo</li>
+        </ul>
+      </div>
+      <div class="glass tier-card reveal">
+        <div class="tc-glow" style="background:#a78bfa;"></div>
+        <span class="tc-tag" style="color:#c4b5fd;border-color:rgba(167,139,250,.35);">Escalation</span>
+        <h3><span style="width:9px;height:9px;border-radius:50%;background:#a78bfa;display:inline-block;"></span>Strong</h3>
+        <p class="tc-price">Sonnet 5 · Terra · Gemini 3.1 Pro · Kimi K3 · Grok 4.6</p>
+        <ul>
+          <li><b>Architecture &amp; refactors</b> — "root cause", "migrate", multi‑file scope</li>
+          <li><b>Non‑trivial UI work</b> — layout/animation changes with real implementation intent</li>
+          <li><b>Provider failure fallback</b> — a fast‑tier call that stumbles escalates automatically, never silently downgrades again</li>
+          <li>Sticky for one short follow‑up if the thread is still clearly complex</li>
+        </ul>
+      </div>
+      <div class="glass tier-card reveal">
+        <div class="tc-glow" style="background:#fb923c;"></div>
+        <span class="tc-tag" style="color:#fdba74;border-color:rgba(251,146,60,.35);">Rare · Auto-Ultra</span>
+        <h3><span style="width:9px;height:9px;border-radius:50%;background:#fb923c;display:inline-block;"></span>Ultra</h3>
+        <p class="tc-price">Fable · Sol · Opus 5 · Kimi K3 · Grok 4.6</p>
+        <ul>
+          <li><b>Auto-Ultra</b> — escalates on genuinely extreme work, with learned suppression so it never runs away</li>
+          <li>You can still type an explicit ultra request anytime</li>
+          <li>Reserved for system design from scratch, deep multi‑day debugging, stack-wide rewrites</li>
+          <li>Falls back to Strong automatically if no ultra model is configured</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMPARE ================= -->
+<section class="section bordered" id="compare">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Versus the field</p>
+      <h2>Built to cost less — not just to look nice.</h2>
+      <p>Cursor is an IDE. Claude Code is a terminal agent. Both send every prompt to one model you pick by hand. Exody routes by task complexity automatically, runs local‑first, and adds a real mobile companion.</p>
+    </div>
+    <div class="glass-strong compare-wrap reveal">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Cursor</th>
+            <th>Claude Code</th>
+            <th>Exody</th>
+          </tr>
+        </thead>
+        <tbody id="compareBody"></tbody>
+      </table>
+    </div>
+    <p style="margin-top:18px;font-size:11.5px;color:var(--muted-2);line-height:1.6;">Comparison based on publicly known capabilities of Cursor and Claude Code at time of writing; provider capabilities may change.</p>
+  </div>
+</section>
+
+<!-- ================= MOBILE ================= -->
+<section class="section bordered" id="mobile">
+  <div class="container mobile-split">
+    <div>
+      <div class="section-head reveal" style="margin-bottom:0;">
+        <p class="eyebrow">Beyond the desk</p>
+        <h2>Pair once. The run follows you.</h2>
+        <p>Scan a QR code from Settings → Mobile. From there your phone pulls the same session history, lets you approve tool calls, send follow‑ups mid‑turn, and talk to the agent over Voice Live — while the Mac keeps doing the actual work.</p>
+      </div>
+      <ul style="margin-top:28px;display:flex;flex-direction:column;gap:14px;">
+        <li style="display:flex;gap:10px;font-size:13.6px;color:var(--muted);"><span style="color:#7dd3fc;">→</span> LAN pairing on the same Wi‑Fi, or a public tunnel via Settings</li>
+        <li style="display:flex;gap:10px;font-size:13.6px;color:var(--muted);"><span style="color:#7dd3fc;">→</span> Voice Live conversational audio, not just dictation</li>
+        <li style="display:flex;gap:10px;font-size:13.6px;color:var(--muted);"><span style="color:#7dd3fc;">→</span> The Mac stays the execution authority — nothing runs "in the cloud"</li>
+      </ul>
+      <div class="hero-cta reveal" style="justify-content:flex-start;margin-top:28px;">
+        <button class="btn btn-ghost" id="mobileCta" type="button">See the mobile bridge</button>
+      </div>
+    </div>
+    <div class="phone-scene reveal">
+      <div class="phone-body" id="phoneBody">
+        <div class="phone-glow" aria-hidden="true"></div>
+        <div class="phone-back" aria-hidden="true"></div>
+        <div class="phone-spine" aria-hidden="true"></div>
+        <div class="phone-face">
+          <div class="phone-screen">
+            <div class="phone-notch" aria-hidden="true"></div>
+            <div class="phone-msg">Refactor the auth flow across the API and mobile client</div>
+            <div class="phone-msg me">Routed → Strong tier · $0.24</div>
+            <div class="phone-msg">3 files touched · tests green ✓</div>
+            <div class="phone-chip-row">
+              <span class="phone-chip">Auto</span>
+              <span class="phone-chip">Voice Live</span>
+              <span class="phone-chip">Paired</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section class="section bordered" id="pricing">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Pricing</p>
+      <h2>Pay models. Not a cloud desk.</h2>
+      <p>Exody is local‑first. Token spend goes straight to your providers, and the router keeps most of it on cheap models.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="glass plan reveal">
+        <div class="plan-tag">BYOK</div>
+        <h3>Bring your keys</h3>
+        <div class="price"><b>$0</b><span>+ provider usage</span></div>
+        <p class="blurb">Run Exody on your Mac with Anthropic, Google, OpenAI, Kimi, xAI, or DeepSeek credentials. You pay providers directly, and the router keeps that bill small.</p>
+        <ul>
+          <li><span class="dot"></span>Local‑first agent and a real terminal</li>
+          <li><span class="dot"></span>Live session and monthly ledger</li>
+          <li><span class="dot"></span>Auto router: cheap by default, strong on merit</li>
+          <li><span class="dot"></span>Mobile bridge pairing</li>
+        </ul>
+        <button class="btn btn-ghost" type="button">Get Exody</button>
+      </div>
+      <div class="glass-strong plan highlight reveal">
+        <div class="plan-tag" style="color:#a5b4fc;">Most popular</div>
+        <h3>Pro</h3>
+        <div class="price"><b>$15</b><span>/mo</span></div>
+        <p class="blurb">A product layer on top of BYOK: soft budget guardrails and the full companion stack.</p>
+        <ul>
+          <li><span class="dot"></span>Everything in BYOK</li>
+          <li><span class="dot"></span>Budget alerts with a configurable ceiling</li>
+          <li><span class="dot"></span>Priority Autopilot and scheduled tasks</li>
+          <li><span class="dot"></span>Voice Live on mobile, Chrome control</li>
+        </ul>
+        <button class="btn btn-primary" type="button">Start Pro</button>
+      </div>
+      <div class="glass plan reveal">
+        <div class="plan-tag">Teams</div>
+        <h3>Enterprise</h3>
+        <div class="price"><b>Custom</b></div>
+        <p class="blurb">Fleet installs, policy, and support for teams that want local agents without a cloud IDE tax.</p>
+        <ul>
+          <li><span class="dot"></span>Custom MCP and policy hooks</li>
+          <li><span class="dot"></span>Audit‑friendly spend exports</li>
+          <li><span class="dot"></span>Dedicated onboarding, SLA options</li>
+        </ul>
+        <a class="btn btn-ghost" href="mailto:hello@exody.ai">Contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section bordered" id="faq">
+  <div class="container" style="max-width:760px;">
+    <div class="section-head reveal">
+      <p class="eyebrow">Good to know</p>
+      <h2>Questions people actually ask</h2>
+    </div>
+    <div id="faqList"></div>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="nav-brand" style="margin-bottom:12px;">
+          <svg class="footer-mark" viewBox="0 0 1024 1024" aria-hidden="true"><use href="#exody-mark" fill="currentColor"/></svg>
+          Exody
+        </div>
+        <p style="font-size:12.8px;color:var(--muted-2);line-height:1.6;max-width:260px;">A local‑first coding agent for Mac, with a router that decides what each task is actually worth.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#router">Router</a>
+        <a href="#assistant">Assistant</a>
+        <a href="#design-studio">Design Studio</a>
+        <a href="#local-first">Local‑first</a>
+        <a href="#compare">Compare</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#faq">FAQ</a>
+        <a href="mailto:hello@exody.ai">Contact</a>
+        <a href="#top">Download</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/refunds">Refunds</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Exody. Not affiliated with Apple, Anthropic, Google, OpenAI, xAI, Moonshot AI or DeepSeek.</span>
+      <span class="mono">Built local‑first.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- ASCII 3D mark — Cline-style point sculpture, built from the Exody X ---------- */
+  (function initAsciiHero(){
+    var stage = document.getElementById("asciiStage");
+    var canvas = document.getElementById("asciiHero");
+    if(!stage || !canvas) return;
+    var ctx = canvas.getContext("2d", { alpha:true });
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var MARK = "M 215.8 252.3 L 384.1 507.8 L 383.5 517.5 L 216.7 772.0 L 444.9 772.0 L 585.9 566.0 L 593.1 566.0 L 596.7 570.2 L 681.8 690.4 L 690.9 704.1 L 690.9 711.2 L 608.7 711.5 L 568.4 653.0 L 534.3 704.7 L 580.1 772.0 L 807.9 771.7 L 629.2 518.2 L 627.2 508.4 L 808.2 252.0 L 581.4 252.0 L 533.6 320.6 L 568.4 370.9 L 608.7 312.4 L 690.9 312.8 L 690.9 319.9 L 688.3 323.8 L 593.1 458.7 L 585.9 458.7 L 583.0 455.1 L 443.6 252.0 Z M 329.8 312.4 L 415.0 312.4 L 551.2 509.1 L 550.5 516.9 L 416.3 711.5 L 330.5 711.5 L 330.2 704.1 L 435.5 542.9 L 490.4 541.9 L 510.9 511.7 L 489.7 482.1 L 436.4 482.1 L 434.8 480.5 L 329.5 319.9 Z";
+    var RAMP = " .,:;+*?%S#@";
+    var pts = sampleMark();
+    var yaw = 0.42, pitch = -0.22;
+    var hoverX = 0, hoverY = 0, tHoverX = 0, tHoverY = 0;
+    var vYaw = 0, vPitch = 0;
+    var dragging = false;
+    var lastX = 0, lastY = 0, lastT = 0;
+    var idle = 0;
+    var running = true;
+    var dpr = 1, cssW = 0, cssH = 0, cell = 9;
+    var hint = stage.querySelector(".ascii-hint");
+
+    function sampleMark(){
+      var W = 168, H = 168, TH = 0.38;
+      var c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      var g = c.getContext("2d");
+      var minX = 200, minY = 230, maxX = 820, maxY = 790;
+      g.setTransform(W/(maxX-minX), 0, 0, H/(maxY-minY), -minX*W/(maxX-minX), -minY*H/(maxY-minY));
+      g.fillStyle = "#fff";
+      g.fill(new Path2D(MARK), "evenodd");
+      var data = g.getImageData(0,0,W,H).data;
+      function on(x,y){
+        if(x<0||y<0||x>=W||y>=H) return false;
+        return data[(y*W+x)*4+3] > 20;
+      }
+      var out = [];
+      var aspect = (maxX-minX)/(maxY-minY);
+      var step = 2;
+      for(var y=0;y<H;y++){
+        for(var x=0;x<W;x++){
+          if(!on(x,y)) continue;
+          var px = ((x+0.5)/W - 0.5) * 2 * aspect;
+          var py = -((y+0.5)/H - 0.5) * 2;
+          var edge = !on(x-1,y)||!on(x+1,y)||!on(x,y-1)||!on(x,y+1);
+          if(x%step===0 && y%step===0){
+            out.push(px, py, TH, 0, 0, 1);
+            out.push(px, py, -TH, 0, 0, -1);
+          }
+          if(edge){
+            var ex=0, ey=0;
+            if(!on(x-1,y)) ex -= 1;
+            if(!on(x+1,y)) ex += 1;
+            if(!on(x,y-1)) ey += 1;
+            if(!on(x,y+1)) ey -= 1;
+            var el = Math.hypot(ex,ey) || 1;
+            ex /= el; ey /= el;
+            for(var i=0;i<=8;i++){
+              out.push(px, py, TH*(1-2*i/8), ex, ey, 0);
+            }
+          }
+        }
+      }
+      return new Float32Array(out);
+    }
+
+    function resize(){
+      var r = stage.getBoundingClientRect();
+      cssW = Math.max(1, r.width);
+      cssH = Math.max(1, r.height);
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+      cell = cssW < 500 ? 7 : (cssW < 900 ? 8 : 9);
+    }
+
+    function projectAndDraw(){
+      var pyaw = yaw + hoverX;
+      var ppitch = pitch + hoverY;
+      var cy = Math.cos(pyaw), sy = Math.sin(pyaw);
+      var cp = Math.cos(ppitch), sp = Math.sin(ppitch);
+      var cols = Math.max(8, Math.floor(cssW / cell));
+      var rows = Math.max(8, Math.floor(cssH / cell));
+      var depth = new Float32Array(cols * rows);
+      var lum = new Float32Array(cols * rows);
+      var hue = new Float32Array(cols * rows);
+      for(var i=0;i<depth.length;i++) depth[i] = -1e9;
+      var scale = Math.min(cssW, cssH) * 0.64;
+      var fl = 3.4;
+      var lx = 0.32, ly = 0.58, lz = 0.74;
+      var n = pts.length;
+      for(var i=0;i<n;i+=6){
+        var x = pts[i], y = pts[i+1], z = pts[i+2];
+        var nx = pts[i+3], ny = pts[i+4], nz = pts[i+5];
+        var xz = x*cy + z*sy;
+        var zz = -x*sy + z*cy;
+        var yz = y*cp - zz*sp;
+        var z2 = y*sp + zz*cp;
+        var nxx = nx*cy + nz*sy;
+        var nzz = -nx*sy + nz*cy;
+        var nyy = ny*cp - nzz*sp;
+        var nzz2 = ny*sp + nzz*cp;
+        var pz = z2 + fl;
+        if(pz < 0.6) continue;
+        var inv = 1 / pz;
+        var sx = cssW*0.5 + xz * scale * inv;
+        var sy2 = cssH*0.52 + yz * scale * inv;
+        var col = (sx / cell) | 0;
+        var row = (sy2 / cell) | 0;
+        if(col<0||row<0||col>=cols||row>=rows) continue;
+        var di = row*cols + col;
+        if(z2 <= depth[di]) continue;
+        var ndot = nxx*lx + nyy*ly + nzz2*lz;
+        var light = 0.16 + Math.max(0, ndot) * 0.84;
+        var fog = Math.max(0.25, Math.min(1, (z2 + 1.1) * 0.55));
+        depth[di] = z2;
+        lum[di] = light * fog;
+        hue[di] = (x + 1.2) * 0.38;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cssW, cssH);
+      ctx.font = "700 " + Math.round(cell * 1.05) + "px \"JetBrains Mono\", ui-monospace, monospace";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.shadowColor = "rgba(56,189,248,.35)";
+      ctx.shadowBlur = 10;
+      for(var row=0;row<rows;row++){
+        for(var col=0;col<cols;col++){
+          var di = row*cols + col;
+          var L = lum[di];
+          if(L <= 0.02 || depth[di] < -1e8) continue;
+          var idx = Math.min(RAMP.length-1, Math.max(1, (L * (RAMP.length-1) + 0.15) | 0));
+          var t = hue[di];
+          if(t < 0) t = 0; else if(t > 1) t = 1;
+          var r, g, b;
+          if(t < 0.5){
+            var k = t * 2;
+            r = 56 + (129-56)*k; g = 189 + (140-189)*k; b = 248 + (248-248)*k;
+          } else {
+            var k = (t-0.5)*2;
+            r = 129 + (192-129)*k; g = 140 + (132-140)*k; b = 248 + (252-248)*k;
+          }
+          r = Math.round(r * (0.45 + L*0.7) + 180*L*0.25);
+          g = Math.round(g * (0.45 + L*0.7) + 200*L*0.2);
+          b = Math.round(Math.min(255, b * (0.5 + L*0.65) + 220*L*0.15));
+          ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+          ctx.globalAlpha = 0.55 + L * 0.45;
+          ctx.fillText(RAMP.charAt(idx), (col+0.5)*cell, (row+0.5)*cell);
+        }
+      }
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+    }
+
+    function tick(now){
+      if(!running) return;
+      if(!reduce){
+        hoverX += (tHoverX - hoverX) * 0.08;
+        hoverY += (tHoverY - hoverY) * 0.08;
+        if(!dragging){
+          vYaw *= 0.94; vPitch *= 0.94;
+          yaw += vYaw;
+          pitch += vPitch;
+          idle += 0.008;
+          yaw += 0.004;
+          pitch += Math.sin(idle) * 0.0006;
+        }
+        if(pitch > 0.85) pitch = 0.85;
+        if(pitch < -0.85) pitch = -0.85;
+      }
+      projectAndDraw();
+      if(!reduce) requestAnimationFrame(tick);
+    }
+
+    function hideHint(){
+      if(hint){ hint.style.opacity = "0"; hint.style.transition = "opacity .4s ease"; }
+    }
+
+    stage.addEventListener("pointerleave", function(){
+      dragging = false;
+      tHoverX = 0; tHoverY = 0;
+      stage.classList.remove("is-drag");
+    });
+    stage.addEventListener("pointermove", function(e){
+      var r = stage.getBoundingClientRect();
+      tHoverX = ((e.clientX - r.left) / r.width - 0.5) * 0.55;
+      tHoverY = (0.5 - (e.clientY - r.top) / r.height) * 0.35;
+      if(!dragging) return;
+      var dt = Math.max(8, nowDelta(e.timeStamp));
+      var dx = e.clientX - lastX;
+      var dy = e.clientY - lastY;
+      yaw += dx * 0.008;
+      pitch += dy * 0.006;
+      vYaw = dx * 0.008 * (16/dt);
+      vPitch = dy * 0.006 * (16/dt);
+      lastX = e.clientX; lastY = e.clientY;
+      hideHint();
+    });
+    stage.addEventListener("pointerdown", function(e){
+      dragging = true;
+      lastX = e.clientX; lastY = e.clientY;
+      lastT = e.timeStamp;
+      vYaw = 0; vPitch = 0;
+      stage.classList.add("is-drag");
+      try{ stage.setPointerCapture(e.pointerId); }catch(err){}
+      e.preventDefault();
+      hideHint();
+    });
+    stage.addEventListener("pointerup", endDrag);
+    stage.addEventListener("pointercancel", endDrag);
+    function endDrag(){
+      dragging = false;
+      stage.classList.remove("is-drag");
+    }
+    function nowDelta(t){ var d = t - lastT; lastT = t; return d; }
+
+    stage.addEventListener("keydown", function(e){
+      var step = 0.12;
+      if(e.key === "ArrowLeft"){ yaw -= step; hideHint(); e.preventDefault(); }
+      else if(e.key === "ArrowRight"){ yaw += step; hideHint(); e.preventDefault(); }
+      else if(e.key === "ArrowUp"){ pitch -= step; hideHint(); e.preventDefault(); }
+      else if(e.key === "ArrowDown"){ pitch += step; hideHint(); e.preventDefault(); }
+    });
+
+    var vis = new IntersectionObserver(function(entries){
+      running = entries[0] && entries[0].isIntersecting;
+      if(running && !reduce) requestAnimationFrame(tick);
+    }, { threshold: 0.02 });
+    vis.observe(stage);
+
+    var ro = new ResizeObserver(function(){ resize(); if(reduce) projectAndDraw(); });
+    ro.observe(stage);
+    resize();
+    if(reduce){ projectAndDraw(); }
+    else { requestAnimationFrame(tick); }
+  })();
+
+  /* ---------- reveal on scroll ---------- */
+  var reveals = document.querySelectorAll(".reveal");
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(function(el, i){
+    el.style.transitionDelay = Math.min(i * 40, 260) + "ms";
+    io.observe(el);
+  });
+
+  /* ---------- provider marquee ---------- */
+  var MODELS = [
+    "Claude Fable","Claude Opus 5","Claude Sonnet 5","Claude Haiku 4.5",
+    "GPT-5.6 Sol","GPT-5.6 Terra","GPT-5.6 Luna",
+    "Gemini 3.7 Flash","Gemini 3.1 Pro","Gemini 3.1 Flash-Lite",
+    "Grok 4.6","Grok Build","Kimi K3","Kimi K2.7 Code",
+    "DeepSeek V4 Flash","DeepSeek V4 Pro"
+  ];
+  var track = document.getElementById("marquee");
+  var frag = document.createDocumentFragment();
+  (MODELS.concat(MODELS)).forEach(function(m){
+    var s = document.createElement("span");
+    s.textContent = m;
+    frag.appendChild(s);
+  });
+  track.appendChild(frag);
+
+  /* ---------- router demo ---------- */
+  var TASKS = [
+    { label:"Rename a variable", tier:"fast", cost:"$0.005", flagship:"$0.05", why:"Mechanical edit — Haiku, Luna, or DeepSeek V4 Flash. Fable would be ten times the output rate." },
+    { label:"Add a null check", tier:"fast", cost:"$0.006", flagship:"$0.05", why:"Small, local, low ambiguity. Fast-tier work." },
+    { label:"Fix a typo in docs", tier:"fast", cost:"$0.003", flagship:"$0.04", why:"Trivial — frontier reasoning is wasted here." },
+    { label:"Write unit tests", tier:"fast", cost:"$0.008", flagship:"$0.07", why:"A pattern the agent has seen thousands of times." },
+    { label:"Refactor auth across 12 files", tier:"strong", cost:"$0.18", flagship:"$0.90", why:"Cross-file reasoning — Sonnet 5 at $2/$10, not Fable at $10/$50." },
+    { label:"Debug a flaky race condition", tier:"strong", cost:"$0.16", flagship:"$0.80", why:"Needs causal reasoning. Strong earns it; Ultra does not." },
+    { label:"Design a distributed system", tier:"ultra", cost:"$0.90", flagship:"$0.90", why:"Extreme complexity — Auto-Ultra picks Fable, or you choose it explicitly." },
+    { label:"Redesign auth flow across the stack", tier:"ultra", cost:"$1.20", flagship:"$1.20", why:"Multi-day refactoring — Auto-Ultra reaches the frontier when the task demands it." }
+  ];
+  var TIER_COLOR = { fast:"#38bdf8", strong:"#a78bfa", ultra:"#fb923c" };
+  var chipsEl = document.getElementById("taskChips");
+  var whyEl = document.getElementById("taskWhy");
+  var costNowEl = document.getElementById("costNow");
+  var costWasEl = document.getElementById("costWas");
+  var tierNodes = document.querySelectorAll(".tier-node");
+  var flowToRouter = document.getElementById("flowToRouter");
+
+  TASKS.forEach(function(t, idx){
+    var b = document.createElement("button");
+    b.className = "chip";
+    b.type = "button";
+    b.textContent = t.label;
+    b.setAttribute("aria-pressed", idx === 0 ? "true" : "false");
+    b.addEventListener("click", function(){ setActive(t, b); });
+    chipsEl.appendChild(b);
+  });
+
+  function setActive(t, btn){
+    Array.prototype.forEach.call(chipsEl.children, function(c){ c.setAttribute("aria-pressed", c === btn ? "true" : "false"); });
+    whyEl.textContent = t.why;
+    costNowEl.textContent = t.cost;
+    costNowEl.style.color = TIER_COLOR[t.tier];
+    if(t.tier === "fast"){
+      costWasEl.innerHTML = "vs <s>" + t.flagship + "</s> on one flagship model";
+    } else if(t.tier === "ultra"){
+      costWasEl.textContent = "top model, by your choice — never auto‑picked";
+    } else {
+      costWasEl.textContent = "same as one flagship call — this task earns it";
+    }
+    tierNodes.forEach(function(n){ n.classList.toggle("active", n.dataset.tier === t.tier); });
+    flowToRouter.style.setProperty("--pulse-color", TIER_COLOR[t.tier]);
+  }
+  setActive(TASKS[0], chipsEl.children[0]);
+
+  /* ---------- compare table ---------- */
+  var ROWS = [
+    { feature:"Smart multi‑model routing", tip:"Auto escalates by task complexity; Auto-Ultra for extremes, explicit Ultra always available.", cursor:"You pick manually", claude:"You pick manually", exody:"Automatic, per task — now with Auto-Ultra" },
+    { feature:"Cost vs. the most expensive model", tip:"Routing simple work to a cheap model is where the bill drops.", cursor:"Fixed subscription", claude:"Full price, every call", exody:"Save up to 65–68%" },
+    { feature:"BYOK + live cost meter", tip:"Your keys. A local ledger with cache‑aware pricing.", cursor:"Subscription", claude:"Usage in CLI", exody:"Local meter + alerts" },
+    { feature:"True local‑first agent", tip:"Code, terminal, and secrets stay on your Mac.", cursor:"Cloud IDE", claude:"Local CLI", exody:"Desktop product" },
+    { feature:"Native mobile companion", tip:"Pair once with a QR — same sessions, Voice Live.", cursor:"Limited", claude:"None", exody:"Full companion" },
+    { feature:"Plan Mode", tip:"Read-only plan first, implement after you approve — no surprise rewrites.", cursor:"None", claude:"None", exody:"Built-in" },
+    { feature:"Ask Question panels", tip:"Multi-question panels with persistent Q&A record in chat.", cursor:"None", claude:"None", exody:"Built-in" },
+    { feature:"Changes Card + undo", tip:"Every file edit shown as a diff card you can review and undo.", cursor:"Basic diff", claude:"CLI git", exody:"Visual cards" },
+    { feature:"Transparent terminal", tip:"Vibrant xterm with macOS vibrancy, not a black box.", cursor:"Built-in", claude:"Terminal", exody:"Vibrant glass" },
+    { feature:"Autopilot + scheduled tasks", tip:"Recurring patrols that run beside your work.", cursor:"None", claude:"DIY cron", exody:"First‑class" },
+    { feature:"Computer / Chrome control", tip:"Consent‑gated clicks and screenshots when text tools can't finish.", cursor:"Browser tools", claude:"Partial", exody:"Mac + Chrome" }
+  ];
+  var tbody = document.getElementById("compareBody");
+  ROWS.forEach(function(r){
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="feat">' + r.feature + '<span>' + r.tip + '</span></td>' +
+      '<td class="dim">' + r.cursor + '</td>' +
+      '<td class="dim">' + r.claude + '</td>' +
+      '<td class="exody">' + r.exody + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  /* ---------- shared reduced-motion check for all 3D tilt heroes ---------- */
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- cursor-tilt engine — drives every 3D hero on the page
+     (router demo stage + terminal hero); each stage tilts independently
+     inside its own perspective wrapper, real translateZ layers do the rest. ---------- */
+  if(!reduceMotion){
+    document.querySelectorAll("[data-tilt-stage]").forEach(function(stage){
+      var wrap = stage.closest(".hero-3d-stage") || stage.closest(".terminal-scene") || stage.parentElement;
+      var maxY = stage.hasAttribute("data-tilt-wide") ? 10 : 7;
+      var maxX = stage.hasAttribute("data-tilt-wide") ? 8 : 6;
+      wrap.addEventListener("mousemove", function(e){
+        var r = stage.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width;
+        var py = (e.clientY - r.top) / r.height;
+        var ry = (px - 0.5) * maxY * 2;
+        var rx = (py - 0.5) * maxX * -2;
+        stage.style.transform = "rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
+      });
+      wrap.addEventListener("mouseleave", function(){
+        stage.style.transform = "rotateX(0deg) rotateY(0deg)";
+      });
+    });
+  }
+
+  /* ---------- phone tilt on cursor ---------- */
+  var phoneBody = document.getElementById("phoneBody");
+  if(phoneBody && !reduceMotion){
+    var scene = phoneBody.closest(".phone-scene");
+    scene.addEventListener("mousemove", function(e){
+      var r = scene.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width;
+      var py = (e.clientY - r.top) / r.height;
+      var ry = -22 + (px - 0.5) * 16;
+      var rx = 8 + (py - 0.5) * -12;
+      phoneBody.style.transform = "rotateX(" + rx + "deg) rotateY(" + ry + "deg) rotateZ(1.5deg)";
+    });
+    scene.addEventListener("mouseleave", function(){
+      phoneBody.style.transform = "rotateX(8deg) rotateY(-22deg) rotateZ(1.5deg)";
+    });
+  }
+
+  /* ---------- glass card cursor spotlight (progressive; safe without JS) ---------- */
+  document.querySelectorAll(".glass, .glass-strong").forEach(function(card){
+    card.addEventListener("mousemove", function(e){
+      var r = card.getBoundingClientRect();
+      var mx = ((e.clientX - r.left) / r.width) * 100;
+      var my = ((e.clientY - r.top) / r.height) * 100;
+      card.style.background = card.classList.contains("glass-strong")
+        ? "radial-gradient(280px circle at " + mx + "% " + my + "%, rgba(255,255,255,.05), rgba(18,18,23,.82) 70%)"
+        : "radial-gradient(280px circle at " + mx + "% " + my + "%, rgba(255,255,255,.04), rgba(16,16,20,.58) 70%)";
+    });
+    card.addEventListener("mouseleave", function(){ card.style.background = ""; });
+  });
+
+  /* ---------- FAQ accordion ---------- */
+  var FAQS = [
+    { q:"How much do I actually save?", a:"Up to 65–68% versus sending every prompt to the most expensive model in the pool (Claude Fable at $10/$50 per million). Everyday edits stay on Fast — Haiku 4.5, Luna, Gemini 3.7 Flash, Kimi K2.7 Code, Grok Build, DeepSeek V4 Flash. Hard work lands on Sonnet 5 or Terra. Fable only runs when the task earns Ultra." },
+    { q:"Does the router ever pick the expensive model by mistake?", a:"Ultra is rare on purpose. Auto-Ultra only escalates on genuinely extreme work, and learned suppression stops it from running away. You can still force Ultra yourself. Everyday edits stay on Fast." },
+    { q:"What happens to my code and secrets?", a:"They stay on your Mac. Exody is a local‑first agent — the Electron app runs on your machine, and only the model calls you actually trigger leave it, straight to your own provider keys." },
+    { q:"Which model providers can I use?", a:"Bring your own key for Anthropic, Google, OpenAI, Moonshot (Kimi), xAI (Grok), or DeepSeek. Hybrid mode shops across every key you hold and picks by task kind — Fable is the Ultra default, Sonnet 5 is the Strong default, Haiku 4.5 is the Fast default." },
+    { q:"How does the mobile app work if the agent runs on my Mac?", a:"Pair once with a QR code. Your phone pulls session history over the LAN bridge (or a tunnel) and can approve tools, send follow‑ups, and talk over Voice Live — but the Mac is always the one executing." },
+    { q:"Is there a free tier?", a:"BYOK is $0 from Exody — you only pay your model provider directly, and the router is what keeps that number small." }
+  ];
+  var faqList = document.getElementById("faqList");
+  FAQS.forEach(function(f, i){
+    var item = document.createElement("div");
+    item.className = "faq-item";
+    item.setAttribute("aria-expanded", i === 0 ? "true" : "false");
+    var qid = "faq-q-" + i, aid = "faq-a-" + i;
+    item.innerHTML =
+      '<button class="faq-q" id="' + qid + '" aria-controls="' + aid + '" aria-expanded="' + (i===0?"true":"false") + '" type="button">' +
+        '<span>' + f.q + '</span><span class="plus" aria-hidden="true">+</span>' +
+      '</button>' +
+      '<div class="faq-a" id="' + aid + '" role="region" aria-labelledby="' + qid + '"><p>' + f.a + '</p></div>';
+    faqList.appendChild(item);
+    var btn = item.querySelector(".faq-q");
+    var panel = item.querySelector(".faq-a");
+    function sync(open){
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      item.setAttribute("aria-expanded", open ? "true" : "false");
+      panel.style.maxHeight = open ? panel.scrollHeight + "px" : "0px";
+    }
+    sync(i === 0);
+    btn.addEventListener("click", function(){
+      var open = btn.getAttribute("aria-expanded") === "true";
+      sync(!open);
+    });
+  });
+
+  /* ---------- nav active link on scroll ---------- */
+  var sections = ["router","assistant","design-studio","new-features","local-first","compare","mobile","pricing","faq"].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+  var links = document.querySelectorAll(".nav-links a");
+  var navIo = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){ l.classList.toggle("active", l.getAttribute("href") === "#" + e.target.id); });
+      }
+    });
+  }, { rootMargin: "-40% 0px -50% 0px" });
+  sections.forEach(function(s){ navIo.observe(s); });
+
+  /* ---------- CTA buttons: scroll targets ---------- */
+  function goto(id){ var el = document.getElementById(id); if(el) el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); }
+  document.getElementById("navDownload").addEventListener("click", function(){ goto("pricing"); });
+  document.getElementById("heroDownload").addEventListener("click", function(){ goto("pricing"); });
+  var mobileCta = document.getElementById("mobileCta");
+  if(mobileCta) mobileCta.addEventListener("click", function(){ goto("mobile"); });
+
+  /* ---------- mobile nav toggle ---------- */
+  var navToggle = document.getElementById("navToggle");
+  var navLinks = document.getElementById("navLinks");
+  if(navToggle && navLinks){
+    navToggle.addEventListener("click", function(){
+      var open = navLinks.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    navLinks.querySelectorAll("a").forEach(function(a){
+      a.addEventListener("click", function(){
+        navLinks.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
