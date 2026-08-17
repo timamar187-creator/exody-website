@@ -253,7 +253,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
    HERO — Cline-style split: copy left, sculpture right
    ============================================================ */
 .hero{ position: relative; padding: 20px 0 40px; overflow-x: clip; }
-.hero > .container{ max-width: 1320px; }
+.hero::before{
+  content:""; position:absolute; pointer-events:none; z-index:0;
+  width:min(760px, 72vw); height:620px; left:52%; top:90px;
+  transform:translateX(-50%);
+  background: radial-gradient(ellipse, rgba(139,92,246,.13) 0%, rgba(168,85,247,.07) 38%, transparent 72%);
+  filter: blur(34px);
+}
+.hero > .container{ max-width: 1320px; position:relative; z-index:1; }
 .hero-split{
   display: grid;
   grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.32fr);
@@ -1525,7 +1532,21 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
 
 /* ========== FAITHFUL APP HEROES (Liquid Glass) ========== */
 /* Full-width, flat, no 3D tilt — matches real app screenshots */
-.product-heroes{  display: grid;  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);  gap: 36px;  align-items: stretch;  margin-top: 40px;  width: 100%; }
+.product-heroes{
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  gap: 36px; align-items: stretch; margin-top: 40px; width: 100%;
+}
+.product-heroes::before{
+  content:""; position:absolute; pointer-events:none; z-index:0;
+  width:78%; height:84%; left:10%; top:8%;
+  background:
+    radial-gradient(ellipse at 25% 42%, rgba(124,58,237,.10), transparent 58%),
+    radial-gradient(ellipse at 78% 62%, rgba(168,85,247,.09), transparent 54%);
+  filter: blur(38px);
+}
+.product-heroes > *{ position:relative; z-index:1; }
 @media (max-width: 1100px){
   .product-heroes{
     grid-template-columns: 1fr;
@@ -2466,9 +2487,6 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
           <div class="router-core">
             <div class="rc-label">Router</div>
             <div class="rc-sub">reads complexity</div>
-          </div>
-          <div class="tier-row" style="width:100%; margin-top:2px;">
-            <div class="flow-line active" style="height:18px;justify-self:center;"></div>
           </div>
           <div class="tier-row" id="tierRow">
             <div class="tier-node" data-tier="fast" style="--tier-color:#38bdf8;">
