@@ -55,7 +55,7 @@
 }
 
 *{ box-sizing: border-box; }
-html{ scroll-behavior: smooth; }
+html{ scroll-behavior: smooth; overflow-x: clip; max-width: 100%; }
 html,body{ margin:0; padding:0; }
 body{
   background: var(--bg);
@@ -64,7 +64,8 @@ body{
   font-size: 15px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
+  max-width: 100%;
   position: relative;
 }
 img{ max-width:100%; display:block; }
@@ -103,7 +104,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 
 /* ---------- ambient background ---------- */
 .ambient{
-  position: fixed; inset: -20%; z-index:0; pointer-events:none;
+  position: fixed; inset: 0; z-index:0; pointer-events:none;
   background:
     radial-gradient(40% 32% at 82% 2%, rgba(56,130,246,.14), transparent 68%),
     radial-gradient(36% 30% at 8% 96%, rgba(147,100,250,.11), transparent 66%),
@@ -130,36 +131,60 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
   backdrop-filter: blur(22px) saturate(1.3);
   -webkit-backdrop-filter: blur(22px) saturate(1.3);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.07),
     inset 0 0 0 .5px rgba(255,255,255,.03),
     0 20px 60px rgba(0,0,0,.45);
   transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
   overflow: hidden;
 }
 .glass-strong{
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   background: rgba(18,18,23,.82);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-xl);
   backdrop-filter: blur(30px) saturate(1.4);
   -webkit-backdrop-filter: blur(30px) saturate(1.4);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.09),
     inset 0 0 0 .5px rgba(255,255,255,.04),
     0 30px 80px rgba(0,0,0,.55);
 }
-.glass::before, .glass-strong::before{
-  /* top rim catching light — the primary Liquid Glass cue */
-  content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none;
-  background: linear-gradient(180deg, rgba(255,255,255,.10), transparent 30%);
-  opacity: .7;
+.router-demo.glass-strong{
+  box-shadow: 0 30px 80px rgba(0,0,0,.55);
 }
+.router-demo.glass-strong::before{
+  display: none;
+}
+.glass::before, .glass-strong::before{
+  /* top rim catching light — a 1px highlight, not a painted band */
+  content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none;
+  background: linear-gradient(180deg, rgba(255,255,255,.14), transparent 1.5px);
+  opacity: .85;
+  z-index: 0;
+}
+.glass::after, .glass-strong::after{
+  /* cursor spotlight — clipped to the card so it never leaks onto the page */
+  content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none;
+  background: radial-gradient(280px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(255,255,255,.05), transparent 70%);
+  opacity: 0;
+  transition: opacity .25s var(--ease);
+  z-index: 1;
+}
+.glass.is-lit::after, .glass-strong.is-lit::after{ opacity: 1; }
+.glass > *, .glass-strong > *{ position: relative; z-index: 2; }
 .sheen{
-  position:absolute; inset:-40%; pointer-events:none;
+  position:absolute; inset:0; pointer-events:none;
   background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,.12) 48%, rgba(255,255,255,.03) 54%, transparent 62%);
   transform: translateX(-60%);
   transition: transform .9s var(--ease);
 }
-.glass:hover .sheen, .glass-strong:hover .sheen{ transform: translateX(60%); }
+@media (hover: hover) and (pointer: fine){
+  .glass:hover .sheen, .glass-strong:hover .sheen{ transform: translateX(60%); }
+}
+@media (hover: none){
+  .sheen{ display: none; }
+}
 
 .btn{
   display:inline-flex; align-items:center; gap: var(--sp-2);
@@ -227,11 +252,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 /* ============================================================
    HERO — Cline-style split: copy left, sculpture right
    ============================================================ */
-.hero{ position: relative; padding: 20px 0 40px; overflow: visible; }
+.hero{ position: relative; padding: 20px 0 40px; overflow-x: clip; }
 .hero > .container{ max-width: 1320px; }
 .hero-split{
   display: grid;
-  grid-template-columns: minmax(300px, 0.78fr) minmax(420px, 1.32fr);
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.32fr);
   align-items: center;
   gap: 8px 4px;
   min-height: min(78vh, 780px);
@@ -247,8 +272,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
   position: relative;
   z-index: 1;
   height: min(86vh, 880px);
-  width: calc(100% + 48px);
-  margin: 0 -40px 0 -8px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -297,7 +324,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 @media (max-width: 960px){
   .hero-split{ grid-template-columns: 1fr; min-height: 0; gap: 8px; }
   .hero-copy{ max-width: none; padding-block: var(--sp-4); }
-  .ascii-stage{ height: min(56vh, 520px); margin: 0; order: -1; }
+  .ascii-stage{ height: min(56vh, 520px); width: 100%; margin: 0; order: -1; }
 }
 @media (max-width: 700px){
   .ascii-stage{ height: min(48vh, 420px); }
@@ -390,7 +417,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 /* ---------- 3D hero stage — the router demo floats as a tiltable glass slab,
    its nodes staggered in real depth (translateZ) so the panel's rotation
    reveals actual parallax, not a flat card pretending to be 3D. ---------- */
-.hero-3d-stage{ perspective: 1800px; }
+.hero-3d-stage{ perspective: 1800px; overflow: hidden; }
 .router-demo{
   transform-style: preserve-3d;
   transform: rotateX(0deg) rotateY(0deg);
@@ -432,8 +459,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 
 /* pillars grid */
 .grid-cards{ display:grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); }
-@media (max-width: 980px){ .grid-cards{ grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 600px){ .grid-cards{ grid-template-columns: 1fr; } }
+.grid-cards.cols-2{ grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 980px){ .grid-cards, .grid-cards.cols-2{ grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 600px){ .grid-cards, .grid-cards.cols-2{ grid-template-columns: 1fr; } }
+
+.assistant-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+@media (max-width: 860px){ .assistant-grid{ grid-template-columns: 1fr; } }
 .pillar{ padding: var(--sp-5); }
 .pillar .pi-num{ font-family: var(--mono); font-size: 11px; color: var(--muted-2); }
 .pillar h3{ margin-top: var(--sp-3); font-size: 16px; font-weight:600; color:#fff; }
@@ -452,7 +483,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 .tier-card .tc-tag{ position:absolute; top:22px; right:22px; font-family: var(--mono); font-size: 10px; letter-spacing:.1em; text-transform:uppercase; padding: 4px 9px; border-radius: 999px; border:1px solid var(--border-strong); }
 
 /* compare table */
-.compare-wrap{ overflow-x:auto; }
+.compare-wrap{ overflow-x:auto; max-width:100%; -webkit-overflow-scrolling: touch; }
 table.compare{ width:100%; min-width: 680px; border-collapse: collapse; font-size: 13.4px; }
 table.compare th, table.compare td{ padding: 16px 18px; text-align:left; border-bottom: 1px solid var(--border); vertical-align: top; }
 table.compare th{ color: var(--muted-2); font-weight:500; font-size:12.5px; }
@@ -494,7 +525,7 @@ table.compare tbody tr:hover{ background: rgba(255,255,255,.02); }
 .t-cursor{ display:inline-block; width:7px; height:14px; background:#e4e4e7; margin-left:6px; animation: caret 1s step-end infinite; vertical-align: -2px; }
 @keyframes caret{ 50%{ opacity:0; } }
 .terminal-float-card{
-  position:absolute; right:-18px; bottom:-22px; transform: translateZ(64px);
+  position:absolute; right:8px; bottom:-22px; transform: translateZ(64px);
   background: rgba(20,20,24,.92); border:1px solid var(--border-strong); border-radius: 12px;
   padding: 10px 16px; font-size:11.5px; color: var(--muted); backdrop-filter: blur(16px);
   box-shadow: 0 20px 40px -14px rgba(0,0,0,.55); display:flex; align-items:center; gap:7px;
@@ -506,7 +537,7 @@ table.compare tbody tr:hover{ background: rgba(255,255,255,.02); }
 }
 
 /* 3D phone */
-.phone-scene{ perspective: 1600px; display:flex; justify-content:center; padding: var(--sp-6) 0; }
+.phone-scene{ perspective: 1600px; display:flex; justify-content:center; padding: var(--sp-6) 0; overflow: hidden; }
 .phone-body{
   width: 240px; height: 486px; transform-style: preserve-3d;
   transform: rotateX(8deg) rotateY(-22deg) rotateZ(1.5deg);
@@ -522,7 +553,7 @@ table.compare tbody tr:hover{ background: rgba(255,255,255,.02); }
 .phone-msg.me{ align-self:flex-end; background: rgba(56,189,248,.14); color:#e0f2fe; border-color: rgba(56,189,248,.24); }
 .phone-chip-row{ display:flex; gap:6px; margin-top:auto; }
 .phone-chip{ font-size: 9.5px; font-family: var(--mono); border:1px solid var(--border-strong); border-radius:999px; padding: 5px 9px; color: var(--muted); }
-.phone-glow{ position:absolute; inset:-60px; background: radial-gradient(circle at 50% 30%, rgba(56,189,248,.24), transparent 65%); filter: blur(40px); z-index:-1; }
+.phone-glow{ position:absolute; inset:-40px; background: radial-gradient(circle at 50% 30%, rgba(56,189,248,.24), transparent 65%); filter: blur(40px); z-index:-1; }
 
 /* pricing */
 .pricing-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap: var(--sp-4); }
@@ -750,7 +781,7 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
     </div>
     <div class="hero-3d-stage reveal" style="margin-top:var(--sp-6);">
       <div class="glass-strong assistant-hero" data-tilt-stage style="padding: var(--sp-6);">
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4);" class="assistant-grid">
+        <div class="assistant-grid">
           <div class="assistant-card" style="padding: var(--sp-4);">
             <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #f87171 0%, #fb923c 100%); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-3);">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -789,7 +820,7 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
       <h2>Design websites. Not just code them.</h2>
       <p style="max-width: 640px; margin: var(--sp-3) auto 0; color: var(--muted); font-size: var(--step-0);">A full visual design surface inside Exody. Prompt a landing page, pick a design system, iterate with the agent — then export clean HTML/CSS or hand off to your codebase. Same local-first engine, same smart router, zero cloud IDE lock-in.</p>
     </div>
-    <div class="grid-cards" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="grid-cards cols-2">
       <div class="glass reveal" style="padding: var(--sp-5);">
         <h3 style="font-size: 16px; font-weight:600; color:#fff;">🎨 Visual Editor + Inspector</h3>
         <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Multi-file projects with a live preview, element inspector, and visual edit mode. Select anything on the page and edit it directly — the agent writes the CSS, you see the result instantly.</p>
@@ -817,7 +848,7 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
       <p class="eyebrow" style="justify-content:center;display:inline-flex;">What's new</p>
       <h2>Shipped in the latest build.</h2>
     </div>
-    <div class="grid-cards" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="grid-cards cols-2">
       <div class="glass reveal" style="padding: var(--sp-5);">
         <h3 style="font-size: 16px; font-weight:600; color:#fff;">🎯 Auto-Ultra</h3>
         <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">The router now detects genuinely extreme tasks and auto-escalates to the frontier model — with learned suppression so it never runs away. You can still pick Ultra explicitly; the agent just got smarter at knowing when you would have.</p>
@@ -1409,7 +1440,8 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
   /* ---------- cursor-tilt engine — drives every 3D hero on the page
      (router demo stage + terminal hero); each stage tilts independently
      inside its own perspective wrapper, real translateZ layers do the rest. ---------- */
-  if(!reduceMotion){
+  var finePointer = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if(!reduceMotion && finePointer){
     document.querySelectorAll("[data-tilt-stage]").forEach(function(stage){
       var wrap = stage.closest(".hero-3d-stage") || stage.closest(".terminal-scene") || stage.parentElement;
       var maxY = stage.hasAttribute("data-tilt-wide") ? 10 : 7;
@@ -1430,7 +1462,7 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
 
   /* ---------- phone tilt on cursor ---------- */
   var phoneBody = document.getElementById("phoneBody");
-  if(phoneBody && !reduceMotion){
+  if(phoneBody && !reduceMotion && finePointer){
     var scene = phoneBody.closest(".phone-scene");
     scene.addEventListener("mousemove", function(e){
       var r = scene.getBoundingClientRect();
@@ -1446,17 +1478,22 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
   }
 
   /* ---------- glass card cursor spotlight (progressive; safe without JS) ---------- */
-  document.querySelectorAll(".glass, .glass-strong").forEach(function(card){
-    card.addEventListener("mousemove", function(e){
-      var r = card.getBoundingClientRect();
-      var mx = ((e.clientX - r.left) / r.width) * 100;
-      var my = ((e.clientY - r.top) / r.height) * 100;
-      card.style.background = card.classList.contains("glass-strong")
-        ? "radial-gradient(280px circle at " + mx + "% " + my + "%, rgba(255,255,255,.05), rgba(18,18,23,.82) 70%)"
-        : "radial-gradient(280px circle at " + mx + "% " + my + "%, rgba(255,255,255,.04), rgba(16,16,20,.58) 70%)";
+  var canHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if(canHover){
+    document.querySelectorAll(".glass, .glass-strong").forEach(function(card){
+      card.addEventListener("mousemove", function(e){
+        var r = card.getBoundingClientRect();
+        var mx = ((e.clientX - r.left) / r.width) * 100;
+        var my = ((e.clientY - r.top) / r.height) * 100;
+        card.style.setProperty("--spot-x", mx + "%");
+        card.style.setProperty("--spot-y", my + "%");
+        card.classList.add("is-lit");
+      });
+      card.addEventListener("mouseleave", function(){
+        card.classList.remove("is-lit");
+      });
     });
-    card.addEventListener("mouseleave", function(){ card.style.background = ""; });
-  });
+  }
 
   /* ---------- FAQ accordion ---------- */
   var FAQS = [
