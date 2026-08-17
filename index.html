@@ -606,6 +606,335 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
   .hero{ padding-top: 64px; }
   #navDownload{ padding: 9px 11px; }
 }
+
+/* ============================================================
+   APP SCREEN HEROES — real Exody chrome, not invented dashboards
+   ============================================================ */
+.app-stage{ perspective: 1800px; overflow: hidden; margin-top: var(--sp-6); }
+.app-window{
+  position: relative;
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  min-height: 520px;
+  max-width: 100%;
+  background: #0c0c0e;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform .5s var(--ease);
+  box-shadow: 0 40px 90px -36px rgba(0,0,0,.72), 0 0 0 1px rgba(255,255,255,.03) inset;
+}
+.app-window[data-tilt-stage]{ will-change: transform; }
+.app-rail{
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 14px 10px 16px;
+  background: #0a0a0c;
+  border-right: 1px solid rgba(255,255,255,.06);
+  transform: translateZ(18px);
+}
+.app-wordmark{
+  font-family: var(--mono); font-size: 10px; letter-spacing: .18em;
+  color: var(--muted-2); padding: 4px 8px 12px;
+}
+.app-rail-item{
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px; border-radius: 8px;
+  font-size: 12.5px; color: #a1a1aa; border: 0; background: transparent;
+  width: 100%; text-align: left; cursor: default;
+}
+.app-rail-item svg{ flex-shrink: 0; opacity: .75; }
+.app-rail-item.is-active{
+  background: rgba(255,255,255,.06); color: #f4f4f5;
+}
+.app-rail-item.is-active svg{ opacity: 1; }
+.app-body{ display: flex; flex-direction: column; min-width: 0; transform: translateZ(8px); }
+.app-titlebar{
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 14px; min-height: 44px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.app-path{ font-size: 12px; color: #a1a1aa; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.app-path b{ color: #e4e4e7; font-weight: 600; }
+.app-path span.sep{ color: #52525b; }
+.budget{
+  min-width: 118px; display: flex; flex-direction: column; gap: 3px;
+}
+.budget-row{ display: flex; justify-content: space-between; font-size: 11px; color: #71717a; }
+.budget-row em{ font-style: normal; color: #d4d4d8; font-variant-numeric: tabular-nums; }
+.budget-track{ height: 4px; border-radius: 999px; background: rgba(255,255,255,.06); overflow: hidden; }
+.budget-fill{ height: 100%; width: 12.4%; border-radius: inherit; background: rgba(52,211,153,.8); }
+.app-work{
+  display: grid; grid-template-columns: 200px minmax(0, 1fr);
+  flex: 1; min-height: 0;
+}
+.app-work.solo{ grid-template-columns: 1fr; }
+.app-side{
+  border-right: 1px solid rgba(255,255,255,.06);
+  padding: 12px 10px; background: rgba(255,255,255,.012);
+  min-width: 0;
+}
+.side-head{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 6px 10px; font-size: 12px; color: #a1a1aa; font-weight: 500;
+}
+.side-head button{
+  border: 0; background: transparent; color: #71717a; padding: 2px; line-height: 0;
+}
+.ap-row{
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid rgba(52,211,153,.2); background: rgba(52,211,153,.05);
+  border-radius: 8px; padding: 7px 8px; margin-bottom: 10px;
+  font-size: 12.5px; color: #e4e4e7; font-weight: 500;
+}
+.ap-dot{ width: 6px; height: 6px; border-radius: 50%; background: rgba(52,211,153,.65); flex-shrink: 0; }
+.proj{ margin-bottom: 10px; }
+.proj-name{
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 6px; font-size: 12.5px; font-weight: 500; color: #e4e4e7;
+}
+.sess{
+  display: block; width: 100%; text-align: left;
+  padding: 5px 6px 5px 26px; border: 0; background: transparent;
+  font-size: 12px; color: #71717a; border-radius: 6px; cursor: pointer;
+}
+.sess:hover, .sess.is-on{ background: rgba(255,255,255,.04); color: #d4d4d8; }
+.app-canvas{
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 28px 22px 18px; gap: 14px; min-width: 0;
+}
+.hero-orb{
+  width: 44px; height: 44px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #7dd3fc, #6366f1 55%, #1e1b4b);
+  box-shadow: 0 0 28px rgba(125,211,252,.28);
+}
+.hero-title{ font-size: 26px; font-weight: 650; letter-spacing: -.03em; color: #fff; text-align: center; }
+.hero-sub{ font-size: 13px; line-height: 1.55; color: #a1a1aa; text-align: center; max-width: 420px; white-space: pre-line; }
+.ready-row{ display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ready-pill{
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid rgba(255,255,255,.06); background: rgba(255,255,255,.02);
+  border-radius: 999px; padding: 4px 10px; font-size: 11px; color: #a1a1aa;
+}
+.ready-pill .ok{ color: rgba(52,211,153,.9); }
+.hint-box{
+  width: min(100%, 420px);
+  border: 1px solid rgba(255,255,255,.05); background: rgba(255,255,255,.015);
+  border-radius: 8px; padding: 10px 14px; font-size: 11.5px; color: #71717a; text-align: left;
+}
+.composer{
+  width: min(100%, 520px);
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(18,18,22,.92);
+  border-radius: 16px;
+  padding: 10px 12px 8px;
+  box-shadow: 0 18px 40px -24px rgba(0,0,0,.7);
+  transform: translateZ(28px);
+}
+.composer-input{
+  min-height: 44px; font-size: 13.5px; color: #71717a; padding: 4px 4px 10px;
+}
+.composer-input .caret{
+  display: inline-block; width: 1px; height: 13px; background: #e4e4e7;
+  margin-left: 1px; vertical-align: -1px; animation: caret 1s step-end infinite;
+}
+.composer-bar{ display: flex; align-items: center; gap: 6px; }
+.icon-btn, .chip{
+  border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);
+  color: #d4d4d8; border-radius: 999px; font-size: 11.5px;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.icon-btn{ width: 28px; height: 28px; justify-content: center; padding: 0; }
+.chip{ padding: 4px 9px; cursor: pointer; }
+.chip.is-on{ border-color: rgba(125,211,252,.35); color: #e0f2fe; background: rgba(56,189,248,.1); }
+.chip-menu{
+  position: relative;
+}
+.chip-pop{
+  display: none; position: absolute; left: 0; bottom: calc(100% + 8px);
+  min-width: 240px; padding: 6px; border-radius: 12px;
+  background: #141416; border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 16px 40px rgba(0,0,0,.5); z-index: 4;
+}
+.chip-menu.open .chip-pop{ display: block; }
+.chip-opt{
+  display: block; width: 100%; text-align: left; border: 0; background: transparent;
+  padding: 7px 8px; border-radius: 8px; color: #e4e4e7; cursor: pointer;
+}
+.chip-opt small{ display: block; color: #71717a; font-size: 10.5px; margin-top: 1px; }
+.chip-opt:hover, .chip-opt.is-on{ background: rgba(255,255,255,.06); }
+.send{
+  margin-left: auto; width: 28px; height: 28px; border: 0; border-radius: 999px;
+  background: #e4e4e7; color: #111; display: grid; place-items: center;
+}
+.suggest-row{ display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 520px; }
+.suggest{
+  border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.025);
+  color: #d4d4d8; border-radius: 999px; padding: 6px 10px; font-size: 11.5px; cursor: pointer;
+}
+.suggest:hover{ border-color: rgba(255,255,255,.16); color: #fff; }
+
+/* Settings window */
+.settings-window{ grid-template-columns: 176px minmax(0, 1fr); min-height: 560px; }
+.set-nav{ padding: 16px 10px; border-right: 1px solid rgba(255,255,255,.06); background: #0a0a0c; }
+.set-nav h3{ font-size: 15px; color: #f4f4f5; font-weight: 600; padding: 2px 8px 12px; }
+.set-tab{
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 7px 8px; border: 0; background: transparent; border-radius: 8px;
+  font-size: 12.5px; color: #a1a1aa; text-align: left; cursor: pointer;
+}
+.set-tab.is-on{ background: rgba(255,255,255,.06); color: #f4f4f5; }
+.set-pane{ padding: 22px 24px 28px; overflow: hidden; }
+.set-pane[hidden]{ display: none; }
+.set-h{ font-size: 16px; font-weight: 600; color: #f4f4f5; }
+.set-p{ margin-top: 6px; font-size: 13px; color: #a1a1aa; line-height: 1.55; max-width: 520px; }
+.callout{
+  margin-top: 14px; border-radius: 12px; padding: 10px 12px;
+  border: 1px solid rgba(56,189,248,.18); background: rgba(56,189,248,.04);
+}
+.callout b{ display: block; font-size: 12px; color: #e4e4e7; font-weight: 500; }
+.callout p{ margin-top: 4px; font-size: 11.5px; color: #a1a1aa; line-height: 1.55; }
+.field{ margin-top: 14px; }
+.field label{ display: block; font-size: 12.5px; color: #d4d4d8; font-weight: 500; margin-bottom: 6px; }
+.field .box, .field select{
+  width: 100%; border-radius: 10px; border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.03); color: #e4e4e7; padding: 9px 11px; font-size: 13px;
+}
+.conn-row, .stat-strip{ display: grid; gap: 8px; margin-top: 14px; }
+.conn-row{ grid-template-columns: 1fr; }
+.conn{
+  display: flex; align-items: center; gap: 10px;
+  border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02);
+  border-radius: 12px; padding: 10px 12px;
+}
+.conn-ico{
+  width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+  font-size: 13px; font-weight: 650; color: #fff; flex-shrink: 0;
+}
+.conn b{ display: block; font-size: 13px; color: #f4f4f5; font-weight: 600; }
+.conn span{ font-size: 11.5px; color: #a1a1aa; }
+.pill-on{
+  margin-left: auto; width: 28px; height: 28px; border-radius: 999px;
+  border: 1px solid rgba(52,211,153,.35); background: rgba(52,211,153,.12);
+  color: #6ee7b7; display: grid; place-items: center; font-size: 13px;
+}
+.stat-strip{
+  grid-template-columns: repeat(5, 1fr);
+  border: 1px solid rgba(255,255,255,.08); border-radius: 16px; overflow: hidden;
+}
+.stat{ padding: 12px 8px; text-align: center; border-right: 1px solid rgba(255,255,255,.07); }
+.stat:last-child{ border-right: 0; }
+.stat b{ display: block; font-size: 16px; color: #f4f4f5; font-weight: 600; }
+.stat span{ display: block; margin-top: 3px; font-size: 11px; color: #71717a; }
+.heat{
+  display: grid; grid-template-columns: repeat(20, 1fr); gap: 3px; margin-top: 14px;
+}
+.heat i{ display: block; aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,.055); }
+.heat i.c1{ background: rgba(56,120,190,.55); }
+.heat i.c2{ background: rgba(56,150,230,.75); }
+.heat i.c3{ background: rgba(96,180,250,.9); }
+.heat i.c4{ background: #7cc4fb; }
+.qr-card{
+  margin-top: 14px; display: flex; gap: 14px; align-items: center;
+  border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.02);
+  border-radius: 14px; padding: 14px;
+}
+.qr{
+  width: 112px; height: 112px; border-radius: 8px; flex-shrink: 0;
+  background:
+    linear-gradient(#0B1220 0 0) 0 0 / 12px 12px,
+    linear-gradient(#0B1220 0 0) 100% 0 / 12px 12px,
+    linear-gradient(#0B1220 0 0) 0 100% / 12px 12px,
+    linear-gradient(#0B1220 0 0) 100% 100% / 12px 12px,
+    repeating-conic-gradient(#0B1220 0% 25%, #fff 0% 50%) 50% / 10px 10px;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  box-shadow: inset 0 0 0 8px #fff;
+}
+.ready-ok{
+  border-radius: 12px; padding: 9px 11px; margin-top: 12px;
+  border: 1px solid rgba(52,211,153,.25); background: rgba(52,211,153,.1);
+  color: #a7f3d0; font-size: 13px;
+}
+.btn-sky{
+  margin-top: 10px; border: 0; border-radius: 8px; padding: 8px 12px;
+  background: rgba(14,165,233,.9); color: #fff; font-size: 13px; font-weight: 500;
+}
+
+/* Mobile screen switcher */
+.m-tabs{ display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 8px; }
+.m-tab{
+  border: 1px solid var(--border-strong); background: transparent; color: var(--muted);
+  border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+}
+.m-tab.is-on{ color: #fff; border-color: rgba(125,211,252,.4); background: rgba(56,189,248,.1); }
+.phone-screen.m-ui{ padding: 18px 14px 12px; gap: 8px; }
+.m-status{ display: flex; justify-content: space-between; font-size: 10px; color: #71717a; padding: 0 4px; }
+.m-brand{ font-family: var(--mono); font-size: 9px; letter-spacing: .16em; color: #71717a; }
+.m-title{ font-size: 16px; font-weight: 650; color: #fff; letter-spacing: -.02em; }
+.m-sub{ font-size: 11px; color: #a1a1aa; line-height: 1.45; }
+.m-search{
+  border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03);
+  border-radius: 10px; padding: 7px 10px; font-size: 11px; color: #71717a;
+}
+.m-card{
+  border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.03);
+  border-radius: 12px; padding: 9px 10px;
+}
+.m-card b{ display: block; font-size: 12px; color: #f4f4f5; }
+.m-card span{ display: block; margin-top: 2px; font-size: 10.5px; color: #71717a; }
+.m-primary{
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: #f4f4f5; color: #111; border: 0; border-radius: 12px;
+  padding: 10px 12px; font-size: 12.5px; font-weight: 600; width: 100%;
+}
+.m-secondary{
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: transparent; color: #d4d4d8; border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px; padding: 9px 12px; font-size: 12px; width: 100%;
+}
+.m-step{ display: flex; gap: 8px; align-items: flex-start; font-size: 11px; color: #d4d4d8; }
+.m-num{
+  width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,.08);
+  display: grid; place-items: center; font-size: 9px; color: #fff; flex-shrink: 0; margin-top: 1px;
+}
+.m-composer{
+  margin-top: auto; border: 1px solid rgba(255,255,255,.1); background: rgba(18,18,22,.9);
+  border-radius: 14px; padding: 8px;
+}
+.m-composer p{ font-size: 11.5px; color: #71717a; min-height: 28px; }
+.m-bar{ display: flex; align-items: center; gap: 5px; }
+.m-chip{ font-size: 9.5px; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; padding: 3px 7px; color: #d4d4d8; }
+.voice-orb{
+  width: 92px; height: 92px; border-radius: 50%; margin: 28px auto 12px;
+  background: radial-gradient(circle at 35% 30%, #7dd3fc, #4f46e5 60%, #0f172a);
+  box-shadow: 0 0 40px rgba(125,211,252,.35);
+  animation: voicePulse 2.4s ease-in-out infinite;
+}
+@keyframes voicePulse{ 50%{ transform: scale(1.06); box-shadow: 0 0 56px rgba(125,211,252,.5); } }
+.karaoke{ font-size: 12px; color: #e4e4e7; text-align: center; line-height: 1.45; min-height: 36px; }
+.voice-row{ display: flex; justify-content: center; gap: 10px; margin-top: auto; padding-bottom: 6px; }
+.voice-btn{
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05); color: #fff; display: grid; place-items: center; font-size: 11px;
+}
+.voice-btn.hang{ background: #ef4444; border-color: #ef4444; }
+.m-label{ font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #71717a; margin-top: 6px; }
+.seg{ display: flex; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; overflow: hidden; }
+.seg i{ flex: 1; text-align: center; padding: 6px 0; font-size: 11px; color: #a1a1aa; font-style: normal; }
+.seg i.on{ background: #f4f4f5; color: #111; }
+.danger{ margin-top: 8px; border: 1px solid rgba(244,63,94,.25); color: #fda4af; border-radius: 10px; padding: 8px; font-size: 11.5px; text-align: center; }
+
+@media (max-width: 860px){
+  .app-window, .settings-window{ grid-template-columns: 1fr; }
+  .app-rail, .set-nav{ display: none; }
+  .app-work{ grid-template-columns: 1fr; }
+  .app-side{ display: none; }
+  .stat-strip{ grid-template-columns: repeat(2, 1fr); }
+  .stat{ border-right: 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .qr-card{ flex-direction: column; align-items: flex-start; }
+}
 </style>
 </head>
 <body>
@@ -629,11 +958,11 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
   </a>
   <div class="nav-links" id="navLinks">
     <a href="#router" class="active">Router</a>
+    <a href="#home">Home</a>
+    <a href="#code">Code</a>
     <a href="#assistant">Assistant</a>
     <a href="#design-studio">Design</a>
-    <a href="#new-features">New</a>
-    <a href="#local-first">Local‑first</a>
-    <a href="#compare">Compare</a>
+    <a href="#settings">Settings</a>
     <a href="#mobile">Mobile</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
@@ -723,55 +1052,150 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
   </div>
 </section>
 
-<!-- ================= LOCAL-FIRST 3D TERMINAL HERO ================= -->
-<section class="section bordered" id="local-first">
+<!-- ================= HOME — real app chrome ================= -->
+<section class="section bordered" id="home">
   <div class="container">
     <div class="section-head center reveal">
-      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Where the code actually runs</p>
-      <h2>Your Mac. Your terminal. Nothing leased.</h2>
-      <p style="margin-inline:auto;">No cloud IDE in the loop. The agent opens a real shell on your machine, and every routing decision surfaces right where the work happens.</p>
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Home</p>
+      <h2>Start anywhere. The composer follows.</h2>
+      <p style="margin-inline:auto;">The same prompt bar powers Assistant, Code, and Design. Switch intent — not app.</p>
     </div>
-    <div class="terminal-scene reveal">
-      <div class="terminal-body" id="terminalBody" data-tilt-stage>
-        <div class="terminal-chrome">
-          <span class="tl-dot" style="background:#ff5f57"></span>
-          <span class="tl-dot" style="background:#febc2e"></span>
-          <span class="tl-dot" style="background:#28c840"></span>
-          <span class="terminal-title mono">exody — zsh — 82×24</span>
-        </div>
-        <div class="terminal-body-inner mono">
-          <div class="t-line"><span class="t-prompt">❯</span> exody "refactor the auth flow across the API and mobile client"</div>
-          <div class="t-line t-dim">Reading task — cross‑file scope, 12 files touched, architecture terms detected</div>
-          <div class="t-line"><span class="t-out-strong">→ routed: Strong tier</span> <span class="t-dim">(Claude Sonnet 5)</span></div>
-          <div class="t-line t-dim">Editing 3 files… tests running…</div>
-          <div class="t-line"><span class="t-out-ok">✓ tests green</span> <span class="t-dim">· $0.24 spent</span></div>
-          <div class="t-line t-caret"><span class="t-prompt">❯</span><span class="t-cursor"></span></div>
-        </div>
-        <div class="terminal-float-card" aria-hidden="true">
-          <span class="tier-dot" style="background:#a78bfa;"></span> Strong · Sonnet 5 · vs Fable at 5× the output rate
+    <div class="app-stage reveal">
+      <div class="app-window" data-tilt-stage>
+        <aside class="app-rail">
+          <div class="app-wordmark">EXODY</div>
+          <button class="app-rail-item is-active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Code</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Assistant</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Design</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Scheduled</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Artifacts</button>
+        </aside>
+        <div class="app-body">
+          <div class="app-titlebar">
+            <div class="app-path"><b>Exody</b><span class="sep">/</span>Projects</div>
+            <div class="budget">
+              <div class="budget-row"><span>Total</span><em>$3.24</em></div>
+              <div class="budget-track"><div class="budget-fill" style="width:12.4%;"></div></div>
+            </div>
+          </div>
+          <div class="app-work">
+            <div class="app-side">
+              <div class="side-head"><span>Projects</span><button><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div>
+              <div class="ap-row"><span class="ap-dot"></span>Autopilot</div>
+              <div class="proj">
+                <div class="proj-name"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>exody-website</div>
+                <button class="sess is-on">marketing-refresh</button>
+                <button class="sess">hero-anim-fix</button>
+              </div>
+              <div class="proj">
+                <div class="proj-name"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>exody-desktop</div>
+                <button class="sess">router-v3</button>
+              </div>
+            </div>
+            <div class="app-canvas">
+              <div class="hero-orb"></div>
+              <div class="hero-title">Good afternoon</div>
+              <div class="hero-sub">Start anywhere. Switch the composer between Assistant and Code.
+The same box, two different agents.</div>
+              <div class="ready-row">
+                <span class="ready-pill"><span class="ok">○</span> API key <span style="color:#71717a;text-decoration:underline;">Add in Settings</span></span>
+                <span class="ready-pill"><span class="ok">✓</span> Project folder</span>
+              </div>
+              <div class="composer">
+                <div class="composer-input"><span id="homePlaceholder">Plan a feature for the marketing site</span><span class="caret"></span></div>
+                <div class="composer-bar">
+                  <button class="icon-btn">📎</button>
+                  <button class="icon-btn">🎙</button>
+                  <div class="chip-menu" id="homeChipMenu">
+                    <button class="chip is-on" id="homeChip">Auto <span style="opacity:.6;">▼</span></button>
+                    <div class="chip-pop">
+                      <button class="chip-opt is-on"><b>Auto</b><small>Router picks Fast or Strong</small></button>
+                      <button class="chip-opt"><b>Fast</b><small>Cheaper exploration model</small></button>
+                      <button class="chip-opt"><b>Strong</b><small>Best model for hard fixes</small></button>
+                      <button class="chip-opt"><b>Ultra</b><small>Most capable (and most expensive) model — extreme tasks only</small></button>
+                      <button class="chip-opt"><b>Local</b><small>Your on-device model — $0, stays on this Mac</small></button>
+                    </div>
+                  </div>
+                  <button class="send">➜</button>
+                </div>
+              </div>
+              <div class="suggest-row">
+                <button class="suggest">Plan a feature for the marketing site</button>
+                <button class="suggest">Summarise the mail I haven't answered</button>
+                <button class="suggest">What's on my calendar tomorrow?</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= PILLARS ================= -->
-<section class="section bordered">
+<!-- ================= CODE — real app chrome ================= -->
+<section class="section bordered" id="code">
   <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow">Why it's built this way</p>
-      <h2>Four decisions, one honest bill.</h2>
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Code</p>
+      <h2>Write code with an agent that reads your repo.</h2>
+      <p style="margin-inline:auto;">Full project context, file tree, terminal, and a composer that routes by task complexity automatically.</p>
     </div>
-    <div class="grid-cards">
-      <div class="glass pillar reveal"><p class="pi-num">01</p><h3>Local‑first, not cloud‑leased</h3><p>The agent runs on your Mac. Your project, terminal, and secrets never leave the machine for someone else's cloud IDE.</p></div>
-      <div class="glass pillar reveal"><p class="pi-num">02</p><h3>A router that pays for itself</h3><p>Auto mode sends simple work to a fast model, escalates to strong on real complexity, and <strong>Auto-Ultra</strong> detects genuinely extreme tasks and picks the frontier model — with learned suppression so it never runs away. Versus sending every prompt to the most expensive model, that mix saves up to 65–68%.</p></div>
-      <div class="glass pillar reveal"><p class="pi-num">03</p><h3>BYOK with an honest meter</h3><p>Bring keys for Anthropic, Google, OpenAI, Kimi, xAI, or DeepSeek. Session and monthly spend are tracked locally — cache discounts included, no markup hidden in the number.</p></div>
-      <div class="glass pillar reveal"><p class="pi-num">04</p><h3>A phone that shares the run</h3><p>Pair once with a QR scan. Approve tools, send follow‑ups mid‑turn, talk over Voice Live — the Mac stays the execution authority. Now with <strong>transparent terminal</strong> and native <strong>Ask Question</strong> panels that stay in the chat history.</p></div>
+    <div class="app-stage reveal">
+      <div class="app-window" data-tilt-stage>
+        <aside class="app-rail">
+          <div class="app-wordmark">EXODY</div>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+          <button class="app-rail-item is-active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Code</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Assistant</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Design</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Scheduled</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Artifacts</button>
+        </aside>
+        <div class="app-body">
+          <div class="app-titlebar">
+            <div class="app-path"><b>exody-desktop</b><span class="sep">/</span>src<span class="sep">/</span>components<span class="sep">/</span>Router.ts</div>
+            <div class="budget">
+              <div class="budget-row"><span>This chat</span><em>$0.24</em></div>
+              <div class="budget-track"><div class="budget-fill" style="width:8%;"></div></div>
+            </div>
+          </div>
+          <div class="app-work">
+            <div class="app-side">
+              <div class="side-head"><span>Files</span></div>
+              <div style="font-size:12px;color:#71717a;padding:2px 6px;">src/</div>
+              <div style="font-size:12px;color:#d4d4d8;padding:2px 6px 2px 16px;">components/</div>
+              <div style="font-size:12px;color:#a1a1aa;padding:2px 6px 2px 28px;">Router.ts</div>
+              <div style="font-size:12px;color:#71717a;padding:2px 6px 2px 28px;">BudgetMeter.tsx</div>
+              <div style="font-size:12px;color:#71717a;padding:2px 6px 2px 28px;">HomeProjectsList.tsx</div>
+              <div style="font-size:12px;color:#d4d4d8;padding:2px 6px 2px 16px;">lib/</div>
+              <div style="font-size:12px;color:#71717a;padding:2px 6px 2px 28px;">router-score.ts</div>
+            </div>
+            <div class="app-canvas" style="align-items:flex-start;justify-content:flex-start;padding:0;">
+              <div style="width:100%;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.06);">
+                <div style="font-size:13px;color:#e4e4e7;margin-bottom:6px;">Refactor the auth flow across the API and mobile client</div>
+                <div style="font-size:11.5px;color:#71717a;">→ Routed: <b style="color:#c4b5fd;">Strong</b> · Sonnet 5 · 3 files touched · tests green ✓ · $0.24</div>
+              </div>
+              <div style="width:100%;padding:14px 18px;">
+                <div style="font-size:12.5px;color:#a1a1aa;line-height:1.6;">Reading task — cross-file scope, 12 files touched, architecture terms detected. Routing to <b>Strong</b> tier. Editing 3 files… tests running…</div>
+              </div>
+              <div class="composer" style="margin-top:auto;border-radius:14px;margin-bottom:14px;margin-inline:18px;width:auto;align-self:stretch;">
+                <div class="composer-input"><span>Write tests for the new auth middleware…</span><span class="caret"></span></div>
+                <div class="composer-bar">
+                  <button class="icon-btn">📎</button>
+                  <div class="chip-menu"><button class="chip is-on">Strong <span style="opacity:.6;">▼</span></button></div>
+                  <button class="send">➜</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ================= ASSISTANT ================= -->
+<!-- ================= ASSISTANT — real app chrome ================= -->
 <section class="section bordered" id="assistant">
   <div class="container">
     <div class="section-head center reveal">
@@ -779,212 +1203,254 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
       <h2>A second brain for your day.</h2>
       <p style="max-width: 620px; margin: var(--sp-3) auto 0; color: var(--muted);">Not a coding agent wearing a hat. A real assistant with its own chat — mail, calendar, documents, errands, and the small research that keeps them moving.</p>
     </div>
-    <div class="hero-3d-stage reveal" style="margin-top:var(--sp-6);">
-      <div class="glass-strong assistant-hero" data-tilt-stage style="padding: var(--sp-6);">
-        <div class="assistant-grid">
-          <div class="assistant-card" style="padding: var(--sp-4);">
-            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #f87171 0%, #fb923c 100%); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-3);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    <div class="app-stage reveal">
+      <div class="app-window" data-tilt-stage>
+        <aside class="app-rail">
+          <div class="app-wordmark">EXODY</div>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Code</button>
+          <button class="app-rail-item is-active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Assistant</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Design</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Scheduled</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Artifacts</button>
+        </aside>
+        <div class="app-body">
+          <div class="app-titlebar">
+            <div class="app-path"><b>Assistant</b></div>
+            <div class="budget">
+              <div class="budget-row"><span>Total</span><em>$3.24</em></div>
+              <div class="budget-track"><div class="budget-fill" style="width:12.4%;"></div></div>
             </div>
-            <h3 style="font-size: 16px; font-weight:600; color:#fff;">Mail &amp; Calendar</h3>
-            <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Connect Gmail or Outlook via MCP. The assistant reads, drafts, and schedules — but never sends without your eyes on it. You set the red line: ask every time, whitelist trusted contacts, or lock it to read-only.</p>
           </div>
-          <div class="assistant-card" style="padding: var(--sp-4);">
-            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-3);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <div class="app-work solo">
+            <div class="app-canvas">
+              <div class="hero-orb"></div>
+              <div class="hero-title">Good afternoon</div>
+              <div class="hint-box">
+                <b>How to talk to me</b>
+                <p>Summarise never relay. Propose, do not act silently. Show the thing. Remember without being asked.</p>
+              </div>
+              <div class="composer">
+                <div class="composer-input"><span id="assistantPlaceholder">What needs me today?</span><span class="caret"></span></div>
+                <div class="composer-bar">
+                  <button class="icon-btn">📎</button>
+                  <button class="icon-btn">🎙</button>
+                  <div class="chip-menu"><button class="chip is-on">Auto <span style="opacity:.6;">▼</span></button></div>
+                  <button class="send">➜</button>
+                </div>
+              </div>
+              <div class="suggest-row">
+                <button class="suggest">What needs me today?</button>
+                <button class="suggest">Summarise the mail I haven't answered</button>
+                <button class="suggest">What's on my calendar tomorrow?</button>
+                <button class="suggest">Draft a reply to the last message from…</button>
+                <button class="suggest">Prepare me for my next meeting</button>
+              </div>
             </div>
-            <h3 style="font-size: 16px; font-weight:600; color:#fff;">Errands &amp; Research</h3>
-            <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Book flights, compare prices, fill forms, track deliveries. The assistant has a real browser (Chrome control), web search, and persistent memory — so it remembers how you like to fly, who matters, and how you sign off.</p>
-          </div>
-          <div class="assistant-card" style="padding: var(--sp-4);">
-            <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #34d399 0%, #38bdf8 100%); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-3);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            </div>
-            <h3 style="font-size: 16px; font-weight:600; color:#fff;">Documents &amp; Memory</h3>
-            <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Write docs, update spreadsheets, create canvases. Everything is saved locally in your .exody folder. The assistant learns what matters and writes it to memory automatically — so it never starts from zero.</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="reveal" style="margin-top: var(--sp-6); text-align: center;">
-      <p class="mono" style="font-size: 12px; color: var(--muted-2);">Four rules: Summarise never relay. Propose, do not act silently. Show the thing. Remember without being asked.</p>
-    </div>
   </div>
 </section>
 
-<!-- ================= DESIGN STUDIO ================= -->
+<!-- ================= DESIGN STUDIO — real app chrome ================= -->
 <section class="section bordered" id="design-studio">
   <div class="container">
     <div class="section-head center reveal">
       <p class="eyebrow" style="justify-content:center;display:inline-flex;">Design studio</p>
       <h2>Design websites. Not just code them.</h2>
-      <p style="max-width: 640px; margin: var(--sp-3) auto 0; color: var(--muted); font-size: var(--step-0);">A full visual design surface inside Exody. Prompt a landing page, pick a design system, iterate with the agent — then export clean HTML/CSS or hand off to your codebase. Same local-first engine, same smart router, zero cloud IDE lock-in.</p>
+      <p style="max-width: 640px; margin: var(--sp-3) auto 0; color: var(--muted); font-size: var(--step-0);">A full visual design surface inside Exody. Prompt a landing page, pick a design system, iterate with the agent — then export clean HTML/CSS or hand off to your codebase.</p>
     </div>
-    <div class="grid-cards cols-2">
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🎨 Visual Editor + Inspector</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Multi-file projects with a live preview, element inspector, and visual edit mode. Select anything on the page and edit it directly — the agent writes the CSS, you see the result instantly.</p>
-      </div>
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">📐 Design System Presets</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Start from Apple, Material, or custom tokens. The agent generates a full design system with colors, typography, spacing, and components — then builds pages that stay consistent.</p>
-      </div>
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🖼️ Render & Animate</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Generate real images for mockups and product shots. Preview CSS animations frame-by-frame with real screenshots. No placeholders — every pixel is real.</p>
-      </div>
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">📤 Export Ready</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">One ZIP with clean HTML, CSS, and assets. Or keep iterating — the design project lives in <code style="font-family:var(--mono);font-size:12px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;">.exody/designs/</code> alongside your code.</p>
+    <div class="app-stage reveal">
+      <div class="app-window" data-tilt-stage>
+        <aside class="app-rail">
+          <div class="app-wordmark">EXODY</div>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Code</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Assistant</button>
+          <button class="app-rail-item is-active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Design</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Scheduled</button>
+          <button class="app-rail-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Artifacts</button>
+        </aside>
+        <div class="app-body">
+          <div class="app-titlebar">
+            <div class="app-path"><b>Design Studio</b></div>
+          </div>
+          <div class="app-work solo">
+            <div class="app-canvas">
+              <div class="hero-orb"></div>
+              <div class="hero-title" style="font-size:22px;">What do you want to design?</div>
+              <div class="hint-box">
+                <b>Design Studio</b>
+                <p>Visual editor, inspector, design systems, image generation, and animation preview — all local-first.</p>
+              </div>
+              <div class="composer">
+                <div class="composer-input"><span id="designPlaceholder">Attach a file, pick a design system, or describe what you want to make</span><span class="caret"></span></div>
+                <div class="composer-bar">
+                  <button class="icon-btn">📎</button>
+                  <button class="icon-btn">🎙</button>
+                  <div class="chip-menu"><button class="chip is-on">Auto <span style="opacity:.6;">▼</span></button></div>
+                  <button class="send">➜</button>
+                </div>
+              </div>
+              <div class="suggest-row">
+                <button class="suggest">Make a pitch deck for a new product</button>
+                <button class="suggest">Sketch a landing page layout</button>
+                <button class="suggest">Design slides for a team update</button>
+                <button class="suggest">Mock up a signup flow</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= WHAT'S NEW ================= -->
-<section class="section bordered" id="new-features">
+<!-- ================= SETTINGS — real app chrome ================= -->
+<section class="section bordered" id="settings">
   <div class="container">
     <div class="section-head center reveal">
-      <p class="eyebrow" style="justify-content:center;display:inline-flex;">What's new</p>
-      <h2>Shipped in the latest build.</h2>
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Settings</p>
+      <h2>Everything under your control.</h2>
+      <p style="margin-inline:auto;">Models, connectors, phone pairing, usage budgets — all in one place, all local.</p>
     </div>
-    <div class="grid-cards cols-2">
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🎯 Auto-Ultra</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">The router now detects genuinely extreme tasks and auto-escalates to the frontier model — with learned suppression so it never runs away. You can still pick Ultra explicitly; the agent just got smarter at knowing when you would have.</p>
-      </div>
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">❓ Ask Question v2</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Multi-question panels with up to 4 questions, free-text answers, and a persistent Q&A record that stays in the chat history. The panel no longer vanishes after you answer.</p>
-      </div>
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">📝 Changes Card</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Every file edit is shown as a diff card with author, timestamp, and undo. No more invisible writes — you see exactly what changed and can roll it back.</p>
-      </div>
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🖥️ Transparent Terminal</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">The xterm sidebar now has real transparency and vibrancy, matching the macOS aesthetic. Dark/light theme aware, with proper backdrop blur.</p>
-      </div>
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🗓️ Plan Mode</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">Read-only planning first. The agent lays out the approach, you approve it, then it implements. No surprise rewrites. Toggle with ⇧Tab.</p>
-      </div>
-      <div class="glass reveal" style="padding: var(--sp-5);">
-        <h3 style="font-size: 16px; font-weight:600; color:#fff;">🔌 Universal Binary</h3>
-        <p style="margin-top: var(--sp-2); font-size: 13.4px; color: var(--muted); line-height:1.6;">One DMG runs on both Apple Silicon and Intel Macs. Ad-hoc signed and verified, so gatekeeper warnings are manageable with a single xattr command.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= ROUTER DEEP DIVE ================= -->
-<section class="section bordered">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow">Inside the flagship feature</p>
-      <h2>Three tiers. One rule: earn the upgrade.</h2>
-      <p>The router scores every message for real signal — architecture words, cross‑file scope, message length, UI‑implementation intent — before a single token is spent on a model. Nothing escalates by accident.</p>
-    </div>
-    <div class="tier-cards">
-      <div class="glass tier-card reveal">
-        <div class="tc-glow" style="background:#38bdf8;"></div>
-        <span class="tc-tag" style="color:#7dd3fc;border-color:rgba(56,189,248,.35);">Default</span>
-        <h3><span style="width:9px;height:9px;border-radius:50%;background:#38bdf8;display:inline-block;"></span>Fast</h3>
-        <p class="tc-price">Haiku 4.5 · Luna · Gemini 3.7 Flash · Kimi K2.7 Code · Grok Build · DeepSeek V4 Flash</p>
-        <ul>
-          <li><b>Trivial edits</b> — rename, typo, one‑line copy fix</li>
-          <li><b>Explore &amp; explain</b> — "where is…", "what does this do"</li>
-          <li><b>Short targeted fixes</b> — under ~800 characters, no architecture terms</li>
-          <li>Also the model for background explore sub‑agents mapping a repo</li>
-        </ul>
-      </div>
-      <div class="glass tier-card reveal">
-        <div class="tc-glow" style="background:#a78bfa;"></div>
-        <span class="tc-tag" style="color:#c4b5fd;border-color:rgba(167,139,250,.35);">Escalation</span>
-        <h3><span style="width:9px;height:9px;border-radius:50%;background:#a78bfa;display:inline-block;"></span>Strong</h3>
-        <p class="tc-price">Sonnet 5 · Terra · Gemini 3.1 Pro · Kimi K3 · Grok 4.6</p>
-        <ul>
-          <li><b>Architecture &amp; refactors</b> — "root cause", "migrate", multi‑file scope</li>
-          <li><b>Non‑trivial UI work</b> — layout/animation changes with real implementation intent</li>
-          <li><b>Provider failure fallback</b> — a fast‑tier call that stumbles escalates automatically, never silently downgrades again</li>
-          <li>Sticky for one short follow‑up if the thread is still clearly complex</li>
-        </ul>
-      </div>
-      <div class="glass tier-card reveal">
-        <div class="tc-glow" style="background:#fb923c;"></div>
-        <span class="tc-tag" style="color:#fdba74;border-color:rgba(251,146,60,.35);">Rare · Auto-Ultra</span>
-        <h3><span style="width:9px;height:9px;border-radius:50%;background:#fb923c;display:inline-block;"></span>Ultra</h3>
-        <p class="tc-price">Fable · Sol · Opus 5 · Kimi K3 · Grok 4.6</p>
-        <ul>
-          <li><b>Auto-Ultra</b> — escalates on genuinely extreme work, with learned suppression so it never runs away</li>
-          <li>You can still type an explicit ultra request anytime</li>
-          <li>Reserved for system design from scratch, deep multi‑day debugging, stack-wide rewrites</li>
-          <li>Falls back to Strong automatically if no ultra model is configured</li>
-        </ul>
+    <div class="app-stage reveal">
+      <div class="app-window settings-window" data-tilt-stage>
+        <aside class="set-nav">
+          <h3>Settings</h3>
+          <button class="set-tab" data-set-tab="models"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/></svg>Models</button>
+          <button class="set-tab" data-set-tab="connectors"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Connectors</button>
+          <button class="set-tab is-on" data-set-tab="phone"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>Phone</button>
+          <button class="set-tab" data-set-tab="usage"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Usage</button>
+        </aside>
+        <div class="set-pane" id="set-models">
+          <div class="set-h">Models</div>
+          <p class="set-p">Choose which models power each routing tier. You can use any provider — or leave a tier blank to skip it.</p>
+          <div class="callout"><b>How routing works</b><p>Auto mode scores every message for complexity and picks Fast, Strong, or Ultra. You can override per-message with the composer chip.</p></div>
+          <div class="field"><label>Fast tier model</label><div class="box">Haiku 4.5</div></div>
+          <div class="field"><label>Strong tier model</label><div class="box">Sonnet 5</div></div>
+          <div class="field"><label>Ultra tier model</label><div class="box">Fable</div></div>
+        </div>
+        <div class="set-pane" id="set-connectors" hidden>
+          <div class="set-h">Connectors</div>
+          <p class="set-p">One-click Gmail, Google Calendar, and Office connectors. The assistant reads and drafts — but never sends without your eyes on it.</p>
+          <div class="conn-row">
+            <div class="conn"><div class="conn-ico" style="background:#34d399;">G</div><div><b>Gmail</b><span>Read and draft mail</span></div><div class="pill-on">✓</div></div>
+            <div class="conn"><div class="conn-ico" style="background:#60a5fa;">C</div><div><b>Google Calendar</b><span>Read and create events</span></div><div class="pill-on">✓</div></div>
+            <div class="conn"><div class="conn-ico" style="background:#a78bfa;">O</div><div><b>Office</b><span>Word, Excel, PowerPoint</span></div><div class="pill-on">✓</div></div>
+          </div>
+        </div>
+        <div class="set-pane" id="set-phone">
+          <div class="set-h">Phone</div>
+          <p class="set-p">Pair your phone to approve tools, send follow-ups, and talk over Voice Live — while the Mac keeps doing the work.</p>
+          <div class="qr-card">
+            <div class="qr"></div>
+            <div>
+              <b style="font-size:13px;color:#f4f4f5;">Scan to pair</b>
+              <p style="margin-top:4px;font-size:11.5px;color:#a1a1aa;">Open Settings → Mobile on your phone and point the camera here.</p>
+            </div>
+          </div>
+          <div class="ready-ok">Paired · iPhone 15 Pro · LAN</div>
+          <button class="btn-sky">Unpair this device</button>
+        </div>
+        <div class="set-pane" id="set-usage" hidden>
+          <div class="set-h">Usage</div>
+          <p class="set-p">Session and monthly spend are tracked locally — cache discounts included, no markup hidden.</p>
+          <div class="stat-strip">
+            <div class="stat"><b>$3.24</b><span>This month</span></div>
+            <div class="stat"><b>$0.24</b><span>This session</span></div>
+            <div class="stat"><b>$12.40</b><span>Budget</span></div>
+            <div class="stat"><b>68%</b><span>Fast routed</span></div>
+            <div class="stat"><b>32%</b><span>Strong routed</span></div>
+          </div>
+          <div class="heat">
+            <i class="c1"></i><i class="c1"></i><i class="c2"></i><i class="c2"></i><i class="c3"></i><i class="c2"></i><i class="c1"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i class="c2"></i><i class="c3"></i><i class="c3"></i><i class="c4"></i><i class="c4"></i><i class="c3"></i><i class="c2"></i><i class="c1"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i class="c1"></i><i class="c2"></i><i class="c2"></i><i class="c3"></i><i class="c3"></i><i class="c2"></i><i class="c1"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i class="c1"></i><i class="c2"></i><i class="c2"></i><i class="c2"></i><i class="c1"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= COMPARE ================= -->
-<section class="section bordered" id="compare">
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow">Versus the field</p>
-      <h2>Built to cost less — not just to look nice.</h2>
-      <p>Cursor is an IDE. Claude Code is a terminal agent. Both send every prompt to one model you pick by hand. Exody routes by task complexity automatically, runs local‑first, and adds a real mobile companion.</p>
-    </div>
-    <div class="glass-strong compare-wrap reveal">
-      <table class="compare">
-        <thead>
-          <tr>
-            <th>Capability</th>
-            <th>Cursor</th>
-            <th>Claude Code</th>
-            <th>Exody</th>
-          </tr>
-        </thead>
-        <tbody id="compareBody"></tbody>
-      </table>
-    </div>
-    <p style="margin-top:18px;font-size:11.5px;color:var(--muted-2);line-height:1.6;">Comparison based on publicly known capabilities of Cursor and Claude Code at time of writing; provider capabilities may change.</p>
-  </div>
-</section>
-
-<!-- ================= MOBILE ================= -->
+<!-- ================= MOBILE — real app chrome ================= -->
 <section class="section bordered" id="mobile">
-  <div class="container mobile-split">
-    <div>
-      <div class="section-head reveal" style="margin-bottom:0;">
-        <p class="eyebrow">Beyond the desk</p>
-        <h2>Pair once. The run follows you.</h2>
-        <p>Scan a QR code from Settings → Mobile. From there your phone pulls the same session history, lets you approve tool calls, send follow‑ups mid‑turn, and talk to the agent over Voice Live — while the Mac keeps doing the actual work.</p>
-      </div>
-      <ul style="margin-top:28px;display:flex;flex-direction:column;gap:14px;">
-        <li style="display:flex;gap:10px;font-size:13.6px;color:var(--muted);"><span style="color:#7dd3fc;">→</span> LAN pairing on the same Wi‑Fi, or a public tunnel via Settings</li>
-        <li style="display:flex;gap:10px;font-size:13.6px;color:var(--muted);"><span style="color:#7dd3fc;">→</span> Voice Live conversational audio, not just dictation</li>
-        <li style="display:flex;gap:10px;font-size:13.6px;color:var(--muted);"><span style="color:#7dd3fc;">→</span> The Mac stays the execution authority — nothing runs "in the cloud"</li>
-      </ul>
-      <div class="hero-cta reveal" style="justify-content:flex-start;margin-top:28px;">
-        <button class="btn btn-ghost" id="mobileCta" type="button">See the mobile bridge</button>
-      </div>
+  <div class="container mobile-set">
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;display:inline-flex;">Beyond the desk</p>
+      <h2>Pair once. The run follows you.</h2>
+      <p style="margin-inline:auto;">Scan a QR code from Settings → Mobile. Approve tools, send follow-ups, and talk over Voice Live — while the Mac stays the execution authority.</p>
     </div>
-    <div class="phone-scene reveal">
-      <div class="phone-body" id="phoneBody">
+    <div class="m-tabs reveal">
+      <button class="m-tab is-on" data-mtab="home">Home</button>
+      <button class="m-tab" data-mtab="pairing">Pairing</button>
+      <button class="m-tab" data-mtab="chat">Chat</button>
+      <button class="m-tab" data-mtab="voice">Voice Live</button>
+      <button class="m-tab" data-mtab="settings">Settings</button>
+    </div>
+    <div class="hero-3d-stage reveal" style="margin-top:8px;">
+      <div class="phone-body" id="mPhoneBody" style="margin-inline:auto;">
         <div class="phone-glow" aria-hidden="true"></div>
         <div class="phone-back" aria-hidden="true"></div>
         <div class="phone-spine" aria-hidden="true"></div>
         <div class="phone-face">
-          <div class="phone-screen">
+          <!-- Home -->
+          <div class="phone-screen m-ui" data-mscreen="home">
             <div class="phone-notch" aria-hidden="true"></div>
-            <div class="phone-msg">Refactor the auth flow across the API and mobile client</div>
-            <div class="phone-msg me">Routed → Strong tier · $0.24</div>
-            <div class="phone-msg">3 files touched · tests green ✓</div>
-            <div class="phone-chip-row">
-              <span class="phone-chip">Auto</span>
-              <span class="phone-chip">Voice Live</span>
-              <span class="phone-chip">Paired</span>
+            <div class="m-status"><span class="m-brand">EXODY</span><span>9:41</span></div>
+            <div class="m-title">Home</div>
+            <div class="m-sub">Start anywhere. Switch between Assistant and Code.</div>
+            <div class="m-search">Search projects and sessions…</div>
+            <div class="m-card"><b>exody-website</b><span>marketing-refresh · 3 min ago</span></div>
+            <div class="m-card"><b>exody-desktop</b><span>router-v3 · 1 hr ago</span></div>
+            <div class="m-composer"><p>Plan a feature for…</p><div class="m-bar"><span class="m-chip">Auto</span><span class="m-chip">⌘</span></div></div>
+          </div>
+          <!-- Pairing -->
+          <div class="phone-screen m-ui" data-mscreen="pairing" hidden>
+            <div class="phone-notch" aria-hidden="true"></div>
+            <div class="m-status"><span class="m-brand">EXODY</span><span>9:41</span></div>
+            <div class="m-title">Pair this device</div>
+            <div class="m-sub">Scan the QR code shown in Exody → Settings → Mobile on your Mac.</div>
+            <div class="qr" style="width:110px;height:110px;margin:14px auto;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 6px #fff;"></div>
+            <button class="m-primary">Scan QR code</button>
+            <button class="m-secondary">Enter pairing key</button>
+          </div>
+          <!-- Chat -->
+          <div class="phone-screen m-ui" data-mscreen="chat" hidden>
+            <div class="phone-notch" aria-hidden="true"></div>
+            <div class="m-status"><span class="m-brand">EXODY</span><span>9:41</span></div>
+            <div style="font-size:13px;color:#e4e4e7;margin-bottom:6px;">Refactor the auth flow</div>
+            <div style="font-size:11px;color:#a1a1aa;margin-bottom:12px;">Routed → Strong tier · $0.24</div>
+            <div style="border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;margin-bottom:8px;background:rgba(255,255,255,.02);">
+              <div style="font-size:11px;color:#d4d4d8;">3 files touched · tests green ✓</div>
             </div>
+            <div class="m-composer" style="margin-top:auto;"><p>Approve or add follow-up…</p><div class="m-bar"><span class="m-chip">Auto</span><span class="m-chip">⌘</span></div></div>
+          </div>
+          <!-- Voice -->
+          <div class="phone-screen m-ui" data-mscreen="voice" hidden>
+            <div class="phone-notch" aria-hidden="true"></div>
+            <div class="m-status"><span class="m-brand">EXODY</span><span>9:41</span></div>
+            <div class="voice-orb" style="width:80px;height:80px;margin:24px auto 10px;"></div>
+            <div class="karaoke" style="font-size:12px;">I'm listening…</div>
+            <div class="voice-row" style="margin-top:auto;">
+              <button class="voice-btn">×</button>
+              <button class="voice-btn hang">●</button>
+            </div>
+          </div>
+          <!-- Settings -->
+          <div class="phone-screen m-ui" data-mscreen="settings" hidden>
+            <div class="phone-notch" aria-hidden="true"></div>
+            <div class="m-status"><span class="m-brand">EXODY</span><span>9:41</span></div>
+            <div class="m-title">Settings</div>
+            <div class="m-label">Tier</div>
+            <div class="seg"><i class="on">Fast</i><i>Strong</i><i>Ultra</i></div>
+            <div class="m-label">Mobile bridge</div>
+            <div class="m-card"><b>Phone · Paired</b><span>192.168.1.42 · LAN</span></div>
+            <button class="danger">Unpair this phone</button>
           </div>
         </div>
       </div>
@@ -1069,10 +1535,12 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
       <div class="footer-col">
         <h4>Product</h4>
         <a href="#router">Router</a>
+        <a href="#home">Home</a>
+        <a href="#code">Code</a>
         <a href="#assistant">Assistant</a>
         <a href="#design-studio">Design Studio</a>
-        <a href="#local-first">Local‑first</a>
-        <a href="#compare">Compare</a>
+        <a href="#settings">Settings</a>
+        <a href="#mobile">Mobile</a>
         <a href="#pricing">Pricing</a>
       </div>
       <div class="footer-col">
@@ -1531,7 +1999,7 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
   });
 
   /* ---------- nav active link on scroll ---------- */
-  var sections = ["router","assistant","design-studio","new-features","local-first","compare","mobile","pricing","faq"].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+  var sections = ["router","home","code","assistant","design-studio","settings","mobile","pricing","faq"].map(function(id){ return document.getElementById(id); }).filter(Boolean);
   var links = document.querySelectorAll(".nav-links a");
   var navIo = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
@@ -1564,6 +2032,33 @@ footer{ border-top:1px solid var(--border); padding: var(--sp-8) 0 var(--sp-6); 
       });
     });
   }
+
+  /* ---------- Settings tab switcher ---------- */
+  document.querySelectorAll('.settings-window[data-set-tabs]').forEach(function(win){
+    var tabs = win.querySelectorAll('[data-set-tab]');
+    var panes = win.querySelectorAll('[data-set-pane]');
+    tabs.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-set-tab');
+        tabs.forEach(function(t){ t.classList.toggle('is-on', t === btn); });
+        panes.forEach(function(p){ p.hidden = p.getAttribute('data-set-pane') !== id; });
+      });
+    });
+  });
+
+  /* ---------- Mobile screen switcher ---------- */
+  document.querySelectorAll('.m-tabs').forEach(function(tabs){
+    var btns = tabs.querySelectorAll('[data-mtab]');
+    var stage = tabs.closest('.mobile-set') || tabs.parentElement;
+    var screens = stage.querySelectorAll('[data-mscreen]');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-mtab');
+        btns.forEach(function(b){ b.classList.toggle('is-on', b === btn); });
+        screens.forEach(function(s){ s.hidden = s.getAttribute('data-mscreen') !== id; });
+      });
+    });
+  });
 })();
 </script>
 </body>
