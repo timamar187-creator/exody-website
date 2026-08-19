@@ -1,1 +1,7 @@
-{"cleanUrls":true,"trailingSlash":false}
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/((?!assets/|lib/|exo/|logo|privacy|terms|refunds).*)", "destination": "/index.html" }
+  ]
+}
