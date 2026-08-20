@@ -18,7 +18,7 @@ const EXO_SYSTEM = [
 ].join(" ");
 
 /** Mirror of brain.ts sanitizeAnswer — strips any leaked instruction scrap. */
-function sanitizeAnswer(raw) {
+function sanitizeAnswer(full) {
   return String(raw)
     .replace(/\*+/g, " ")
     .replace(/\b(constraints?|fact ?sheet|system ?(prompt|instruction)|style|secrecy|language|voice)\s*:\s*/gi, " ")
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
           systemInstruction: { parts: [{ text: EXO_SYSTEM }] },
           contents: [{ role: "user", parts: [{ text: q }] }],
           generationConfig: {
-            maxOutputTokens: 200,
+            maxOutputTokens: 400,
             temperature: 0.8,
             thinkingConfig: { thinkingBudget: 0 },
           },
@@ -73,7 +73,12 @@ export default async function handler(req, res) {
       .filter(Boolean)
       .join(" ")
       .trim();
-    const text = sanitizeAnswer(raw);
+    let full = raw;
+    if (d?.candidates?.[0]?.finishReason === "MAX_TOKENS") {
+      const m2 = full.match(/^[\s\S]*[.!?…]/);
+      full = m2 ? m2[0].trim() : "";
+    }
+    const text = sanitizeAnswer(full);
     const stub = !text || (text.length < 12 && d?.candidates?.[0]?.finishReason === "MAX_TOKENS");
     res.setHeader("cache-control", "no-store");
     res.status(200).json({ answer: stub ? null : text });
