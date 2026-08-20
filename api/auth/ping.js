@@ -1,7 +1,7 @@
 import { tursoExecute } from "./_turso.js";
 
 /**
- * Launch heartbeat: the beta app reports "this signed-in user opened the app"
+ * Launch heartbeat: the app reports "this signed-in user opened the app"
  * so the owner sees real USAGE, not just downloads. Fire-and-forget on the
  * app side; UPDATE-only here so a heartbeat can never mint a user row —
  * accounts are created exclusively by the verified callback.
@@ -22,13 +22,13 @@ export default async function handler(req, res) {
   try {
     await tursoExecute([
       {
-        sql: "UPDATE beta_users SET last_seen_at = ?, launches = launches + 1, app_version = ?, platform = ? WHERE sub = ?",
+        sql: "UPDATE users SET last_seen_at = ?, launches = launches + 1, app_version = ?, platform = ? WHERE sub = ?",
         args: [new Date().toISOString(), version, platform, sub],
       },
     ]);
     res.status(200).json({ ok: true });
   } catch (e) {
-    console.error("[beta/ping] failed:", e?.message);
+    console.error("[auth/ping] failed:", e?.message);
     res.status(200).json({ ok: false });
   }
 }

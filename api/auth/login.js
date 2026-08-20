@@ -1,5 +1,5 @@
 /**
- * Beta sign-in, step 1 of 2: the Exody app opens this URL in the user's
+ * Exody sign-in, step 1 of 2: the Exody app opens this URL in the user's
  * browser; we bounce to Google's consent screen. The OAuth client SECRET
  * never ships in the app — the whole exchange happens server-side in
  * callback.js, which is the reason this hop exists at all.
@@ -17,12 +17,12 @@ export default function handler(req, res) {
   }
   const cid = process.env.EXODY_GOOGLE_CLIENT_ID || "";
   if (!cid) {
-    res.status(500).send("beta sign-in is not configured yet");
+    res.status(500).send("sign-in is not configured yet");
     return;
   }
   const u = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   u.searchParams.set("client_id", cid);
-  u.searchParams.set("redirect_uri", "https://exody.ai/api/beta/callback");
+  u.searchParams.set("redirect_uri", "https://exody.ai/api/auth/callback");
   u.searchParams.set("response_type", "code");
   u.searchParams.set("scope", "openid email profile");
   u.searchParams.set("state", state + "." + port);
