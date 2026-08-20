@@ -37,6 +37,7 @@ export default async function handler(req, res) {
           contents: [{ role: "user", parts: [{ text }] }],
           generationConfig: {
             responseModalities: ["AUDIO"],
+        temperature: 0.35,
             speechConfig: {
               voiceConfig: { prebuiltVoiceConfig: { voiceName: "Charon" } },
             },
