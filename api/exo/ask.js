@@ -57,7 +57,7 @@ export default async function handler(req, res) {
           systemInstruction: { parts: [{ text: EXO_SYSTEM }] },
           contents: [{ role: "user", parts: [{ text: q }] }],
           generationConfig: {
-            maxOutputTokens: 400,
+            maxOutputTokens: 1000,
             temperature: 0.8,
             thinkingConfig: { thinkingBudget: 0 },
           },
