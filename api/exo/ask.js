@@ -18,7 +18,7 @@ const EXO_SYSTEM = [
 ].join(" ");
 
 /** Mirror of brain.ts sanitizeAnswer — strips any leaked instruction scrap. */
-function sanitizeAnswer(full) {
+function sanitizeAnswer(raw) {
   return String(raw)
     .replace(/\*+/g, " ")
     .replace(/\b(constraints?|fact ?sheet|system ?(prompt|instruction)|style|secrecy|language|voice)\s*:\s*/gi, " ")
