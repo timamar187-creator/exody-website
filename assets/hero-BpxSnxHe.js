@@ -1,1 +1,0 @@
-import{c as t,j as e,D as r}from"./index-Qp6jW4bp.js";const o=new URLSearchParams(location.search),s=o.get("screen")||"home";t.createRoot(document.getElementById("root")).render(e.jsx("div",{style:{width:880,margin:"24px auto"},children:e.jsx(r,{initialScreen:s})}));
