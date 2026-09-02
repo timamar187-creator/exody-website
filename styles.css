@@ -708,12 +708,14 @@ html.is-mobile .sec[data-section=services] .topbar .title,html.is-mobile .sec[da
 html.is-mobile .sec[data-section=services] h2{--grid-font-base:22}
 html.is-mobile .svc-list{display:none}
 /* the six capabilities are cards on a swipe rail */
-html.is-mobile .svc-cards{grid-row:span 5;grid-column:1 / -1;display:flex;overflow:hidden;scrollbar-width:none;position:relative}
+/* six rows, not five: the longest description overflowed the box and overflow:hidden ate the
+   bottom padding — the last line sat on the border ("where editors work." touching the line, 02.09.26) */
+html.is-mobile .svc-cards{grid-row:span 6;grid-column:1 / -1;display:flex;overflow:hidden;scrollbar-width:none;position:relative}
 html.is-mobile .svc-cards::-webkit-scrollbar{display:none}
 html.is-mobile .svc-card{position:relative;flex:0 0 100%;padding:calc(var(--k)*.5) calc(var(--k)*.3) calc(var(--k)*.4);display:flex;flex-direction:column;justify-content:flex-start;gap:calc(var(--k)*.12)}
 html.is-mobile .svc-card .svc-sq{margin-bottom:calc(var(--k)*.2)}
 html.is-mobile .svc-card .ct{--grid-font-base:30;--grid-font-size-step:4;font-weight:200;color:var(--text-primary);line-height:1.1}
-html.is-mobile .svc-card .cd{margin:calc(var(--k)*.12) 0 0;--grid-font-base:14;color:var(--text-tertiary);line-height:1.5}
+html.is-mobile .svc-card .cd{margin:calc(var(--k)*.12) 0 0;--grid-font-base:13;color:var(--text-tertiary);line-height:1.45}
 html.is-mobile .svc-card .hint{position:absolute;right:calc(var(--k)*.3);top:calc(var(--k)*.5);--grid-font-base:10;letter-spacing:.14em;text-transform:uppercase;color:var(--text-quaternary);font-family:var(--font-mono)}
 html.is-mobile .svc-title,html.is-mobile .svc-kind{--grid-font-base:34}
 html.is-mobile .svc-window{grid-row:span 9;grid-column:1 / -1;overflow:visible;display:block;height:auto}
@@ -751,6 +753,9 @@ html.is-mobile .ft-bar .left{gap:0;height:var(--k)}
 html.is-mobile .ft-bar .cell{flex:1;width:auto}
 html.is-mobile #loader .pbox{width:calc(var(--k)*5);height:calc(var(--k)*5)}
 html.is-mobile #loader .pbox-host{height:calc(var(--k)*5)}
+/* the word is centred to the FRAME, not to the viewport: the frame sits 3K down and is 5K tall,
+   while inset:0 centred the letters on the fixed layer (iOS: the large viewport) — off by tens of px */
+html.is-mobile #loader .word{top:calc(var(--k)*3);height:calc(var(--k)*5);bottom:auto}
 /* on mobile the services orb box stands alone, so it keeps all four edges */
 html.is-mobile .svc-bubble .cb>i:nth-child(2){box-shadow:inset 0 1px 0 0 var(--border-primary),inset -1px 0 0 0 var(--border-primary)}
 html.is-mobile .svc-bubble .cb>i:nth-child(3){box-shadow:inset 0 -1px 0 0 var(--border-primary),inset 1px 0 0 0 var(--border-primary)}
