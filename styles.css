@@ -204,8 +204,9 @@ body.is-ready #header .cell{opacity:1}
    CTA is a full grid cell — 2K wide, the row's full height, its corner lines closing the grid.
    The reveal wrapper (.ry) had no height, so the cell collapsed to a 22px pill and its lines went
    with it ("the grid is broken, the button is too narrow"). */
-.topbar .title{display:flex;flex-direction:column;justify-content:flex-start;height:100%;padding-left:2px;padding-top:3px}
+.topbar .title{display:flex;flex-direction:column;justify-content:center;height:100%;padding-left:2px}
 .topbar>.ry{height:100%;flex:none}
+.topbar .cta.wide{width:calc(var(--k)*3 + 1px)}
 .topbar .title .tag{--grid-font-base:14;color:var(--text-tertiary);margin-bottom:2px}
 .topbar .cta{position:relative;height:100%;width:calc(var(--k)*2 + 1px);display:flex;align-items:center;justify-content:center;--grid-font-base:16;font-weight:200;transition:background-color .2s;cursor:pointer}
 .topbar .cta:hover{background:color-mix(in oklab,var(--accent-hover) 20%,transparent)}
@@ -245,22 +246,22 @@ body.is-ready #header .cell{opacity:1}
 
 /* ---------- WORK ---------- */
 .work-ap{position:relative;grid-row:2 / span 6;grid-column:1 / span var(--work-ap-s,6)}
-.work-gal{grid-row:2 / span 6;grid-column:calc(var(--work-ap-s,6) + 1) / span calc(var(--cols) - var(--work-ap-s,6) - 2);position:relative;display:grid;grid-template-columns:7.6fr 2.7fr 1fr 3.5fr;grid-template-rows:1fr;gap:0}
+.work-gal{grid-row:2 / span 6;grid-column:calc(var(--work-ap-s,6) + 1) / span calc(var(--cols) - var(--work-ap-s,6));position:relative;display:grid;grid-template-columns:7.6fr 2.7fr 1fr 3.5fr;grid-template-rows:1fr;gap:0}
 .work-bar{grid-row:8;grid-column:1 / -1;display:flex;align-items:stretch;position:relative}
 .work-bar .btn{width:var(--k);display:flex;align-items:center;justify-content:center;color:var(--text-tertiary);position:relative;transition:background-color .2s}
 .work-bar .btn:hover{background:color-mix(in oklab,var(--background-inverse) 10%,transparent);color:var(--text-primary)}
 .work-bar .btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.2}
 .work-bar .name{flex:1;display:flex;align-items:center;justify-content:center;--grid-font-base:20;font-weight:200;position:relative;overflow:hidden}
 .work-bar .name .rw{height:1.4em}
-.case{position:absolute;inset:0;display:grid;grid-template-columns:10.3fr 1fr 3.5fr;opacity:0;transition:opacity .35s var(--ease-std);pointer-events:none}
+.case{position:absolute;inset:0;display:grid;grid-template-columns:1fr var(--k) calc(var(--k)*4);opacity:0;transition:opacity .35s var(--ease-std);pointer-events:none}
 .case.is-cur{opacity:1;pointer-events:auto}
 .case .desk{padding:calc(var(--k)*.12) calc(var(--k)*.1) 0 calc(var(--k)*.1);display:grid;grid-template-rows:auto 1fr;gap:calc(var(--k)*.15)}
 .case .mob{padding:calc(var(--k)*.12) calc(var(--k)*.1) 0 0}
-.case .tech{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;padding-top:1px}
-.case .tech i{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);position:relative;box-shadow:inset 0 -1px 0 0 var(--border-primary)}
+.case .tech{position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:0;overflow:hidden}
+.case .tech i{width:100%;height:var(--k);flex:none;display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);position:relative;box-shadow:inset 0 -1px 0 0 var(--border-primary)}
 .case .tech i svg{width:42%;height:42%}
 .case .tech i.hatch{box-shadow:none}
-.case .txt{padding:calc(var(--k)*.2) calc(var(--k)*.1) 0 calc(var(--k)*.25);color:var(--text-tertiary);--grid-font-base:14;line-height:1.5;font-weight:200}
+.case .txt{position:relative;padding:calc(var(--k)*.2) calc(var(--k)*.1) 0 calc(var(--k)*.25);color:var(--text-tertiary);--grid-font-base:14;line-height:1.5;font-weight:200}
 .case .txt .p+.p{margin-top:.9em}
 .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--k)*.2);align-items:stretch}
 .thumb{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}
@@ -312,7 +313,7 @@ body.is-ready #header .cell{opacity:1}
 .router .lat{position:absolute;right:8px;bottom:6px;--grid-font-base:8;color:var(--text-quaternary);letter-spacing:.06em}
 
 /* ---------- SERVICES ---------- */
-.svc-list{grid-row:2 / span 5;grid-column:1 / span var(--svc-list-s,8);position:relative;display:flex;flex-direction:column;justify-content:center;padding-left:calc(var(--k)*.3);padding-right:calc(var(--k)*.4)}
+.svc-list{grid-row:2 / span 7;grid-column:1 / span var(--svc-list-s,8);position:relative;display:flex;flex-direction:column;justify-content:center;padding-left:calc(var(--k)*.3);padding-right:calc(var(--k)*.4)}
 .svc-sq{display:flex;gap:6px;margin-bottom:calc(var(--k)*.3)}
 .svc-sq i{width:12px;height:12px;background:var(--border-primary);display:block;transition:background-color .3s}
 .svc-sq i.on{background:var(--text-secondary)}
@@ -362,7 +363,7 @@ body.is-ready #header .cell{opacity:1}
 .svc-test .tq .who span{color:var(--text-quaternary)}
 
 /* ---------- ABOUT ---------- */
-.about-bio{grid-row:2 / span 5;grid-column:1 / span 8;display:flex;align-items:center;padding:0 calc(var(--k)*.5) 0 calc(var(--k)*1.2);--grid-font-base:18;line-height:1.5;color:var(--text-primary);font-weight:200}
+.about-bio{position:relative;grid-row:2 / span 5;grid-column:1 / span 8;display:flex;align-items:center;padding:0 calc(var(--k)*.5) 0 calc(var(--k)*1.2);--grid-font-base:18;line-height:1.5;color:var(--text-primary);font-weight:200}
 .about-ap{position:relative;grid-row:2 / span 5;grid-column:9 / span var(--about-ap-s,6)}
 .about-ticker{grid-row:7 / span 2;grid-column:1 / span calc(var(--about-img-c,15) - 1);position:relative;overflow:hidden;display:flex;align-items:center}
 .about-ticker .track{display:flex;align-items:center;gap:calc(var(--k)*1.35);padding-left:calc(var(--k)*.6);will-change:transform;white-space:nowrap}
@@ -805,3 +806,10 @@ html.is-mobile .ft-box1,html.is-mobile .ft-box2{justify-content:flex-start;paddi
 html.is-mobile #connector .line{width:2px;background:repeating-linear-gradient(to bottom,#7a7a7a 0,#7a7a7a 5px,transparent 5px,transparent 10px)}
 html.is-mobile #connector .node{box-shadow:inset 0 0 0 1px #7a7a7a}
 html.is-mobile #connector .node i{background:#7a7a7a}
+/* MOBILE FRAMES (02.09.26 night): cells stack full-width, so every cell draws its own right edge —
+   collapse-r (a neighbour draws it on desktop) has no neighbour here. The Product visual and its
+   text/tech rows keep their brackets; the "open release" button leaves the bar. */
+html.is-mobile .cb.collapse-r>i:nth-child(2){box-shadow:inset 0 1px 0 0 var(--border-primary),inset -1px 0 0 0 var(--border-primary)}
+html.is-mobile .cb.collapse-r>i:nth-child(4){box-shadow:inset 0 -1px 0 0 var(--border-primary),inset -1px 0 0 0 var(--border-primary)}
+html.is-mobile .cb.collapse-r.collapse-b>i:nth-child(4){box-shadow:inset -1px 0 0 0 var(--border-primary)}
+html.is-mobile .work-bar a.btn[aria-label="Latest release"]{display:none}
