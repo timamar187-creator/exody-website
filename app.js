@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkjx5bs';
-import { createRouterHero } from './router-hero.js?v=mtkjx5bs';
+import { createBubble } from './bubble.js?v=mtkkpk9n';
+import { createRouterHero } from './router-hero.js?v=mtkkpk9n';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -477,7 +477,7 @@ function setCase(i, force) {
   setTimeout(() => trSet(tr, true), 300);
   playChat(next);
   filmPause(next);
-  if (MOBILE) { const gal = $('#work-gal'); gal.scrollTo({ left: i * gal.clientWidth, behavior: 'smooth' }); }
+  if (MOBILE) { const gal = $('#work-gal'); const el = $$('.case', gal)[i]; gal.scrollTo({ left: el ? el.offsetLeft - 1 : i * gal.clientWidth, behavior: 'smooth' }); }
 }
 /* ── SCROLL-SCRUBBED FILM HEROES (02.09.26) ──
    Each case owns a frame sequence (the laptop opening, the phone's 360) drawn
@@ -856,7 +856,7 @@ function frame(now) {
       const cards = $('.svc-cards');
       if (sv.track && cards) {
         const i = clamp(Math.floor(sv.p * 6), 0, 5);
-        if (cards.dataset.idx !== String(i)) { cards.dataset.idx = String(i); cards.scrollTo({ left: i * cards.clientWidth, behavior: 'smooth' }); }
+        if (cards.dataset.idx !== String(i)) { cards.dataset.idx = String(i); const el = $$('.svc-card', cards)[i]; cards.scrollTo({ left: el ? el.offsetLeft - 1 : i * cards.clientWidth, behavior: 'smooth' }); }
       }
     }
     // the orb docks in the aperture with the most of itself on screen and scrolls with it
