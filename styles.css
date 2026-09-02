@@ -629,6 +629,7 @@ body.is-ready #header .cell{opacity:1}
 .hero-one .film.is-live video{opacity:1}
 .hero-one .film.is-live canvas{opacity:0}
 .hero-one .film[data-film="mobile"] canvas,.hero-one .film[data-film="mobile"] video{--film-zoom:1.5;--film-y:-1%}
+html.is-mobile .hero-one .film[data-film="desktop"] canvas,html.is-mobile .hero-one .film[data-film="desktop"] video,html.is-mobile .hero-one .film[data-film="design"] canvas,html.is-mobile .hero-one .film[data-film="design"] video{--film-y:6%}
 
 /* ══════════════════════════════════════════════════════════════════════
    MOBILE FLOW (02.09.26) — the reference's non-pinning layout, read off
@@ -641,7 +642,11 @@ html.is-mobile #header .brand{min-width:0;padding:0 calc(var(--k)*.25)}
 html.is-mobile #header .cross{display:none}
 html.is-mobile #header .menu-btn{position:relative;height:100%;width:calc(var(--k)*1.6);display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text-secondary);--grid-font-base:12;letter-spacing:.14em;text-transform:uppercase;font-weight:300}
 html.is-mobile #header .menu-btn>i{display:block;width:14px;height:9px;border-top:1px solid currentColor;border-bottom:1px solid currentColor;font-style:normal}
+html.is-mobile #header .menu-btn>i{position:relative;transition:border-color .25s}
+html.is-mobile #header .menu-btn>i::before,html.is-mobile #header .menu-btn>i::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:currentColor;transform:scaleX(0);transition:transform .3s var(--ease-house)}
 body.menu-open #header .menu-btn>i{border-top-color:transparent;border-bottom-color:transparent}
+body.menu-open #header .menu-btn>i::before{transform:rotate(45deg)}
+body.menu-open #header .menu-btn>i::after{transform:rotate(-45deg)}
 #menu{position:fixed;inset:0;z-index:49;background:var(--background-primary);display:none;flex-direction:column;justify-content:center;padding:0 calc(var(--k)*.5);gap:0}
 body.menu-open #menu{display:flex}
 #menu a{position:relative;height:var(--k);display:flex;align-items:center;padding:0 calc(var(--k)*.4);--grid-font-base:20;font-weight:200;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary)}
@@ -694,7 +699,12 @@ html.is-mobile .case-details .tech i svg{width:38%;height:38%;max-width:26px;max
 html.is-mobile .case-details .tech i:first-child{box-shadow:inset -1px 0 0 0 var(--border-primary),inset 1px 0 0 0 var(--border-primary),inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary)}
 html.is-mobile .case-details .tech i.hatch{box-shadow:inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary),inset -1px 0 0 0 var(--border-primary)}
 /* services */
-html.is-mobile .sec[data-section=services] .topbar{height:calc(var(--k)*2);grid-row:span 2}
+/* ONE title→text distance on mobile (02.09.26): every heading sits at the foot of its
+   row with --title-gap of air under it, and the text it introduces starts --title-gap
+   under the line — services, about, contact, information, connect alike. */
+html.is-mobile{--title-gap:calc(var(--k)*.26)}
+html.is-mobile .sec[data-section=services] .topbar{height:calc(var(--k)*2);grid-row:span 2;align-items:flex-end;padding-bottom:var(--title-gap)}
+html.is-mobile .sec[data-section=services] .topbar .title,html.is-mobile .sec[data-section=about] .topbar .title{justify-content:flex-end;height:auto}
 html.is-mobile .sec[data-section=services] h2{--grid-font-base:22}
 html.is-mobile .svc-list{display:none}
 /* the six capabilities are cards on a swipe rail */
@@ -768,10 +778,15 @@ html.is-mobile .pintrack .pin{position:sticky;top:0;height:auto;overflow:hidden}
 html.is-mobile .sec[data-section=work] .blk{margin-top:calc(var(--k)*1.5)}
 html.is-mobile .sec[data-section=services] .pin .blk{margin-top:calc(var(--k)*3)}
 html.is-mobile .sec .blk.svc-rest{margin-top:0}   /* outranks the generic 4-block section gap */
-html.is-mobile .sec[data-section=about] .topbar{height:calc(var(--k)*2);grid-row:span 2;align-items:flex-end;padding-bottom:calc(var(--k)*.3)}
+html.is-mobile .sec[data-section=about] .topbar{height:calc(var(--k)*2);grid-row:span 2;align-items:flex-end;padding-bottom:var(--title-gap)}
+html.is-mobile .about-bio{align-items:flex-start;padding-top:var(--title-gap)}
 html.is-mobile .ft-l1{grid-row:span 2}
 html.is-mobile .ft-l2,html.is-mobile .ft-r{grid-row:span 3}
-html.is-mobile .ft-h{padding-bottom:calc(var(--k)*.25)}
+/* the footer headings sit at the FOOT of their rows: .ry had no height on mobile, so
+   height:100% on .ft-h resolved to auto and the title floated a full row above its box */
+html.is-mobile .ft-l1 .ry,html.is-mobile .ft-l2 .ry,html.is-mobile .ft-r .ry{height:100%}
+html.is-mobile .ft-h{padding-bottom:var(--title-gap)}
+html.is-mobile .ft-box1,html.is-mobile .ft-box2{justify-content:flex-start;padding-top:var(--title-gap)}
 /* the connectors get room and weight on mobile: a 4-block gap, the line clear of the content at
    both ends, drawn heavier and brighter than the desktop hairline */
 html.is-mobile #connector .line{width:2px;background:repeating-linear-gradient(to bottom,#7a7a7a 0,#7a7a7a 5px,transparent 5px,transparent 10px)}

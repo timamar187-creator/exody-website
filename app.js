@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtk4hb5h';
-import { createRouterHero } from './router-hero.js?v=mtk4hb5h';
+import { createBubble } from './bubble.js?v=mtk9j6as';
+import { createRouterHero } from './router-hero.js?v=mtk9j6as';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -853,7 +853,7 @@ function frame(now) {
       if (best) {
         const r = apertureRect(best);
         // screen-fixed: the hero hole's centre height, clamped into the viewport
-        const ay = clamp(mobileAnchorY, G.vh * 0.3, G.vh * 0.6);
+        const ay = clamp(mobileAnchorY, G.vh * 0.3, G.vh * 0.82);   // the hero hole's centre is ~0.75vh on a phone
         const c = { x: r.left + r.width / 2, y: ay, size: Math.min(r.width, r.height) };
         if (anchor.name !== best.name) { anchor.name = best.name; bubble.setTarget(c.x, c.y, c.size, true); bubble.setSection(best.name); }
         else bubble.trackTarget(c.x, c.y, c.size);
