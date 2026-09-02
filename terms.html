@@ -1,106 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Terms of Service — Exody</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1024' y2='1024'%3E%3Cstop offset='0%25' stop-color='%2338bdf8'/%3E%3Cstop offset='55%25' stop-color='%23818cf8'/%3E%3Cstop offset='100%25' stop-color='%23c084fc'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='1024' rx='220' fill='%2308080a'/%3E%3Cpath fill-rule='evenodd' fill='url(%23g)' d='M 215.8 252.3 L 384.1 507.8 L 383.5 517.5 L 216.7 772.0 L 444.9 772.0 L 585.9 566.0 L 593.1 566.0 L 596.7 570.2 L 681.8 690.4 L 690.9 704.1 L 690.9 711.2 L 608.7 711.5 L 568.4 653.0 L 534.3 704.7 L 580.1 772.0 L 807.9 771.7 L 629.2 518.2 L 627.2 508.4 L 808.2 252.0 L 581.4 252.0 L 533.6 320.6 L 568.4 370.9 L 608.7 312.4 L 690.9 312.8 L 690.9 319.9 L 688.3 323.8 L 593.1 458.7 L 585.9 458.7 L 583.0 455.1 L 443.6 252.0 Z M 329.8 312.4 L 415.0 312.4 L 551.2 509.1 L 550.5 516.9 L 416.3 711.5 L 330.5 711.5 L 330.2 704.1 L 435.5 542.9 L 490.4 541.9 L 510.9 511.7 L 489.7 482.1 L 436.4 482.1 L 434.8 480.5 L 329.5 319.9 Z'/%3E%3C/svg%3E">
-
-<meta name="description" content="Terms of Service for Exody." />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  color-scheme: dark;
-  --bg: #08080a;
-  --bg-elevated: #0e0e11;
-  --panel: #121215;
-  --border: rgba(255,255,255,.08);
-  --border-strong: rgba(255,255,255,.16);
-  --text: #f4f4f5;
-  --muted: #9a9aa2;
-  --muted-2: #87878f;
-  --grad: linear-gradient(135deg,#38bdf8 0%,#818cf8 55%,#c084fc 100%);
-  --font-display: "Instrument Serif", Georgia, serif;
-  --font-body: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
-  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:48px;--sp-8:64px;--sp-9:96px;
-  --radius-lg: 24px;--radius-xl: 32px;--ease: cubic-bezier(0.22,1,0.36,1);
-}
-*{box-sizing:border-box}html{scroll-behavior:smooth}html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
-::selection{background:rgba(129,140,248,.35);color:#fff}
-.container{max-width:800px;margin:0 auto;padding:0 var(--sp-5)}
-.mono{font-family:var(--mono)}.serif{font-family:var(--font-display);font-style:italic}
-.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.eyebrow{display:inline-flex;align-items:center;gap:var(--sp-2);font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2)}
-.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#38bdf8;box-shadow:0 0 10px #38bdf8}
-
-.ambient{position:fixed;inset:-20%;z-index:0;pointer-events:none;background:radial-gradient(40% 32% at 82% 2%,rgba(56,130,246,.14),transparent 68%),radial-gradient(36% 30% at 8% 96%,rgba(147,100,250,.11),transparent 66%),radial-gradient(24% 20% at 50% 45%,rgba(56,189,248,.045),transparent 70%);animation:drift 32s ease-in-out infinite alternate}
-@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(2%,-2%,0) scale(1.05)}}
-
-/* nav */
-.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px var(--sp-5);background:rgba(8,8,10,.6);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--border)}
-.nav-brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;letter-spacing:-.01em}
-.nav-mark{width:24px;height:24px;display:block;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(129,140,248,.45))}
-
-/* legal page */
-.legal-hero{padding: var(--sp-8) 0 var(--sp-5)}
-.legal-hero h1{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:var(--sp-3)}
-.legal-hero .lede{color:var(--muted);font-size:16.5px;line-height:1.6;max-width:640px}
-
-.legal-body{padding: var(--sp-4) 0 var(--sp-9)}
-.legal-body h2{font-size:18px;font-weight:700;color:#fff;margin-top:var(--sp-7);margin-bottom:var(--sp-3)}
-.legal-body h3{font-size:15px;font-weight:600;color:#fff;margin-top:var(--sp-5);margin-bottom:var(--sp-2)}
-.legal-body p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:var(--sp-3)}
-.legal-body ul{padding-left:var(--sp-4);list-style:disc;margin-bottom:var(--sp-3)}
-.legal-body li{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:var(--sp-1)}
-.legal-body strong{color:var(--text);font-weight:500}
-.legal-body a{text-decoration:underline;text-underline-offset:3px;color:#a5b4fc}
-.legal-body a:hover{color:#c7d2fe}
-.legal-body .last-updated{font-family:var(--mono);font-size:12px;color:var(--muted-2);margin-top:var(--sp-6);padding-top:var(--sp-4);border-top:1px solid var(--border)}
-
-/* footer */
-footer{border-top:1px solid var(--border);padding:var(--sp-7) 0 var(--sp-6)}
-.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:var(--sp-6)}
-.footer-col h4{font-size:12px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--sp-3)}
-.footer-col a{display:block;font-size:13px;color:var(--muted);padding:5px 0;transition:color .15s}
-.footer-col a:hover{color:#fff}
-.footer-bottom{margin-top:var(--sp-7);padding-top:var(--sp-5);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--sp-3);font-size:12px;color:var(--muted-2)}
-@media(max-width:760px){.footer-grid{grid-template-columns:1fr 1fr}}
-</style>
+<meta name="robots" content="index,follow">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="stylesheet" href="legal.css?v=20260903">
 </head>
 <body>
-<div class="ambient" aria-hidden="true"></div>
+<div class="grid" aria-hidden="true"></div>
+<header class="top">
+  <a class="brand" href="/"><svg class="logo" viewBox="0 0 1024 1024" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M 215.8 252.3 L 384.1 507.8 L 383.5 517.5 L 216.7 772.0 L 444.9 772.0 L 585.9 566.0 L 593.1 566.0 L 596.7 570.2 L 681.8 690.4 L 690.9 704.1 L 690.9 711.2 L 608.7 711.5 L 568.4 653.0 L 534.3 704.7 L 580.1 772.0 L 807.9 771.7 L 629.2 518.2 L 627.2 508.4 L 808.2 252.0 L 581.4 252.0 L 533.6 320.6 L 568.4 370.9 L 608.7 312.4 L 690.9 312.8 L 690.9 319.9 L 688.3 323.8 L 593.1 458.7 L 585.9 458.7 L 583.0 455.1 L 443.6 252.0 Z M 329.8 312.4 L 415.0 312.4 L 551.2 509.1 L 550.5 516.9 L 416.3 711.5 L 330.5 711.5 L 330.2 704.1 L 435.5 542.9 L 490.4 541.9 L 510.9 511.7 L 489.7 482.1 L 436.4 482.1 L 434.8 480.5 L 329.5 319.9 Z"/></svg><span>EXODY</span></a>
+  <a class="back" href="/">Back to site</a>
+</header>
+<main class="legal">
+  <div class="frame">
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="exody-mark" viewBox="0 0 1024 1024">
-      <path fill-rule="evenodd" d="M 215.8 252.3 L 384.1 507.8 L 383.5 517.5 L 216.7 772.0 L 444.9 772.0 L 585.9 566.0 L 593.1 566.0 L 596.7 570.2 L 681.8 690.4 L 690.9 704.1 L 690.9 711.2 L 608.7 711.5 L 568.4 653.0 L 534.3 704.7 L 580.1 772.0 L 807.9 771.7 L 629.2 518.2 L 627.2 508.4 L 808.2 252.0 L 581.4 252.0 L 533.6 320.6 L 568.4 370.9 L 608.7 312.4 L 690.9 312.8 L 690.9 319.9 L 688.3 323.8 L 593.1 458.7 L 585.9 458.7 L 583.0 455.1 L 443.6 252.0 Z M 329.8 312.4 L 415.0 312.4 L 551.2 509.1 L 550.5 516.9 L 416.3 711.5 L 330.5 711.5 L 330.2 704.1 L 435.5 542.9 L 490.4 541.9 L 510.9 511.7 L 489.7 482.1 L 436.4 482.1 L 434.8 480.5 L 329.5 319.9 Z"/>
-    </symbol>
-  </defs>
-</svg>
-
-<nav class="nav" aria-label="Primary">
-  <a href="/" class="nav-brand">
-    <svg class="nav-mark" viewBox="0 0 1024 1024" aria-hidden="true"><use href="#exody-mark" fill="currentColor"/></svg>
-    Exody
-  </a>
-</nav>
-
-<main>
-  <section class="legal-hero">
-    <div class="container">
-      <p class="eyebrow">Legal</p>
-      <h1>Terms of Service</h1>
+<h1>Terms of Service</h1>
       <p class="lede">These terms govern your use of Exody, its website, and related services. By using Exody, you agree to these terms.</p>
-    </div>
-  </section>
+    
+  
 
-  <section class="legal-body">
-    <div class="container">
+  
+    
       <h2>1. Acceptance of Terms</h2>
       <p>By downloading, installing, or using Exody ("the Product", "we", "us", or "our"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Product.</p>
 
@@ -163,47 +87,11 @@ footer{border-top:1px solid var(--border);padding:var(--sp-7) 0 var(--sp-6)}
       <p>For questions about these terms, email <a href="mailto:hello@exody.ai">hello@exody.ai</a>.</p>
 
       <p class="last-updated">Last updated: 17 August 2026</p>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-col">
-        <div class="nav-brand" style="margin-bottom:12px;">
-          <svg class="nav-mark" viewBox="0 0 1024 1024" aria-hidden="true" style="width:22px;height:22px;"><use href="#exody-mark" fill="currentColor"/></svg>
-          Exody
-        </div>
-        <p style="font-size:12.8px;color:var(--muted-2);line-height:1.6;max-width:260px;">A local‑first coding agent for Mac, with a router that decides what each task is actually worth.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Product</h4>
-        <a href="/#router">Router</a>
-        <a href="/#assistant">Assistant</a>
-        <a href="/#design-studio">Design Studio</a>
-        <a href="/#local-first">Local‑first</a>
-        <a href="/#compare">Compare</a>
-        <a href="/#pricing">Pricing</a>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="/#faq">FAQ</a>
-        <a href="mailto:hello@exody.ai">Contact</a>
-        <a href="/#top">Download</a>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <a href="/terms">Terms</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/refunds">Refunds</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 Exody.</span>
-      <span class="mono">Built local‑first.</span>
-    </div>
   </div>
+</main>
+<footer class="foot">
+  <span>Exody © 2026</span>
+  <nav><a href="/privacy">Privacy policy</a><a href="/terms">Terms of service</a><a href="/refunds">Refund policy</a></nav>
 </footer>
 </body>
 </html>
