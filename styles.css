@@ -650,8 +650,8 @@ body.menu-open #menu{display:flex}
 html.is-mobile .ruler,html.is-mobile #scrollmeter{display:none!important}
 html.is-mobile .sec{height:auto!important}
 html.is-mobile .sec .pin{position:static;height:auto;overflow:visible}
-html.is-mobile .sec .blk{margin-top:calc(var(--k)*3);grid-auto-rows:var(--k);grid-template-rows:none}
-html.is-mobile .sec[data-section=hero] .blk{margin-top:calc(var(--k)*2);height:auto}
+html.is-mobile .sec .blk{margin-top:calc(var(--k)*4);grid-auto-rows:var(--k);grid-template-rows:none}
+html.is-mobile .sec[data-section=hero] .blk{margin-top:calc(var(--k)*2);margin-bottom:calc(var(--k)*2.5);height:auto}
 html.is-mobile .sec[data-section=footer] .blk{margin-bottom:calc(var(--k)*1)}
 html.is-mobile .topbar{grid-column:1 / -1;grid-row:auto;height:var(--k)}
 html.is-mobile .topbar .cta{display:none}
@@ -662,23 +662,32 @@ html.is-mobile .cap{--grid-font-base:10}
 html.is-mobile .hero-lbl{--grid-font-base:10;letter-spacing:.1em;white-space:normal}
 html.is-mobile .hero-lbl.tl{grid-row:1;grid-column:1 / span 3}
 html.is-mobile .hero-lbl.tr{grid-row:1;grid-column:4 / -1}
-html.is-mobile .hero-ap{grid-row:2 / span 5;grid-column:1 / -1}
-html.is-mobile .hero-lbl.bl{grid-row:7;grid-column:1 / span 3}
-html.is-mobile .hero-lbl.br{grid-row:7;grid-column:4 / -1}
-html.is-mobile .hero-words{display:none}
+/* the hero words bracket the hole on mobile: "Autonomous Engineering" above, flush left,
+   "Shipping Software" below, flush right — the desktop's left/right pair turned into a stack,
+   each pair drifting apart a little as the page scrolls */
+/* one centred word slot above the hole: "Autonomous Engineering" at rest, and as the page
+   scrolls it leaves upward while "Shipping Software" rises into the same place (the owner's idea) */
+html.is-mobile .hero-words{display:flex;grid-column:1 / -1;grid-row:2 / span 2;justify-self:center;align-self:center;align-items:center;justify-content:center;text-align:center;--grid-font-base:28;--grid-font-size-step:4;padding:0 2px 0;width:max-content;pointer-events:none}
+html.is-mobile .hero-words.l,html.is-mobile .hero-words.r{grid-row:2 / span 2;grid-column:1 / -1}
+html.is-mobile .hero-words .rw{width:max-content;height:1.12em}
+html.is-mobile .hero-words .rw>i{justify-content:center}
+html.is-mobile .hero-ap{grid-row:4 / span 5;grid-column:1 / -1}
+html.is-mobile .hero-lbl.bl{grid-row:9;grid-column:1 / span 3}
+html.is-mobile .hero-lbl.br{grid-row:9;grid-column:4 / -1}
 /* work */
 html.is-mobile .work-ap{display:none}
 /* the four cases are a swipe rail: one full-width slide each, snapping */
-html.is-mobile .work-gal{grid-row:span 5;grid-column:1 / -1;display:flex;position:relative;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+html.is-mobile .work-gal{grid-row:span 5;grid-column:1 / -1;display:flex;position:relative;overflow:hidden;scrollbar-width:none}
 html.is-mobile .work-gal::-webkit-scrollbar{display:none}
 html.is-mobile .case{position:relative;inset:auto;flex:0 0 100%;display:block;opacity:1;pointer-events:auto;scroll-snap-align:start;height:100%}
 html.is-mobile .case.is-out{opacity:1}
 html.is-mobile .hero-one{width:100%;height:100%;padding:calc(var(--k)*.1)}
 html.is-mobile .work-bar{grid-row:auto;grid-column:1 / -1}
-html.is-mobile .work-details{grid-column:1 / -1;grid-row:span 5;position:relative;display:flex;flex-direction:column}
+html.is-mobile .work-details{grid-column:1 / -1;grid-row:span 3;position:relative;display:flex;flex-direction:column}
 html.is-mobile .case-details{display:none;flex-direction:column;flex:1}
 html.is-mobile .case-details.is-cur{display:flex}
-html.is-mobile .case-details .txt{padding:calc(var(--k)*.35) calc(var(--k)*.3);flex:1;--grid-font-base:14}
+html.is-mobile .case-details .txt{padding:calc(var(--k)*.28) calc(var(--k)*.3) calc(var(--k)*.12);flex:none;--grid-font-base:13.5}
+html.is-mobile .case-details .txt .p+.p{display:none}
 html.is-mobile .case-details .tech{display:flex;flex-direction:row;height:var(--k);flex:none;padding:0}
 html.is-mobile .case-details .tech i{display:flex;align-items:center;justify-content:center;position:relative;width:auto;flex:1;height:100%;aspect-ratio:auto;color:var(--text-quaternary);box-shadow:inset -1px 0 0 0 var(--border-primary),inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary)}
 html.is-mobile .case-details .tech i svg{width:38%;height:38%;max-width:26px;max-height:26px}
@@ -689,13 +698,13 @@ html.is-mobile .sec[data-section=services] .topbar{height:calc(var(--k)*2);grid-
 html.is-mobile .sec[data-section=services] h2{--grid-font-base:22}
 html.is-mobile .svc-list{display:none}
 /* the six capabilities are cards on a swipe rail */
-html.is-mobile .svc-cards{grid-row:span 5;grid-column:1 / -1;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;position:relative}
+html.is-mobile .svc-cards{grid-row:span 5;grid-column:1 / -1;display:flex;overflow:hidden;scrollbar-width:none;position:relative}
 html.is-mobile .svc-cards::-webkit-scrollbar{display:none}
-html.is-mobile .svc-card{position:relative;flex:0 0 100%;scroll-snap-align:start;padding:calc(var(--k)*.35) calc(var(--k)*.3);display:flex;flex-direction:column;justify-content:center;gap:calc(var(--k)*.14)}
+html.is-mobile .svc-card{position:relative;flex:0 0 100%;padding:calc(var(--k)*.5) calc(var(--k)*.3) calc(var(--k)*.4);display:flex;flex-direction:column;justify-content:flex-start;gap:calc(var(--k)*.12)}
 html.is-mobile .svc-card .svc-sq{margin-bottom:calc(var(--k)*.2)}
-html.is-mobile .svc-card .ct{--grid-font-base:34;--grid-font-size-step:4;font-weight:200;color:var(--text-primary);line-height:1.1}
+html.is-mobile .svc-card .ct{--grid-font-base:30;--grid-font-size-step:4;font-weight:200;color:var(--text-primary);line-height:1.1}
 html.is-mobile .svc-card .cd{margin:calc(var(--k)*.12) 0 0;--grid-font-base:14;color:var(--text-tertiary);line-height:1.5}
-html.is-mobile .svc-card .hint{position:absolute;right:calc(var(--k)*.25);bottom:calc(var(--k)*.18);--grid-font-base:10;letter-spacing:.14em;text-transform:uppercase;color:var(--text-quaternary);font-family:var(--font-mono)}
+html.is-mobile .svc-card .hint{position:absolute;right:calc(var(--k)*.3);top:calc(var(--k)*.5);--grid-font-base:10;letter-spacing:.14em;text-transform:uppercase;color:var(--text-quaternary);font-family:var(--font-mono)}
 html.is-mobile .svc-title,html.is-mobile .svc-kind{--grid-font-base:34}
 html.is-mobile .svc-window{grid-row:span 9;grid-column:1 / -1;overflow:visible;display:block;height:auto}
 html.is-mobile .svc-strip{position:static;display:block;transform:none!important;height:auto}
@@ -744,9 +753,26 @@ html.is-mobile .svc-bubble .cb>i:nth-child(4){box-shadow:inset 0 -1px 0 0 var(--
 .svc-stats .h1,.svc-stats .h2{display:none}
 .svc-stats .s2{grid-column:1 / span 4}
 /* WebKit gave the card's kind pill an 8px box: the main size is stated as a flex basis, not a height */
-html.is-mobile .svc-card .svc-kind{display:flex;align-items:center;flex:0 0 calc(var(--k)*1);height:calc(var(--k)*1);min-height:calc(var(--k)*1);width:fit-content;width:-webkit-fit-content;position:relative;overflow:hidden}
-html.is-mobile .svc-card .svc-kind .word{position:relative;display:flex;align-items:center;height:calc(var(--k)*1);white-space:nowrap}
+html.is-mobile .svc-card .svc-kind{display:flex;align-items:center;flex:0 0 calc(var(--k)*.9);height:calc(var(--k)*.9);min-height:calc(var(--k)*.9);width:fit-content;width:-webkit-fit-content;position:relative;overflow:hidden;--grid-font-base:30}
+html.is-mobile .svc-card .svc-kind .word{position:relative;display:flex;align-items:center;height:calc(var(--k)*.9);white-space:nowrap}
 html.is-mobile .svc-card .svc-kind .word.des{position:absolute;left:0;top:0}
 /* mobile connectors live in the 3-block gap between sections: no caption, labels beside the line */
 html.is-mobile #connector .cap{display:none}
 html.is-mobile #connector .node span{--grid-font-base:11}
+/* ── mobile, pinned rails (02.09.26): Product and Capabilities pin like the desktop and the
+   vertical scroll drives them sideways; the rest of Capabilities flows after the pinned part ── */
+html.is-mobile #header{background:var(--background-primary)}
+html.is-mobile #header .in{box-shadow:inset 0 -1px 0 0 var(--border-primary)}
+html.is-mobile .pintrack{position:relative}
+html.is-mobile .pintrack .pin{position:sticky;top:0;height:var(--vh);overflow:hidden}
+html.is-mobile .sec[data-section=work] .blk{margin-top:calc(var(--k)*1.5)}
+html.is-mobile .sec[data-section=services] .pin .blk{margin-top:calc(var(--k)*3)}
+html.is-mobile .svc-rest{margin-top:calc(var(--k)*1.5)}
+html.is-mobile .sec[data-section=about] .topbar{height:calc(var(--k)*2);grid-row:span 2;align-items:flex-end;padding-bottom:calc(var(--k)*.3)}
+html.is-mobile .ft-l1,html.is-mobile .ft-l2,html.is-mobile .ft-r{grid-row:span 2}
+html.is-mobile .ft-h{padding-bottom:calc(var(--k)*.25)}
+/* the connectors get room and weight on mobile: a 4-block gap, the line clear of the content at
+   both ends, drawn heavier and brighter than the desktop hairline */
+html.is-mobile #connector .line{width:2px;background:repeating-linear-gradient(to bottom,#7a7a7a 0,#7a7a7a 5px,transparent 5px,transparent 10px)}
+html.is-mobile #connector .node{box-shadow:inset 0 0 0 1px #7a7a7a}
+html.is-mobile #connector .node i{background:#7a7a7a}

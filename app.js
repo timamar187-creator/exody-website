@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtk2dg87';
-import { createRouterHero } from './router-hero.js?v=mtk2dg87';
+import { createBubble } from './bubble.js?v=mtk3s3cy';
+import { createRouterHero } from './router-hero.js?v=mtk3s3cy';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -20,6 +20,8 @@ const G = { vw: 0, vh: 0, K: 72, rows: 12, cols: 22, maxW: 0, gridX: 0, pinning:
 const HERO_PLACEMENT = { 16: [1, 2, 2, 4], 18: [2, 3, 3, 5], 20: [2, 3, 3, 5], 22: [3, 4, 4, 6], 24: [3, 4, 4, 6], 26: [3, 4, 5, 7], 28: [3, 4, 7, 9], 30: [3, 4, 7, 9] };
 // pinned scroll budget per section, in viewport heights
 const DIST = { hero: 2.2, work: 5, services: 5, about: 3, footer: 1.6 };
+// mobile: only Product and Capabilities pin (their rails), the rest flows
+const DIST_M = { work: 3.2, services: 4.2 };
 const LABEL = { hero: '', work: 'Product', services: 'Capabilities', about: 'About', footer: 'Contact' };
 // ── MOBILE FLOW (02.09.26): the reference's non-pinning layout. Sections run in
 // normal flow, one column of blocks; the orb docks in whichever aperture is on
@@ -79,7 +81,12 @@ function layoutGrid() {
   r.setProperty('--wrd-l', String(wl));
   r.setProperty('--wrd-r', String(wr));
   for (const s of SEC) {
-    s.el.style.height = MOBILE ? '' : px((DIST[s.name] + 1) * G.vh);
+    if (MOBILE) {
+      s.el.style.height = '';
+      if (s.track) s.track.style.height = px((DIST_M[s.name] + 1) * G.vh);
+    } else {
+      s.el.style.height = px((DIST[s.name] + 1) * G.vh);
+    }
   }
   r.setProperty('--hero-h', MOBILE ? 'auto' : px((DIST.hero + 1) * G.vh));
 }
@@ -133,18 +140,24 @@ if (MOBILE) {
   document.body.appendChild(menu);
   btn.addEventListener('click', () => document.body.classList.toggle('menu-open'));
   menu.addEventListener('click', () => document.body.classList.remove('menu-open'));
-  // Product: the rail's scroll position is the case (the owner: "you can't see
-  // all the heroes — it has to scroll sideways").
-  const gal = $('#work-gal');
-  let galRaf = 0;
-  gal.addEventListener('scroll', () => {
-    if (galRaf) return;
-    galRaf = requestAnimationFrame(() => {
-      galRaf = 0;
-      const i = clamp(Math.round(gal.scrollLeft / Math.max(1, gal.clientWidth)), 0, 3);
-      if (i !== work.idx) setCase(i);
-    });
-  }, { passive: true });
+  // Product + Capabilities pin like the desktop: the vertical scroll drives the
+  // rails sideways (the owner: "horizontal while I scroll normally, like desktop").
+  for (const name of ['work', 'services']) {
+    const s = byName[name];
+    const track = document.createElement('div');
+    track.className = 'pintrack';
+    s.pin.parentNode.insertBefore(track, s.pin);
+    track.appendChild(s.pin);
+    s.track = track;
+  }
+  // Capabilities: the stats, the orb box and the testimonials flow after the pinned rail.
+  const sv = byName.services;
+  const rest = document.createElement('div');
+  rest.className = 'blk svc-rest';
+  rest.appendChild($('.svc-window', sv.el));
+  rest.appendChild($('.svc-test', sv.el));
+  sv.el.appendChild(rest);
+  sv.tail = rest;
   // Capabilities: one card per service on the same kind of rail.
   const list = $('.svc-list');
   const titles = $$('#svc-title .tt').map((t) => t.textContent.trim());
@@ -156,7 +169,7 @@ if (MOBILE) {
     `<div class="svc-sq">${titles.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>` +
     `<div class="ct">${t}</div>` +
     `<div class="svc-kind${i >= 3 ? ' is-design' : ''}"><span class="bg"></span><span class="word dev">Development</span><span class="word des">Design</span></div>` +
-    `<p class="cd">${descs[i]}</p><span class="hint">${i + 1} / ${titles.length}${i < titles.length - 1 ? ' · swipe' : ''}</span></div>`).join('');
+    `<p class="cd">${descs[i]}</p><span class="hint">${i + 1} / ${titles.length}${i < titles.length - 1 ? ' · scroll' : ''}</span></div>`).join('');
   list.after(cards);
   // Testimonials: swipe, with the arrows as a fallback.
   const win = $('.svc-test .win');
@@ -183,7 +196,7 @@ function measureMobileAnchor() {
 
 function measureSections() {
   for (const s of SEC) {
-    const r = s.el.getBoundingClientRect();
+    const r = (s.track || s.el).getBoundingClientRect();
     s.top = r.top + scrollY;
     s.h = r.height;
   }
@@ -389,8 +402,10 @@ function updateConnector() {
   let shown = false;
   for (let i = 0; i < SEC.length - 1 && !shown; i++) {
     const A = SEC[i], B = SEC[i + 1];
-    const ra = A.blk.getBoundingClientRect(), rb = B.blk.getBoundingClientRect();
-    const E = ra.bottom, J = rb.top, M = J - E;
+    const ra = (A.tail || A.blk).getBoundingClientRect(), rb = B.blk.getBoundingClientRect();
+    // mobile: the line stops half a block short of the content at both ends
+    const inset = MOBILE ? G.K * 0.6 : 0;
+    const E = ra.bottom + inset, J = rb.top - inset, M = J - E;
     if (M <= 0 || E > G.vh * 1.2 || J < -G.vh * 0.2) continue;
     const p = G.vh;
     const C = 0.5 * p, N = 0.75 * p, O = 0.25 * p + M;
@@ -398,17 +413,19 @@ function updateConnector() {
     if (E >= N) t = 0; else if (J <= C) t = 1; else t = O > 0 ? clamp((N - E) / O) : 0;
     if (t <= 0 || t >= 1) continue;
     shown = true;
-    const clip = t <= 0.5 ? `inset(0% 0% ${(100 - 200 * t).toFixed(1)}% 0%)` : `inset(${((t - 0.5) * 200).toFixed(1)}% 0% 0% 0%)`;
+    // mobile: the connector is a fixture, drawn whole while the gap is on screen (the
+    // desktop's travelling reveal left it a stub most of the time on a phone)
+    const clip = MOBILE ? 'inset(0)' : t <= 0.5 ? `inset(0% 0% ${(100 - 200 * t).toFixed(1)}% 0%)` : `inset(${((t - 0.5) * 200).toFixed(1)}% 0% 0% 0%)`;
     cn.line.style.top = px(E);
     cn.line.style.height = px(M);
     cn.line.style.clipPath = clip;
     cn.top.style.top = px(E);
     cn.bottom.style.top = px(J);
-    const nodeOn = t > 0.01 && t < 0.99 ? 1 : 0;
+    const nodeOn = MOBILE || (t > 0.01 && t < 0.99) ? 1 : 0;
     cn.top.style.opacity = nodeOn;
     cn.bottom.style.opacity = nodeOn;
-    cn.top.firstElementChild.style.clipPath = `inset(${(1 - t) * 50}%)`;
-    cn.bottom.firstElementChild.style.clipPath = `inset(${t * 50}%)`;
+    cn.top.firstElementChild.style.clipPath = MOBILE ? 'inset(25%)' : `inset(${(1 - t) * 50}%)`;
+    cn.bottom.firstElementChild.style.clipPath = MOBILE ? 'inset(25%)' : `inset(${t * 50}%)`;
     cn.label.textContent = LABEL[B.name];
     cn.labelTop.textContent = LABEL[A.name];
     cn.cap.style.top = px((E + J) / 2);
@@ -447,14 +464,14 @@ function setCase(i, force) {
   $$('.case-details').forEach((d) => d.classList.toggle('is-cur', Number(d.dataset.case) === i));
   trSet(work.name, false);
   setTimeout(() => { work.name.textContent = next.dataset.name; splitTR(work.name); trSet(work.name, true); }, 170);
-  bubble.setTint(next.dataset.tint, 0.85);
+  if (!MOBILE) bubble.setTint(next.dataset.tint, 0.85);   // mobile: no hole in the product section, so no case tint
   const trOf = (k) => $('[data-tr]', work.cases[k]) || $(`.case-details[data-case="${k}"] [data-tr]`);
   const tr = trOf(i);
   for (let k = 0; k < work.cases.length; k++) { const t = trOf(k); if (t && k !== i) trSet(t, false); }
   setTimeout(() => trSet(tr, true), 300);
   playChat(next);
   filmPause(next);
-  if (MOBILE) filmSequence(i);
+  if (MOBILE) { const gal = $('#work-gal'); gal.scrollTo({ left: i * gal.clientWidth, behavior: 'smooth' }); }
 }
 /* ── SCROLL-SCRUBBED FILM HEROES (02.09.26) ──
    Each case owns a frame sequence (the laptop opening, the phone's 360) drawn
@@ -547,7 +564,7 @@ function filmPause(cur) {
 filmInit();
 filmPreload(0);
 function workActivate(on) {
-  if (on) { setCase(work.idx, true); if (MOBILE) filmSequence(work.idx); }
+  if (on) { setCase(work.idx, true); }
   else { clearTimeout(work.chatTimer); bubble.setTint(null); filmPause(null); }
   if (on) { for (let k = 0; k < 4; k++) filmPreload(k); }
 }
@@ -561,8 +578,8 @@ $('#work-prev').addEventListener('click', () => gotoCase(work.idx - 1));
 $('#work-next').addEventListener('click', () => gotoCase(work.idx + 1));
 function gotoCase(i) {
   i = clamp(i, 0, 3);
-  if (MOBILE) { const gal = $('#work-gal'); gal.scrollTo({ left: i * gal.clientWidth, behavior: 'smooth' }); setCase(i); return; }
   const s = byName.work;
+  if (MOBILE) { scrollTo0(s.top + (i / 4 + 0.03) * (s.h - G.vh)); return; }
   scrollTo0(s.top + (0.06 + i * 0.235 + 0.03) * (s.h - G.vh));
 }
 
@@ -802,9 +819,25 @@ function frame(now) {
     // the owner's phone) is a title the visitor scrolls past unread.
     for (const s of SEC) {
       if (s === byName.hero && !ready) continue;
-      const br = s.blk.getBoundingClientRect();
+      const br = s.el.getBoundingClientRect();
       const vis = Math.min(br.bottom, G.vh) - Math.max(br.top, 0);
       activate(s, vis > 0);
+      if (s.tail) s.tail.classList.toggle('is-active', s.active);
+    }
+    // the pinned rails: the section's progress picks the case / the card
+    {
+      const w = byName.work;
+      if (w.track) {
+        const i = clamp(Math.floor(w.p * 4), 0, 3);
+        if (i !== work.idx) setCase(i);
+        filmScrub(i, clamp(w.p * 4 - i));
+      }
+      const sv = byName.services;
+      const cards = $('.svc-cards');
+      if (sv.track && cards) {
+        const i = clamp(Math.floor(sv.p * 6), 0, 5);
+        if (cards.dataset.idx !== String(i)) { cards.dataset.idx = String(i); cards.scrollTo({ left: i * cards.clientWidth, behavior: 'smooth' }); }
+      }
     }
     // the orb docks in the aperture with the most of itself on screen and scrolls with it
     if (ready) {
@@ -826,6 +859,25 @@ function frame(now) {
       bubble.setHeroPath(clamp(y / (G.vh * 0.9)));
     }
     heroFrame(0);
+    // the word swap: "Autonomous Engineering" leaves upward as the page scrolls and
+    // "Shipping Software" rises into the same slot (each line a beat behind the first)
+    {
+      const p = clamp((y - G.K * 0.3) / (G.vh * 0.4));
+      const L = $$('.hero-words.l .rw > i'), R = $$('.hero-words.r .rw > i');
+      // a short lift with a fade, not a full roll: the two phrases never read as four lines
+      L.forEach((el, k) => {
+        const e = easeInOut(clamp((p - k * 0.08) / 0.92));
+        el.style.transition = p > 0 ? 'none' : '';
+        el.style.transform = p > 0 ? `translateY(${(-45 * e).toFixed(1)}%)` : '';
+        el.style.opacity = p > 0 ? String((1 - e).toFixed(3)) : '';
+      });
+      R.forEach((el, k) => {
+        const e = easeInOut(clamp((p - k * 0.08) / 0.92));
+        el.style.transition = 'none';
+        el.style.transform = `translateY(${(45 * (1 - e)).toFixed(1)}%)`;
+        el.style.opacity = String(e.toFixed(3));
+      });
+    }
     filmTick(now);
     updateServices(byName.services, now);
     updateAbout(byName.about, dt);
@@ -896,6 +948,8 @@ if (PROBE.has('probe')) {
   addEventListener('error', (e) => log(`ERR ${e.message} @${(e.filename || '').split('/').pop()}:${e.lineno}`));
   addEventListener('unhandledrejection', (e) => log(`REJ ${e.reason && e.reason.message ? e.reason.message : e.reason}`));
   log(`probe · ${innerWidth}×${innerHeight} · mobile=${MOBILE} · ua=${navigator.userAgent.slice(0, 60)}`);
+  let n = 0;
+  const tick = setInterval(() => { log(`t+${(n + 1) * 1.5}s scrollY=${Math.round(scrollY)} docH=${document.documentElement.scrollHeight}`); if (++n >= 6) clearInterval(tick); }, 1500);
 }
 function probeAfterLoad() {
   if (!PROBE.has('y') && !PROBE.has('case')) return;
