@@ -640,8 +640,8 @@ html.is-mobile #header .right{display:none}
 html.is-mobile #header .brand{min-width:0;padding:0 calc(var(--k)*.25)}
 html.is-mobile #header .cross{display:none}
 html.is-mobile #header .menu-btn{position:relative;height:100%;width:calc(var(--k)*1.6);display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text-secondary);--grid-font-base:12;letter-spacing:.14em;text-transform:uppercase;font-weight:300}
-html.is-mobile #header .menu-btn i{display:block;width:14px;height:9px;border-top:1px solid currentColor;border-bottom:1px solid currentColor;font-style:normal}
-body.menu-open #header .menu-btn i{border-top-color:transparent;border-bottom-color:transparent;position:relative}
+html.is-mobile #header .menu-btn>i{display:block;width:14px;height:9px;border-top:1px solid currentColor;border-bottom:1px solid currentColor;font-style:normal}
+body.menu-open #header .menu-btn>i{border-top-color:transparent;border-bottom-color:transparent}
 #menu{position:fixed;inset:0;z-index:49;background:var(--background-primary);display:none;flex-direction:column;justify-content:center;padding:0 calc(var(--k)*.5);gap:0}
 body.menu-open #menu{display:flex}
 #menu a{position:relative;height:var(--k);display:flex;align-items:center;padding:0 calc(var(--k)*.4);--grid-font-base:20;font-weight:200;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary)}
@@ -668,9 +668,11 @@ html.is-mobile .hero-lbl.br{grid-row:7;grid-column:4 / -1}
 html.is-mobile .hero-words{display:none}
 /* work */
 html.is-mobile .work-ap{display:none}
-html.is-mobile .work-gal{grid-row:span 5;grid-column:1 / -1;display:block;position:relative}
-html.is-mobile .case{position:absolute;inset:0;display:block}
-html.is-mobile .case:not(.is-cur){display:none}
+/* the four cases are a swipe rail: one full-width slide each, snapping */
+html.is-mobile .work-gal{grid-row:span 5;grid-column:1 / -1;display:flex;position:relative;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+html.is-mobile .work-gal::-webkit-scrollbar{display:none}
+html.is-mobile .case{position:relative;inset:auto;flex:0 0 100%;display:block;opacity:1;pointer-events:auto;scroll-snap-align:start;height:100%}
+html.is-mobile .case.is-out{opacity:1}
 html.is-mobile .hero-one{width:100%;height:100%;padding:calc(var(--k)*.1)}
 html.is-mobile .work-bar{grid-row:auto;grid-column:1 / -1}
 html.is-mobile .work-details{grid-column:1 / -1;grid-row:span 5;position:relative;display:flex;flex-direction:column}
@@ -685,7 +687,15 @@ html.is-mobile .case-details .tech i.hatch{box-shadow:inset 0 1px 0 0 var(--bord
 /* services */
 html.is-mobile .sec[data-section=services] .topbar{height:calc(var(--k)*2);grid-row:span 2}
 html.is-mobile .sec[data-section=services] h2{--grid-font-base:22}
-html.is-mobile .svc-list{grid-row:span 5;grid-column:1 / -1;padding:0 calc(var(--k)*.3)}
+html.is-mobile .svc-list{display:none}
+/* the six capabilities are cards on a swipe rail */
+html.is-mobile .svc-cards{grid-row:span 5;grid-column:1 / -1;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;position:relative}
+html.is-mobile .svc-cards::-webkit-scrollbar{display:none}
+html.is-mobile .svc-card{position:relative;flex:0 0 100%;scroll-snap-align:start;padding:calc(var(--k)*.35) calc(var(--k)*.3);display:flex;flex-direction:column;justify-content:center;gap:calc(var(--k)*.14)}
+html.is-mobile .svc-card .svc-sq{margin-bottom:calc(var(--k)*.2)}
+html.is-mobile .svc-card .ct{--grid-font-base:34;--grid-font-size-step:4;font-weight:200;color:var(--text-primary);line-height:1.1}
+html.is-mobile .svc-card .cd{margin:calc(var(--k)*.12) 0 0;--grid-font-base:14;color:var(--text-tertiary);line-height:1.5}
+html.is-mobile .svc-card .hint{position:absolute;right:calc(var(--k)*.25);bottom:calc(var(--k)*.18);--grid-font-base:10;letter-spacing:.14em;text-transform:uppercase;color:var(--text-quaternary);font-family:var(--font-mono)}
 html.is-mobile .svc-title,html.is-mobile .svc-kind{--grid-font-base:34}
 html.is-mobile .svc-window{grid-row:span 9;grid-column:1 / -1;overflow:visible;display:block;height:auto}
 html.is-mobile .svc-strip{position:static;display:block;transform:none!important;height:auto}
@@ -700,7 +710,11 @@ html.is-mobile .svc-strip>.svc-bubble{width:calc(var(--k)*5);height:calc(var(--k
 html.is-mobile .svc-gears{display:none}
 html.is-mobile .svc-window>.cap{display:none}
 html.is-mobile .svc-test{grid-row:span 4;grid-column:1 / -1}
-html.is-mobile .svc-test .tq{width:100%!important}
+html.is-mobile .svc-test .win{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+html.is-mobile .svc-test .win::-webkit-scrollbar{display:none}
+html.is-mobile .svc-test .track{position:relative;inset:auto;transform:none!important;width:max-content;height:100%}
+html.is-mobile .svc-test .tq{scroll-snap-align:start}
+html.is-mobile .about-ticker .track .mdl{flex-shrink:0}
 /* about */
 html.is-mobile .about-bio{grid-row:span 4;grid-column:1 / -1;padding:calc(var(--k)*.3);--grid-font-base:16}
 html.is-mobile .about-bio p{max-width:none!important}
@@ -729,3 +743,7 @@ html.is-mobile .svc-bubble .cb>i:nth-child(4){box-shadow:inset 0 -1px 0 0 var(--
 /* the hatched filler cells beside the figures are gone (owner, 02.09.26); the 3,024 cell takes the column */
 .svc-stats .h1,.svc-stats .h2{display:none}
 .svc-stats .s2{grid-column:1 / span 4}
+/* WebKit gave the card's kind pill an 8px box: the main size is stated as a flex basis, not a height */
+html.is-mobile .svc-card .svc-kind{display:flex;align-items:center;flex:0 0 calc(var(--k)*1);height:calc(var(--k)*1);min-height:calc(var(--k)*1);width:fit-content;width:-webkit-fit-content;position:relative;overflow:hidden}
+html.is-mobile .svc-card .svc-kind .word{position:relative;display:flex;align-items:center;height:calc(var(--k)*1);white-space:nowrap}
+html.is-mobile .svc-card .svc-kind .word.des{position:absolute;left:0;top:0}

@@ -133,6 +133,35 @@ if (MOBILE) {
   document.body.appendChild(menu);
   btn.addEventListener('click', () => document.body.classList.toggle('menu-open'));
   menu.addEventListener('click', () => document.body.classList.remove('menu-open'));
+  // Product: the rail's scroll position is the case (the owner: "you can't see
+  // all the heroes — it has to scroll sideways").
+  const gal = $('#work-gal');
+  let galRaf = 0;
+  gal.addEventListener('scroll', () => {
+    if (galRaf) return;
+    galRaf = requestAnimationFrame(() => {
+      galRaf = 0;
+      const i = clamp(Math.round(gal.scrollLeft / Math.max(1, gal.clientWidth)), 0, 3);
+      if (i !== work.idx) setCase(i);
+    });
+  }, { passive: true });
+  // Capabilities: one card per service on the same kind of rail.
+  const list = $('.svc-list');
+  const titles = $$('#svc-title .tt').map((t) => t.textContent.trim());
+  const descs = $$('#svc-desc .dd').map((d) => d.textContent.trim());
+  const cards = document.createElement('div');
+  cards.className = 'svc-cards';
+  cards.innerHTML = titles.map((t, i) =>
+    `<div class="svc-card"><div class="cb is-full"><i></i><i></i><i></i><i></i></div>` +
+    `<div class="svc-sq">${titles.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>` +
+    `<div class="ct">${t}</div>` +
+    `<div class="svc-kind${i >= 3 ? ' is-design' : ''}"><span class="bg"></span><span class="word dev">Development</span><span class="word des">Design</span></div>` +
+    `<p class="cd">${descs[i]}</p><span class="hint">${i + 1} / ${titles.length}${i < titles.length - 1 ? ' · swipe' : ''}</span></div>`).join('');
+  list.after(cards);
+  // Testimonials: swipe, with the arrows as a fallback.
+  const win = $('.svc-test .win');
+  $('#test-prev').addEventListener('click', () => win.scrollBy({ left: -win.clientWidth, behavior: 'smooth' }));
+  $('#test-next').addEventListener('click', () => win.scrollBy({ left: win.clientWidth, behavior: 'smooth' }));
 }
 
 function measureSections() {
@@ -515,7 +544,7 @@ $('#work-prev').addEventListener('click', () => gotoCase(work.idx - 1));
 $('#work-next').addEventListener('click', () => gotoCase(work.idx + 1));
 function gotoCase(i) {
   i = clamp(i, 0, 3);
-  if (MOBILE) { setCase(i); return; }
+  if (MOBILE) { const gal = $('#work-gal'); gal.scrollTo({ left: i * gal.clientWidth, behavior: 'smooth' }); setCase(i); return; }
   const s = byName.work;
   scrollTo0(s.top + (0.06 + i * 0.235 + 0.03) * (s.h - G.vh));
 }
@@ -567,11 +596,8 @@ function updateServices(s, now) {
   if (MOBILE) {
     const tw = svc.testTrack.parentElement.clientWidth;
     for (const q of $$('.tq', svc.testTrack)) q.style.width = px(tw);
-    const tx = -clamp(svc.testIdx, 0, 5) * tw;
-    svc.testTrack.style.transform = `translateX(${tx}px)`;
-    svc.testCap.textContent = `translateX: ${Math.round(tx)}px`;
+    svc.testCap.textContent = `scrollLeft: ${Math.round(svc.testTrack.parentElement.scrollLeft)}px`;
     if (!s.active) return;
-    setService(Math.floor(now / 2600) % 6);
     const st = $('#svc-stats').getBoundingClientRect();
     if (st.top < G.vh * 0.85 && st.bottom > 0) runCounters();
     const ar = apertureRect(s);
@@ -753,12 +779,14 @@ function frame(now) {
   if (!cur && y >= SEC[SEC.length - 1].top) cur = SEC[SEC.length - 1];
 
   if (MOBILE) {
-    // activation: a block is live while a third of the viewport (or half of it) shows
+    // activation: a block is live from the first pixel on screen to the last —
+    // a title that only appeared once a third of the viewport was in (02.09.26,
+    // the owner's phone) is a title the visitor scrolls past unread.
     for (const s of SEC) {
       if (s === byName.hero && !ready) continue;
       const br = s.blk.getBoundingClientRect();
       const vis = Math.min(br.bottom, G.vh) - Math.max(br.top, 0);
-      activate(s, vis > Math.min(G.vh * 0.3, br.height * 0.5));
+      activate(s, vis > 0);
     }
     // the orb docks in the aperture with the most of itself on screen and scrolls with it
     if (ready) {
