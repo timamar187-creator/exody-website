@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkfq7g0';
-import { createRouterHero } from './router-hero.js?v=mtkfq7g0';
+import { createBubble } from './bubble.js?v=mtkg7pxx';
+import { createRouterHero } from './router-hero.js?v=mtkg7pxx';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -164,6 +164,7 @@ if (MOBILE) {
   const descs = $$('#svc-desc .dd').map((d) => d.textContent.trim());
   const cards = document.createElement('div');
   cards.className = 'svc-cards';
+  cards.dataset.lane = '';
   cards.innerHTML = titles.map((t, i) =>
     `<div class="svc-card"><div class="cb is-full"><i></i><i></i><i></i><i></i></div>` +
     `<div class="svc-sq">${titles.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>` +
@@ -353,6 +354,34 @@ function updateMask() {
   c.style.webkitMaskRepeat = c.style.maskRepeat = 'no-repeat';
 }
 
+// ---------------------------------------------------------------- one line per boundary
+// Two touching cells both drew their shared edge — A's right at x−1, B's left at x — and the
+// pair read as a thick line (owner, 02.09.26). Measured from the live rects on every layout:
+// a cell whose right/bottom touches a neighbour gives that edge up (collapse-r / collapse-b),
+// on desktop and mobile alike. Siblings inside a horizontal scroller keep their edges: the
+// neighbour that would draw them is off screen.
+function dedupeBrackets() {
+  const cbs = $$('main .cb, #header .cb').filter((c) => c.id !== 'hero-cb' && !c.classList.contains('is-corner'));
+  const items = [];
+  for (const c of cbs) {
+    if (c.dataset.autoR) { c.classList.remove('collapse-r'); delete c.dataset.autoR; }
+    if (c.dataset.autoB) { c.classList.remove('collapse-b'); delete c.dataset.autoB; }
+    const r = c.getBoundingClientRect();
+    if (r.width < 4 || r.height < 4) continue;
+    const owner = c.parentElement, lane = owner.parentElement && owner.parentElement.hasAttribute('data-lane') ? owner.parentElement : null;
+    items.push({ c, l: r.left, t: r.top, r: r.right, b: r.bottom, lane });
+  }
+  for (const a of items) {
+    for (const b of items) {
+      if (a === b || (a.lane && a.lane === b.lane)) continue;
+      const vov = Math.min(a.b, b.b) - Math.max(a.t, b.t);
+      const hov = Math.min(a.r, b.r) - Math.max(a.l, b.l);
+      if (vov > 4 && Math.abs(a.r - b.l) <= 1.5 && !a.c.classList.contains('collapse-r')) { a.c.classList.add('collapse-r'); a.c.dataset.autoR = '1'; }
+      if (hov > 4 && Math.abs(a.b - b.t) <= 1.5 && !a.c.classList.contains('collapse-b')) { a.c.classList.add('collapse-b'); a.c.dataset.autoB = '1'; }
+    }
+  }
+}
+
 // ---------------------------------------------------------------- corners + activation
 function cornersFull(s, on) {
   for (const cb of s.cbs) cb.classList.toggle('is-full', on);
@@ -360,6 +389,7 @@ function cornersFull(s, on) {
 function activate(s, on) {
   if (s.active === on) return;
   s.active = on;
+  if (on) { clearTimeout(dedupeBrackets._a); dedupeBrackets._a = setTimeout(dedupeBrackets, 1100); }
   s.blk.classList.toggle('is-active', on);
   cornersFull(s, on);
   for (const cap of $$('.cap', s.el)) cap.classList.toggle('is-on', on);
@@ -422,9 +452,10 @@ function updateConnector() {
     cn.line.style.height = px(M);
     cn.line.style.clipPath = clip;
     cn.top.style.top = px(E);
-    cn.bottom.style.top = px(J);
+    // mobile: one node in the middle of the gap, the same dashed run above it and below it
+    cn.bottom.style.top = px(MOBILE ? (E + J) / 2 : J);
     const nodeOn = MOBILE || (t > 0.01 && t < 0.99) ? 1 : 0;
-    cn.top.style.opacity = nodeOn;
+    cn.top.style.opacity = MOBILE ? 0 : nodeOn;
     cn.bottom.style.opacity = nodeOn;
     cn.top.firstElementChild.style.clipPath = MOBILE ? 'inset(25%)' : `inset(${(1 - t) * 50}%)`;
     cn.bottom.firstElementChild.style.clipPath = MOBILE ? 'inset(25%)' : `inset(${t * 50}%)`;
@@ -792,6 +823,8 @@ async function runLoader() {
   setTimeout(() => { loader.remove(); }, 900);
   document.body.classList.add('is-ready');
   ready = true;
+  dedupeBrackets();
+  setTimeout(dedupeBrackets, 1200);
   $$('#header .cb').forEach((c) => c.classList.add('is-full'));
   // hero intro: corners open, labels & words rise
   const t1 = performance.now();
@@ -873,7 +906,9 @@ function frame(now) {
     // the word swap: "Autonomous Engineering" leaves upward as the page scrolls and
     // "Shipping Software" rises into the same slot (each line a beat behind the first)
     {
-      const p = clamp((y - G.K * 0.3) / (G.vh * 0.4));
+      // a phone scrolls the words away within ~200px: the swap has to land within the first
+      // 40px of travel or the second phrase is never seen (owner, 02.09.26)
+      const p = MOBILE ? clamp((y - 6) / (G.K * 0.6)) : clamp((y - G.K * 0.3) / (G.vh * 0.4));
       const L = $$('.hero-words.l .rw > i'), R = $$('.hero-words.r .rw > i');
       // a short lift with a fade, not a full roll: the two phrases never read as four lines
       L.forEach((el, k) => {
@@ -988,3 +1023,4 @@ addEventListener('resize', () => { layoutGrid(); measureSections(); buildRuler()
 addEventListener('load', () => { measureSections(); });
 $('#brand')?.addEventListener('click', (e) => { e.preventDefault(); scrollTo0(0); });
 boot();
+window.addEventListener('resize', () => { clearTimeout(dedupeBrackets._t); dedupeBrackets._t = setTimeout(dedupeBrackets, 200); });
