@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkhm0et';
-import { createRouterHero } from './router-hero.js?v=mtkhm0et';
+import { createBubble } from './bubble.js?v=mtki84vs';
+import { createRouterHero } from './router-hero.js?v=mtki84vs';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -354,40 +354,6 @@ function updateMask() {
   c.style.webkitMaskRepeat = c.style.maskRepeat = 'no-repeat';
 }
 
-// ---------------------------------------------------------------- one line per boundary
-// Two touching cells both drew their shared edge — A's right at x−1, B's left at x — and the
-// pair read as a thick line (owner, 02.09.26). Measured from the live rects on every layout:
-// a cell whose right/bottom touches a neighbour gives that edge up (collapse-r / collapse-b),
-// on desktop and mobile alike. Siblings inside a horizontal scroller keep their edges: the
-// neighbour that would draw them is off screen.
-function dedupeBrackets() {
-  const cbs = $$('main .cb, #header .cb').filter((c) => c.id !== 'hero-cb' && !c.classList.contains('is-corner'));
-  const items = [];
-  for (const c of cbs) {
-    const owner = c.parentElement, lane = owner.parentElement && owner.parentElement.hasAttribute('data-lane') ? owner.parentElement : null;
-    // ordinary cells: the classes are derived here, every time (a hand-placed collapse-r on a
-    // cell that has no right neighbour in THIS layout — the phone's stacked stats — would
-    // otherwise leave the edge open)
-    if (!lane) { c.classList.remove('collapse-r', 'collapse-b', 'collapse-l', 'collapse-t'); }
-    const r = c.getBoundingClientRect();
-    if (r.width < 4 || r.height < 4) continue;
-    // an aperture's frame is on from the first paint, before its section activates: it keeps
-    // all four edges and the neighbour gives up the shared one instead (the hole used to
-    // show three sides until the cell beside it lit up — owner, 02.09.26)
-    items.push({ c, l: r.left, t: r.top, r: r.right, b: r.bottom, lane, always: Boolean(owner.closest('[data-aperture]')) });
-  }
-  for (const a of items) {
-    if (a.lane) continue;
-    for (const b of items) {
-      if (a === b || b.lane) continue;
-      const vov = Math.min(a.b, b.b) - Math.max(a.t, b.t);
-      const hov = Math.min(a.r, b.r) - Math.max(a.l, b.l);
-      if (vov > 4 && Math.abs(a.r - b.l) <= 1.5) { if (a.always && !b.always) b.c.classList.add('collapse-l'); else a.c.classList.add('collapse-r'); }
-      if (hov > 4 && Math.abs(a.b - b.t) <= 1.5) { if (a.always && !b.always) b.c.classList.add('collapse-t'); else a.c.classList.add('collapse-b'); }
-    }
-  }
-}
-
 // ---------------------------------------------------------------- corners + activation
 function cornersFull(s, on) {
   for (const cb of s.cbs) cb.classList.toggle('is-full', on);
@@ -395,7 +361,6 @@ function cornersFull(s, on) {
 function activate(s, on) {
   if (s.active === on) return;
   s.active = on;
-  if (on) { clearTimeout(dedupeBrackets._a); dedupeBrackets._a = setTimeout(dedupeBrackets, 1100); }
   s.blk.classList.toggle('is-active', on);
   cornersFull(s, on);
   for (const cap of $$('.cap', s.el)) cap.classList.toggle('is-on', on);
@@ -832,8 +797,6 @@ async function runLoader() {
   setTimeout(() => { loader.remove(); }, 900);
   document.body.classList.add('is-ready');
   ready = true;
-  dedupeBrackets();
-  setTimeout(dedupeBrackets, 1200);
   $$('#header .cb').forEach((c) => c.classList.add('is-full'));
   // hero intro: corners open, labels & words rise
   const t1 = performance.now();
@@ -1039,4 +1002,3 @@ addEventListener('resize', () => { layoutGrid(); measureSections(); buildRuler()
 addEventListener('load', () => { measureSections(); });
 $('#brand')?.addEventListener('click', (e) => { e.preventDefault(); scrollTo0(0); });
 boot();
-window.addEventListener('resize', () => { clearTimeout(dedupeBrackets._t); dedupeBrackets._t = setTimeout(dedupeBrackets, 200); });

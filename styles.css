@@ -93,7 +93,9 @@ h3{--grid-font-base:24;--grid-font-size-step:4;font-weight:300;text-transform:lo
 .b-not-t{box-shadow:inset 0 -1px 0 0 var(--border-primary),inset 1px 0 0 0 var(--border-primary),inset -1px 0 0 0 var(--border-primary)}
 
 /* ---------- cornered border (4 quadrants, each clipped to an L) ---------- */
-.cb{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;pointer-events:none;
+/* every bracket box starts 1px above/left of its cell: touching cells draw their shared edge on
+   the SAME pixel, so no boundary is ever doubled and none depends on a neighbour (03.09.26) */
+.cb{position:absolute;inset:-1px 0 0 -1px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;pointer-events:none;
   --cl:var(--corner-length);--cd:.6s}
 .cb>i{display:block}
 .cb>i:nth-child(1){box-shadow:inset 0 1px 0 0 var(--border-primary),inset 1px 0 0 0 var(--border-primary);clip-path:inset(0 100% 100% 0);transition:clip-path var(--cd) ease}
@@ -266,7 +268,7 @@ body.is-ready #header .cell{opacity:1}
 .case.is-cur{opacity:1;pointer-events:auto}
 .case .desk{padding:calc(var(--k)*.12) calc(var(--k)*.1) 0 calc(var(--k)*.1);display:grid;grid-template-rows:auto 1fr;gap:calc(var(--k)*.15)}
 .case .mob{padding:calc(var(--k)*.12) calc(var(--k)*.1) 0 0}
-.case .tech{position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:0;overflow:hidden}
+.case .tech{position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:0}
 .case .tech>i{width:100%;height:var(--k);flex:none;display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);position:relative;box-shadow:inset 0 -1px 0 0 var(--border-primary)}
 .case .tech>i svg{width:42%;height:42%}
 .case .tech>i.hatch{box-shadow:none}
@@ -339,7 +341,7 @@ body.is-ready #header .cell{opacity:1}
 .svc-kind.is-design .word.dev{transform:translateY(-100%)}
 .svc-kind.is-design .word.des{transform:translateY(0)}
 .svc-desc{margin-top:calc(var(--k)*.3);--grid-font-base:14;color:var(--text-tertiary);min-height:2.6em;line-height:1.5}
-.svc-window{grid-row:2 / span 5;grid-column:calc(var(--svc-list-s,8) + 1) / span calc(var(--cols) - var(--svc-list-s,8));position:relative;overflow:hidden}
+.svc-window{grid-row:2 / span 5;grid-column:calc(var(--svc-list-s,8) + 1) / span calc(var(--cols) - var(--svc-list-s,8));position:relative;clip-path:inset(-1px 0 0 -1px)}
 .svc-strip{position:absolute;top:0;left:0;height:100%;display:flex;will-change:transform}
 .svc-strip>div{height:100%;flex-shrink:0;position:relative}
 .svc-stats{width:calc(var(--k)*var(--span,7));display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(5,var(--k))}
@@ -365,7 +367,7 @@ body.is-ready #header .cell{opacity:1}
 .svc-test .nav button{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-tertiary);position:relative}
 .svc-test .nav button svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.2}
 .svc-test .nav button:hover{background:color-mix(in oklab,var(--background-inverse) 10%,transparent)}
-.svc-test .win{flex:1;position:relative;overflow:hidden;background:none;border:0;aspect-ratio:auto;display:block;font-family:var(--font-sans);--grid-font-base:16}
+.svc-test .win{flex:1;position:relative;background:none;border:0;aspect-ratio:auto;display:block;font-family:var(--font-sans);--grid-font-base:16}
 .svc-test .track{position:absolute;inset:0;display:flex;will-change:transform;transition:transform .8s var(--ease-house);letter-spacing:0}
 .svc-test .tq{position:relative;flex-shrink:0;height:100%;padding:calc(var(--k)*.22) calc(var(--k)*.3);display:flex;flex-direction:column;justify-content:center;gap:.6em}
 .svc-test .tq p{margin:0;font-style:italic;--grid-font-base:13;color:var(--text-tertiary);line-height:1.5}
@@ -375,10 +377,11 @@ body.is-ready #header .cell{opacity:1}
 /* ---------- ABOUT ---------- */
 .about-bio{position:relative;grid-row:2 / span 5;grid-column:1 / span 8;display:flex;align-items:center;padding:0 calc(var(--k)*.5) 0 calc(var(--k)*1.2);--grid-font-base:18;line-height:1.5;color:var(--text-primary);font-weight:200}
 .about-ap{position:relative;grid-row:2 / span 5;grid-column:9 / span var(--about-ap-s,6)}
-.about-ticker{grid-row:7 / span 2;grid-column:1 / span calc(var(--about-img-c,15) - 1);position:relative;overflow:hidden;display:flex;align-items:center}
+.about-ticker{grid-row:7 / span 2;grid-column:1 / span calc(var(--about-img-c,15) - 1);position:relative;display:flex;align-items:center}
+.about-ticker .clip,.svc-test .win .clip{position:absolute;inset:0;overflow:hidden;display:flex;align-items:center}
 .about-ticker .track{display:flex;align-items:center;gap:calc(var(--k)*1.35);padding-left:calc(var(--k)*.6);will-change:transform;white-space:nowrap}
 .about-ticker .track img{height:calc(var(--k)*.42);width:auto;opacity:.5;filter:invert(1) grayscale(1)}
-.about-img{grid-row:2 / span 7;grid-column:var(--about-img-c,15) / span calc(var(--cols) - var(--about-img-c,15) + 1);position:relative;overflow:hidden}
+.about-img{grid-row:2 / span 7;grid-column:var(--about-img-c,15) / span calc(var(--cols) - var(--about-img-c,15) + 1);position:relative}
 .about-img .frame{position:absolute;inset:calc(var(--k)*.12);border:1px solid var(--border-primary);background:#141416;overflow:hidden}
 .about-img .win{position:absolute;inset:0;border:0;aspect-ratio:auto;height:100%}
 .about-img .term{position:absolute;inset:0;padding:calc(var(--k)*.4);font-family:var(--font-mono);--grid-font-base:11;line-height:1.7;color:var(--text-tertiary);display:flex;flex-direction:column;justify-content:flex-end}
@@ -829,3 +832,4 @@ html.is-mobile #connector .node i{background:#7a7a7a}
    collapse-r (a neighbour draws it on desktop) has no neighbour here. The Product visual and its
    text/tech rows keep their brackets; the "open release" button leaves the bar. */
 html.is-mobile .work-bar a.btn[aria-label="Latest release"]{display:none}
+html.is-mobile .work-gal,html.is-mobile .svc-cards{padding:1px 0 0 1px}
