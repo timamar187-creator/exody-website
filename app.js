@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkg7pxx';
-import { createRouterHero } from './router-hero.js?v=mtkg7pxx';
+import { createBubble } from './bubble.js?v=mtkgwzre';
+import { createRouterHero } from './router-hero.js?v=mtkgwzre';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -364,20 +364,23 @@ function dedupeBrackets() {
   const cbs = $$('main .cb, #header .cb').filter((c) => c.id !== 'hero-cb' && !c.classList.contains('is-corner'));
   const items = [];
   for (const c of cbs) {
-    if (c.dataset.autoR) { c.classList.remove('collapse-r'); delete c.dataset.autoR; }
-    if (c.dataset.autoB) { c.classList.remove('collapse-b'); delete c.dataset.autoB; }
+    const owner = c.parentElement, lane = owner.parentElement && owner.parentElement.hasAttribute('data-lane') ? owner.parentElement : null;
+    // ordinary cells: the classes are derived here, every time (a hand-placed collapse-r on a
+    // cell that has no right neighbour in THIS layout — the phone's stacked stats — would
+    // otherwise leave the edge open)
+    if (!lane) { c.classList.remove('collapse-r', 'collapse-b'); }
     const r = c.getBoundingClientRect();
     if (r.width < 4 || r.height < 4) continue;
-    const owner = c.parentElement, lane = owner.parentElement && owner.parentElement.hasAttribute('data-lane') ? owner.parentElement : null;
     items.push({ c, l: r.left, t: r.top, r: r.right, b: r.bottom, lane });
   }
   for (const a of items) {
+    if (a.lane) continue;
     for (const b of items) {
-      if (a === b || (a.lane && a.lane === b.lane)) continue;
+      if (a === b || b.lane) continue;
       const vov = Math.min(a.b, b.b) - Math.max(a.t, b.t);
       const hov = Math.min(a.r, b.r) - Math.max(a.l, b.l);
-      if (vov > 4 && Math.abs(a.r - b.l) <= 1.5 && !a.c.classList.contains('collapse-r')) { a.c.classList.add('collapse-r'); a.c.dataset.autoR = '1'; }
-      if (hov > 4 && Math.abs(a.b - b.t) <= 1.5 && !a.c.classList.contains('collapse-b')) { a.c.classList.add('collapse-b'); a.c.dataset.autoB = '1'; }
+      if (vov > 4 && Math.abs(a.r - b.l) <= 1.5) a.c.classList.add('collapse-r');
+      if (hov > 4 && Math.abs(a.b - b.t) <= 1.5) a.c.classList.add('collapse-b');
     }
   }
 }
@@ -786,8 +789,9 @@ $$('[data-goto]').forEach((a) => a.addEventListener('click', (e) => {
 // ---------------------------------------------------------------- header + hover corners
 {
   $$('#header .nav, .cta, .work-bar .btn, .svc-test .nav button, .ft-bar .cell, .ft-bar .send').forEach((b) => {
-    b.addEventListener('mouseenter', () => b.querySelector('.cb')?.classList.add('is-full'));
-    b.addEventListener('mouseleave', () => { if (!b.closest('.blk')?.classList.contains('is-active')) b.querySelector('.cb')?.classList.remove('is-full'); });
+    b.addEventListener('mouseenter', () => { const cb = b.querySelector('.cb'); if (!cb) return; b.dataset.cbWasFull = cb.classList.contains('is-full') ? '1' : ''; cb.classList.add('is-full'); });
+    // a frame that was there before the hover (the header nav, an active section) stays
+    b.addEventListener('mouseleave', () => { if (b.dataset.cbWasFull) return; if (!b.closest('.blk')?.classList.contains('is-active')) b.querySelector('.cb')?.classList.remove('is-full'); });
   });
 }
 
