@@ -33,6 +33,7 @@ const VERT = /* glsl */ `
   uniform float uEntrance;
 
   attribute vec4 aRand;
+  attribute vec3 aNormal;
 
   varying float vDepth;
   varying float vExplode;
@@ -216,7 +217,8 @@ const VERT = /* glsl */ `
     float time = uTime;
     vec3 scaledPosition = position * uScale * uEntrance;
     float particleRadius = length(scaledPosition);
-    vec3 n = normalize(scaledPosition + vec3(0.0001));
+    // the surface normal of the point (radial on a sphere, the face normal on the logo)
+    vec3 n = normalize(aNormal + vec3(0.0001));
     vec3 uPos = scaledPosition;
 
     float noise = 0.0;
@@ -230,7 +232,10 @@ const VERT = /* glsl */ `
       if (uTurbulenceTangential > 0.5) curlPos -= n * dot(curlPos, n);
       uPos += curlPos * uCurlNoiseAmount * uScale * 0.35;
       if (uLockShell > 0.001) {
-        vec3 locked = normalize(uPos) * particleRadius;
+        // shell lock: keep the point on its surface — the displacement slides along the
+        // tangent plane instead of leaving it (radius-locking only made sense on a sphere)
+        vec3 disp = uPos - scaledPosition;
+        vec3 locked = uPos - n * dot(disp, n);
         uPos = mix(uPos, locked, clamp(uLockShell, 0.0, 1.0));
       }
     }
@@ -348,7 +353,88 @@ function nested(n) {
   out.set(inner, outerN * 3);
   return out;
 }
-const LAYOUTS = { sphere: fibonacci, sphereRandom: (n) => jittered(n, 4242, 1), nested };
+/** The Exody mark (the header logo path, 1024 box, straight segments only) as a 3D body:
+ *  extruded with a soft bevel, its surface sampled area-weighted so the particle skin reads as
+ *  a solid logo. Returns positions + surface normals; width spans x∈[-1,1] like the sphere. */
+const LOGO_D = 'M 215.8 252.3 L 384.1 507.8 L 383.5 517.5 L 216.7 772.0 L 444.9 772.0 L 585.9 566.0 L 593.1 566.0 L 596.7 570.2 L 681.8 690.4 L 690.9 704.1 L 690.9 711.2 L 608.7 711.5 L 568.4 653.0 L 534.3 704.7 L 580.1 772.0 L 807.9 771.7 L 629.2 518.2 L 627.2 508.4 L 808.2 252.0 L 581.4 252.0 L 533.6 320.6 L 568.4 370.9 L 608.7 312.4 L 690.9 312.8 L 690.9 319.9 L 688.3 323.8 L 593.1 458.7 L 585.9 458.7 L 583.0 455.1 L 443.6 252.0 Z M 329.8 312.4 L 415.0 312.4 L 551.2 509.1 L 550.5 516.9 L 416.3 711.5 L 330.5 711.5 L 330.2 704.1 L 435.5 542.9 L 490.4 541.9 L 510.9 511.7 L 489.7 482.1 L 436.4 482.1 L 434.8 480.5 L 329.5 319.9 Z';
+function logoPolygons() {
+  const polys = [];
+  let cur = null;
+  const toks = LOGO_D.trim().split(/\s+/);
+  for (let i = 0; i < toks.length; i++) {
+    const t = toks[i];
+    if (t === 'M' || t === 'L') {
+      const x = parseFloat(toks[++i]), y = parseFloat(toks[++i]);
+      if (t === 'M') { cur = []; polys.push(cur); }
+      cur.push([x, y]);
+    } else if (t === 'Z') { cur = null; }
+  }
+  return polys;
+}
+const logoCache = new Map();
+function logoLayout(n) {
+  if (logoCache.has(n)) return logoCache.get(n);
+  const polys = logoPolygons();
+  // centre + scale in the 2D plane first (y flipped: SVG y runs down)
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const poly of polys) for (const [x, y] of poly) { minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y); }
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2, k = 2 / (maxX - minX);
+  const v2 = (poly) => poly.map(([x, y]) => new THREE.Vector2((x - cx) * k, -(y - cy) * k));
+  const shape = new THREE.Shape(v2(polys[0]));
+  for (let i = 1; i < polys.length; i++) shape.holes.push(new THREE.Path(v2(polys[i])));
+  const depth = 0.34;
+  const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.03, bevelSegments: 2, curveSegments: 1 });
+  geo.translate(0, 0, -depth / 2);
+  const pos = geo.attributes.position.array;
+  const tri = pos.length / 9;
+  const areas = new Float64Array(tri);
+  let total = 0;
+  const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), AB = new THREE.Vector3(), AC = new THREE.Vector3(), N = new THREE.Vector3();
+  const faceN = new Float32Array(tri * 3);
+  for (let t = 0; t < tri; t++) {
+    A.fromArray(pos, t * 9); B.fromArray(pos, t * 9 + 3); C.fromArray(pos, t * 9 + 6);
+    AB.subVectors(B, A); AC.subVectors(C, A); N.crossVectors(AB, AC);
+    const area = N.length() / 2;
+    areas[t] = area; total += area;
+    N.normalize(); faceN[t * 3] = N.x; faceN[t * 3 + 1] = N.y; faceN[t * 3 + 2] = N.z;
+  }
+  const cdf = new Float64Array(tri);
+  let acc = 0;
+  for (let t = 0; t < tri; t++) { acc += areas[t] / total; cdf[t] = acc; }
+  const rnd = mulberry(2026);
+  const out = new Float32Array(n * 3), nrm = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const r = rnd();
+    let lo = 0, hi = tri - 1;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (cdf[mid] < r) lo = mid + 1; else hi = mid; }
+    const t = lo;
+    let u = rnd(), v = rnd();
+    if (u + v > 1) { u = 1 - u; v = 1 - v; }
+    const w = 1 - u - v;
+    A.fromArray(pos, t * 9); B.fromArray(pos, t * 9 + 3); C.fromArray(pos, t * 9 + 6);
+    out[i * 3] = A.x * w + B.x * u + C.x * v;
+    out[i * 3 + 1] = A.y * w + B.y * u + C.y * v;
+    out[i * 3 + 2] = A.z * w + B.z * u + C.z * v;
+    nrm[i * 3] = faceN[t * 3]; nrm[i * 3 + 1] = faceN[t * 3 + 1]; nrm[i * 3 + 2] = faceN[t * 3 + 2];
+  }
+  geo.dispose();
+  const layout = { positions: out, normals: nrm };
+  logoCache.set(n, layout);
+  return layout;
+}
+function radialNormals(positions) {
+  const out = new Float32Array(positions.length);
+  for (let i = 0; i < positions.length; i += 3) {
+    const l = Math.hypot(positions[i], positions[i + 1], positions[i + 2]) || 1;
+    out[i] = positions[i] / l; out[i + 1] = positions[i + 1] / l; out[i + 2] = positions[i + 2] / l;
+  }
+  return out;
+}
+const LAYOUTS = { sphere: fibonacci, sphereRandom: (n) => jittered(n, 4242, 1), nested, logo: (n) => logoLayout(n).positions };
+/** Surface normals per layout — the logo carries its own, the spheres are radial. */
+function layoutNormals(name, positions, n) {
+  return name === 'logo' ? logoLayout(n).normals : radialNormals(positions);
+}
 
 const WOBBLE = { ORGANIC: 0, SPIKY: 1, SPIKE_BURST: 3, CORONA: 4, NEBULA: 9 };
 
@@ -359,11 +445,11 @@ const HERO_PATH = [
 ];
 
 const SECTION_STATES = {
-  hero: { shape: 'sphere', wobble: 0.56, wobbleType: WOBBLE.NEBULA, curl: 0, curlFrequency: 0.05, lockShell: 0, tangential: 0, rotation: 0.3, scale: 1 },
-  work: { shape: 'sphere', wobble: 0, wobbleType: WOBBLE.ORGANIC, curl: 0.98, curlFrequency: 0.36, lockShell: 1, tangential: 1, rotation: 0.4, scale: 1 },
-  services: { shape: 'sphere', wobble: 1, wobbleType: WOBBLE.SPIKE_BURST, curl: 0, curlFrequency: 0.05, lockShell: 0, tangential: 0, rotation: 0.4, scale: 1 },
-  about: { shape: 'sphere', wobble: 1, wobbleType: WOBBLE.CORONA, curl: 0, curlFrequency: 0.05, lockShell: 0, tangential: 0, rotation: 0.4, scale: 1 },
-  footer: { shape: 'nested', wobble: 0, wobbleType: WOBBLE.ORGANIC, curl: 0, curlFrequency: 0.05, lockShell: 0, tangential: 0, rotation: 0.4, scale: 1.15 },
+  hero: { shape: 'logo', wobble: 0.56, wobbleType: WOBBLE.NEBULA, curl: 0, curlFrequency: 0.05, lockShell: 0, tangential: 0, rotation: 0.3, scale: 1 },
+  work: { shape: 'logo', wobble: 0, wobbleType: WOBBLE.ORGANIC, curl: 0.5, curlFrequency: 0.36, lockShell: 1, tangential: 1, rotation: 0.4, scale: 1 },
+  services: { shape: 'logo', wobble: 1, wobbleType: WOBBLE.SPIKE_BURST, curl: 0, curlFrequency: 0.05, lockShell: 0, tangential: 0, rotation: 0.4, scale: 1 },
+  about: { shape: 'logo', wobble: 1, wobbleType: WOBBLE.CORONA, curl: 0, curlFrequency: 0.05, lockShell: 0, tangential: 0, rotation: 0.4, scale: 1 },
+  footer: { shape: 'logo', wobble: 0, wobbleType: WOBBLE.ORGANIC, curl: 0, curlFrequency: 0.05, lockShell: 0, tangential: 0, rotation: 0.4, scale: 1.15 },
 };
 
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -382,8 +468,10 @@ export function createBubble(canvas, opts = {}) {
   const VISIBLE_H = 2 * Math.tan((50 * Math.PI) / 360) * 8; // world units spanning the viewport height
 
   const geometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(fibonacci(COUNT));
+  const positions = new Float32Array(LAYOUTS.logo(COUNT));
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const normals = new Float32Array(layoutNormals('logo', positions, COUNT));
+  geometry.setAttribute('aNormal', new THREE.BufferAttribute(normals, 3));
   const rand = new Float32Array(COUNT * 4);
   const rnd = mulberry(1337);
   for (let i = 0; i < COUNT; i++) {
@@ -449,7 +537,7 @@ export function createBubble(canvas, opts = {}) {
   let tintTarget = null, tintMixTarget = 0;
   let colorMixTarget = 0, rimTarget = 0;
   let morph = null;          // {from, to, t, speed}
-  let currentShape = 'sphere';
+  let currentShape = 'logo';
   let rotY = 0;
   let mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   let glide = null;          // {from:{x,y,px}, to, t, dur}
@@ -472,9 +560,11 @@ export function createBubble(canvas, opts = {}) {
 
   function applyShape(name, speed = 1.5) {
     if (name === currentShape && !morph) return;
-    const to = (LAYOUTS[name] || LAYOUTS.sphere)(COUNT);
+    const to = (LAYOUTS[name] || LAYOUTS.logo)(COUNT);
+    const toN = layoutNormals(name in LAYOUTS ? name : 'logo', to, COUNT);
     const from = new Float32Array(geometry.attributes.position.array);
-    morph = { from, to, t: 0, speed };
+    const fromN = new Float32Array(geometry.attributes.aNormal.array);
+    morph = { from, to, fromN, toN, t: 0, speed };
     currentShape = name;
   }
 
@@ -572,10 +662,11 @@ export function createBubble(canvas, opts = {}) {
       if (morph) {
         morph.t = Math.min(1, morph.t + dt * morph.speed);
         const k = morph.t < 1 ? 1 - Math.pow(1 - morph.t, 3) : 1;
-        const arr = geometry.attributes.position.array;
-        const { from, to } = morph;
-        for (let i = 0; i < arr.length; i++) arr[i] = from[i] + (to[i] - from[i]) * k;
+        const arr = geometry.attributes.position.array, narr = geometry.attributes.aNormal.array;
+        const { from, to, fromN, toN } = morph;
+        for (let i = 0; i < arr.length; i++) { arr[i] = from[i] + (to[i] - from[i]) * k; narr[i] = fromN[i] + (toN[i] - fromN[i]) * k; }
         geometry.attributes.position.needsUpdate = true;
+        geometry.attributes.aNormal.needsUpdate = true;
         if (morph.t >= 1) morph = null;
       }
 
@@ -618,7 +709,7 @@ export function createBubble(canvas, opts = {}) {
       rotY += dt * state.rotation * 0.45 + dt * explodeShown * 1.2;
       mouse.x = lerp(mouse.x, mouse.tx, 0.05);
       mouse.y = lerp(mouse.y, mouse.ty, 0.05);
-      group.rotation.y = rotY + mouse.x * 0.2;
+      group.rotation.y = Math.sin(rotY) * 0.45 + mouse.x * 0.2;
       group.rotation.x = mouse.y * 0.12;
 
       renderer.render(scene, camera);

@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkig5lf';
-import { createRouterHero } from './router-hero.js?v=mtkig5lf';
+import { createBubble } from './bubble.js?v=mtkj8cuh';
+import { createRouterHero } from './router-hero.js?v=mtkj8cuh';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
