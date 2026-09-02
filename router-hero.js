@@ -26,8 +26,8 @@ const TASKS = [
 ];
 // Two compositions: the full switchboard, and a compact one for narrow hosts
 // (the mobile work box), where the same drawing would shrink its type to 4px.
-const FULL = { W: 1000, H: 750, CORE: { x: 500, y: 375, r: 66 }, CHIP: { x: 62, w: 232, h: 56, gap: 82, slots: 5, top: 140, center: 2 },
-  NODE: { x: 700, w: 240, h: 74 }, F: 1, models: true, header: true, footerRight: true, chipsLabel: true };
+const FULL = { W: 1000, H: 545, CORE: { x: 500, y: 262, r: 60 }, CHIP: { x: 62, w: 232, h: 52, gap: 66, slots: 5, top: 104, center: 2 },
+  NODE: { x: 700, w: 240, h: 66 }, F: 1, models: true, header: true, footerRight: true, chipsLabel: true };
 const COMPACT = { W: 620, H: 500, CORE: { x: 318, y: 248, r: 46 }, CHIP: { x: 22, w: 188, h: 50, gap: 0, slots: 1, top: 223, center: 0 },
   NODE: { x: 418, w: 180, h: 58 }, F: 1.22, models: false, header: true, footerRight: false, chipsLabel: false };
 let L = FULL;

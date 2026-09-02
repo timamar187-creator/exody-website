@@ -253,6 +253,7 @@ body.is-ready #header .cell{opacity:1}
 .work-bar .btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.2}
 .work-bar .name{flex:1;display:flex;align-items:center;justify-content:center;--grid-font-base:20;font-weight:200;position:relative;overflow:hidden}
 .work-bar .name .rw{height:1.4em}
+.case>.cb{display:none}
 .case{position:absolute;inset:0;display:grid;grid-template-columns:1fr var(--k) calc(var(--k)*4);opacity:0;transition:opacity .35s var(--ease-std);pointer-events:none}
 .case.is-cur{opacity:1;pointer-events:auto}
 .case .desk{padding:calc(var(--k)*.12) calc(var(--k)*.1) 0 calc(var(--k)*.1);display:grid;grid-template-rows:auto 1fr;gap:calc(var(--k)*.15)}
@@ -261,6 +262,7 @@ body.is-ready #header .cell{opacity:1}
 .case .tech i{width:100%;height:var(--k);flex:none;display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);position:relative;box-shadow:inset 0 -1px 0 0 var(--border-primary)}
 .case .tech i svg{width:42%;height:42%}
 .case .tech i.hatch{box-shadow:none}
+.case .tech i.hatch svg{width:100%;height:100%;max-width:none;max-height:none}
 .case .txt{position:relative;padding:calc(var(--k)*.2) calc(var(--k)*.1) 0 calc(var(--k)*.25);color:var(--text-tertiary);--grid-font-base:14;line-height:1.5;font-weight:200}
 .case .txt .p+.p{margin-top:.9em}
 .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--k)*.2);align-items:stretch}
@@ -357,7 +359,7 @@ body.is-ready #header .cell{opacity:1}
 .svc-test .nav button:hover{background:color-mix(in oklab,var(--background-inverse) 10%,transparent)}
 .svc-test .win{flex:1;position:relative;overflow:hidden;background:none;border:0;aspect-ratio:auto;display:block;font-family:var(--font-sans);--grid-font-base:16}
 .svc-test .track{position:absolute;inset:0;display:flex;will-change:transform;transition:transform .8s var(--ease-house);letter-spacing:0}
-.svc-test .tq{flex-shrink:0;height:100%;padding:calc(var(--k)*.22) calc(var(--k)*.3);display:flex;flex-direction:column;justify-content:center;gap:.6em}
+.svc-test .tq{position:relative;flex-shrink:0;height:100%;padding:calc(var(--k)*.22) calc(var(--k)*.3);display:flex;flex-direction:column;justify-content:center;gap:.6em}
 .svc-test .tq p{margin:0;font-style:italic;--grid-font-base:13;color:var(--text-tertiary);line-height:1.5}
 .svc-test .tq .who{--grid-font-base:14;color:var(--text-secondary)}
 .svc-test .tq .who span{color:var(--text-quaternary)}
@@ -635,8 +637,11 @@ body.is-ready #header .cell{opacity:1}
 .hero-one .film video{opacity:0}
 .hero-one .film.is-live video{opacity:1}
 .hero-one .film.is-live canvas{opacity:0}
-.hero-one .film[data-film="mobile"] canvas,.hero-one .film[data-film="mobile"] video{--film-zoom:1.5;--film-y:-1%}
-html.is-mobile .hero-one .film[data-film="desktop"] canvas,html.is-mobile .hero-one .film[data-film="desktop"] video,html.is-mobile .hero-one .film[data-film="design"] canvas,html.is-mobile .hero-one .film[data-film="design"] video{--film-y:6%}
+.hero-one .film[data-film="mobile"] canvas,.hero-one .film[data-film="mobile"] video{--film-zoom:1.5;--film-y:0%}
+.hero-one .film[data-film="desktop"] canvas,.hero-one .film[data-film="desktop"] video,.hero-one .film[data-film="design"] canvas,.hero-one .film[data-film="design"] video{--film-y:14.5%}
+/* the scaled film must not paint over the neighbouring column's bracket line */
+.case>.hero-one{overflow:hidden}
+html.is-mobile .hero-one .film[data-film="desktop"] canvas,html.is-mobile .hero-one .film[data-film="desktop"] video,html.is-mobile .hero-one .film[data-film="design"] canvas,html.is-mobile .hero-one .film[data-film="design"] video{--film-y:14%}
 
 /* ══════════════════════════════════════════════════════════════════════
    MOBILE FLOW (02.09.26) — the reference's non-pinning layout, read off
@@ -691,6 +696,8 @@ html.is-mobile .work-ap{display:none}
 /* the four cases are a swipe rail: one full-width slide each, snapping */
 html.is-mobile .work-gal{grid-row:span 5;grid-column:1 / -1;display:flex;position:relative;overflow:hidden;scrollbar-width:none}
 html.is-mobile .work-gal::-webkit-scrollbar{display:none}
+html.is-mobile .work-gal>.cb{display:none}
+html.is-mobile .case>.cb{display:grid}
 html.is-mobile .case{position:relative;inset:auto;flex:0 0 100%;display:block;opacity:1;pointer-events:auto;scroll-snap-align:start;height:100%}
 html.is-mobile .case.is-out{opacity:1}
 html.is-mobile .hero-one{width:100%;height:100%;padding:calc(var(--k)*.1)}
@@ -698,9 +705,10 @@ html.is-mobile .work-bar{grid-row:auto;grid-column:1 / -1}
 html.is-mobile .work-details{grid-column:1 / -1;grid-row:span 3;position:relative;display:flex;flex-direction:column}
 html.is-mobile .case-details{display:none;flex-direction:column;flex:1}
 html.is-mobile .case-details.is-cur{display:flex}
-html.is-mobile .case-details .txt{padding:calc(var(--k)*.28) calc(var(--k)*.3) calc(var(--k)*.12);flex:none;--grid-font-base:13.5}
+html.is-mobile .case-details .txt{position:relative;padding:calc(var(--k)*.3);flex:1;display:flex;align-items:center;--grid-font-base:13.5}
 html.is-mobile .case-details .txt .p+.p{display:none}
-html.is-mobile .case-details .tech{display:flex;flex-direction:row;height:var(--k);flex:none;padding:0}
+html.is-mobile .case-details .tech{position:relative;display:flex;flex-direction:row;height:var(--k);flex:none;padding:0}
+html.is-mobile .case-details .tech i.hatch svg{width:100%;height:100%;max-width:none;max-height:none}
 html.is-mobile .case-details .tech i{display:flex;align-items:center;justify-content:center;position:relative;width:auto;flex:1;height:100%;aspect-ratio:auto;color:var(--text-quaternary);box-shadow:inset -1px 0 0 0 var(--border-primary),inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary)}
 html.is-mobile .case-details .tech i svg{width:38%;height:38%;max-width:26px;max-height:26px}
 html.is-mobile .case-details .tech i:first-child{box-shadow:inset -1px 0 0 0 var(--border-primary),inset 1px 0 0 0 var(--border-primary),inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary)}
@@ -719,7 +727,7 @@ html.is-mobile .svc-list{display:none}
    bottom padding — the last line sat on the border ("where editors work." touching the line, 02.09.26) */
 html.is-mobile .svc-cards{grid-row:span 6;grid-column:1 / -1;display:flex;overflow:hidden;scrollbar-width:none;position:relative}
 html.is-mobile .svc-cards::-webkit-scrollbar{display:none}
-html.is-mobile .svc-card{position:relative;flex:0 0 100%;padding:calc(var(--k)*.5) calc(var(--k)*.3) calc(var(--k)*.4);display:flex;flex-direction:column;justify-content:flex-start;gap:calc(var(--k)*.12)}
+html.is-mobile .svc-card{position:relative;flex:0 0 100%;padding:calc(var(--k)*.4) calc(var(--k)*.3);display:flex;flex-direction:column;justify-content:center;gap:calc(var(--k)*.12)}
 html.is-mobile .svc-card .svc-sq{margin-bottom:calc(var(--k)*.2)}
 html.is-mobile .svc-card .ct{--grid-font-base:30;--grid-font-size-step:4;font-weight:200;color:var(--text-primary);line-height:1.1}
 html.is-mobile .svc-card .cd{margin:calc(var(--k)*.12) 0 0;--grid-font-base:13;color:var(--text-tertiary);line-height:1.45}
@@ -793,7 +801,7 @@ html.is-mobile .sec[data-section=work] .blk{margin-top:calc(var(--k)*1.5)}
 html.is-mobile .sec[data-section=services] .pin .blk{margin-top:calc(var(--k)*3)}
 html.is-mobile .sec .blk.svc-rest{margin-top:0}   /* outranks the generic 4-block section gap */
 html.is-mobile .sec[data-section=about] .topbar{height:calc(var(--k)*2);grid-row:span 2;align-items:flex-end;padding-bottom:var(--title-gap)}
-html.is-mobile .about-bio{align-items:flex-start;padding-top:var(--title-gap)}
+html.is-mobile .about-bio{align-items:center;padding:calc(var(--k)*.3)}
 html.is-mobile .ft-l1{grid-row:span 2}
 html.is-mobile .ft-l2,html.is-mobile .ft-r{grid-row:span 3}
 /* the footer headings sit at the FOOT of their rows: .ry had no height on mobile, so
