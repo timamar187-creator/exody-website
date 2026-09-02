@@ -836,3 +836,9 @@ html.is-mobile .work-gal,html.is-mobile .svc-cards{padding:1px 0 0 1px}
 html.is-mobile #header .in{padding-left:1px}
 #header .brand>.cb{display:none}
 html.is-mobile #header .brand>.cb{display:grid}
+/* THE CURSOR (03.09.26): the previous site's difference-dot — a 20px disc in mix-blend
+   difference that leans into anything pressable (×2.8) — and no native pointer at all.
+   Fine pointers only; touch devices never see it. */
+html.exo-cursor-on,html.exo-cursor-on *{cursor:none!important}
+#cursor{position:fixed;left:0;top:0;width:20px;height:20px;border-radius:50%;background:#fff;mix-blend-mode:difference;pointer-events:none;z-index:10000;will-change:transform;opacity:0;transition:opacity .25s}
+html.exo-cursor-on #cursor{opacity:1}

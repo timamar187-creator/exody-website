@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkkpk9n';
-import { createRouterHero } from './router-hero.js?v=mtkkpk9n';
+import { createBubble } from './bubble.js?v=mtkl5k53';
+import { createRouterHero } from './router-hero.js?v=mtkl5k53';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -1002,3 +1002,33 @@ addEventListener('resize', () => { layoutGrid(); measureSections(); buildRuler()
 addEventListener('load', () => { measureSections(); });
 $('#brand')?.addEventListener('click', (e) => { e.preventDefault(); scrollTo0(0); });
 boot();
+
+// ---------------------------------------------------------------- cursor
+// The previous site's cursor: a white difference-blend dot that follows the mouse with a
+// short spring and grows ×2.8 over anything that can be pressed; the native pointer is hidden
+// (owner, 03.09.26). Fine pointers only, and never under reduced motion.
+(function cursor() {
+  if (MOBILE || !matchMedia('(pointer:fine)').matches) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const dot = document.createElement('div');
+  dot.id = 'cursor';
+  dot.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(dot);
+  let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, sc = 1, tsc = 1, seen = false;
+  const HOT = 'a,button,input,textarea,select,label,[role=button],[data-cursor]';
+  addEventListener('mousemove', (e) => {
+    tx = e.clientX; ty = e.clientY;
+    tsc = e.target && e.target.closest && e.target.closest(HOT) ? 2.8 : 1;
+    if (!seen) { seen = true; x = tx; y = ty; document.documentElement.classList.add('exo-cursor-on'); }
+  }, { passive: true });
+  addEventListener('mousedown', () => { tsc *= 0.8; }, { passive: true });
+  addEventListener('mouseup', (e) => { tsc = e.target && e.target.closest && e.target.closest(HOT) ? 2.8 : 1; }, { passive: true });
+  document.addEventListener('mouseleave', () => document.documentElement.classList.remove('exo-cursor-on'));
+  document.addEventListener('mouseenter', () => { if (seen) document.documentElement.classList.add('exo-cursor-on'); });
+  const tick = () => {
+    x += (tx - x) * 0.22; y += (ty - y) * 0.22; sc += (tsc - sc) * 0.18;
+    dot.style.transform = `translate(${(x - 10).toFixed(1)}px, ${(y - 10).toFixed(1)}px) scale(${sc.toFixed(3)})`;
+    requestAnimationFrame(tick);
+  };
+  tick();
+})();
