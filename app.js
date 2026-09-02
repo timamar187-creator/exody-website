@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtk3zp27';
-import { createRouterHero } from './router-hero.js?v=mtk3zp27';
+import { createBubble } from './bubble.js?v=mtk4hb5h';
+import { createRouterHero } from './router-hero.js?v=mtk4hb5h';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -411,7 +411,9 @@ function updateConnector() {
     const C = 0.5 * p, N = 0.75 * p, O = 0.25 * p + M;
     let t;
     if (E >= N) t = 0; else if (J <= C) t = 1; else t = O > 0 ? clamp((N - E) / O) : 0;
-    if (t <= 0 || t >= 1) continue;
+    // mobile: the connector stays as long as its gap is on screen (it used to blink in and
+    // out with the travel thresholds); desktop keeps the travelling reveal
+    if (MOBILE ? (E > p || J < 0) : (t <= 0 || t >= 1)) continue;
     shown = true;
     // mobile: the connector is a fixture, drawn whole while the gap is on screen (the
     // desktop's travelling reveal left it a stub most of the time on a phone)
