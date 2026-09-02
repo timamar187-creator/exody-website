@@ -173,10 +173,10 @@ h3{--grid-font-base:24;--grid-font-size-step:4;font-weight:300;text-transform:lo
 #header .in{position:relative;display:flex;align-items:center;justify-content:space-between;margin:0 auto;height:100%;max-width:var(--max-w);padding-top:1px}
 #header .cell{position:relative;height:100%;display:flex;align-items:center;justify-content:center}
 #header .left{display:flex;height:100%}
-#header .brand{width:auto;min-width:calc(var(--k)*2);justify-content:flex-start;padding:0 calc(var(--k)*.3) 0 calc(var(--k)*.28);gap:10px;color:var(--text-primary)}
+#header .brand{width:calc(var(--k)*2);min-width:0;justify-content:center;padding:0;gap:10px;color:var(--text-primary)}
 #header .brand .logo{width:calc(var(--k)*.34);height:calc(var(--k)*.34);color:var(--text-primary)}
 #header .brand .wm{font-family:var(--font-sans);font-weight:300;letter-spacing:.16em;--grid-font-base:15;text-transform:uppercase;color:var(--text-primary)}
-#header .nav{width:auto;padding:0 calc(var(--k)*.32);color:var(--text-tertiary);--grid-font-base:13;letter-spacing:.1em;text-transform:uppercase;font-weight:300;transition:color .2s,background-color .2s}
+#header .nav{width:calc(var(--k)*2);padding:0;color:var(--text-tertiary);--grid-font-base:13;letter-spacing:.1em;text-transform:uppercase;font-weight:300;transition:color .2s,background-color .2s}
 #header .nav:hover{color:var(--text-primary);background:color-mix(in oklab,var(--background-inverse) 8%,transparent)}
 #header .menu{width:var(--k);--grid-font-base:18;color:var(--text-quaternary)}
 #header .menu .cb{--cl:100%}
@@ -219,7 +219,7 @@ body.is-ready #header .cell{opacity:1}
 .topbar .cta .apple{width:1em;height:1em;flex:none;margin-top:-.1em}
 .topbar .title .tag{--grid-font-base:14;color:var(--text-tertiary);margin-bottom:2px}
 .topbar .cta{position:relative;height:100%;width:calc(var(--k)*2 + 1px);display:flex;align-items:center;justify-content:center;--grid-font-base:16;font-weight:200;transition:background-color .2s;cursor:pointer}
-.topbar .cta:hover{background:color-mix(in oklab,var(--accent-hover) 20%,transparent)}
+.topbar .cta:hover{background:color-mix(in oklab,var(--background-inverse) 8%,transparent);color:var(--text-primary)}
 
 /* aperture (the hole) */
 .ap{position:relative;grid-row:var(--r) / span var(--rs);grid-column:var(--c) / span var(--cs)}
@@ -414,7 +414,7 @@ body.is-ready #header .cell{opacity:1}
 .ft-bar .cell{position:relative;width:calc(var(--k)*2);display:flex;align-items:center;justify-content:center;--grid-font-base:12;color:var(--text-tertiary);letter-spacing:.02em}
 .ft-bar .cell.w2{width:calc(var(--k)*2)}
 .ft-bar .send{position:relative;width:calc(var(--k)*7);display:flex;align-items:center;justify-content:center;--grid-font-base:16;font-weight:200;color:var(--text-primary);transition:background-color .2s}
-.ft-bar .send:hover{background:color-mix(in oklab,var(--accent-hover) 20%,transparent)}
+.ft-bar .send:hover{background:color-mix(in oklab,var(--background-inverse) 8%,transparent);color:var(--text-primary)}
 .sec[data-section=footer] .blk{--off:2;grid-template-rows:repeat(9,var(--k))}
 
 /* ---------- LOADER ---------- */
@@ -834,8 +834,6 @@ html.is-mobile #connector .node i{background:#7a7a7a}
 html.is-mobile .work-bar a.btn[aria-label="Latest release"]{display:none}
 html.is-mobile .work-gal,html.is-mobile .svc-cards{padding:1px 0 0 1px}
 html.is-mobile #header .in{padding-left:1px}
-#header .brand>.cb{display:none}
-html.is-mobile #header .brand>.cb{display:grid}
 /* THE CURSOR (03.09.26): the previous site's difference-dot — a 20px disc in mix-blend
    difference that leans into anything pressable (×2.8) — and no native pointer at all.
    Fine pointers only; touch devices never see it. */
