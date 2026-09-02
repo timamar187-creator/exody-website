@@ -214,7 +214,7 @@ body.is-ready #header .cell{opacity:1}
    The reveal wrapper (.ry) had no height, so the cell collapsed to a 22px pill and its lines went
    with it ("the grid is broken, the button is too narrow"). */
 .topbar .title{display:flex;flex-direction:column;justify-content:center;height:100%;padding-left:2px}
-.topbar>.ry{height:100%;flex:none}
+.topbar>.ry{height:100%;flex:none;padding:1px 0 0 1px}
 .topbar .cta.wide{width:calc(var(--k)*3 + 1px);gap:.5em}
 .topbar .cta .apple{width:1em;height:1em;flex:none;margin-top:-.1em}
 .topbar .title .tag{--grid-font-base:14;color:var(--text-tertiary);margin-bottom:2px}
