@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtk3s3cy';
-import { createRouterHero } from './router-hero.js?v=mtk3s3cy';
+import { createBubble } from './bubble.js?v=mtk3zp27';
+import { createRouterHero } from './router-hero.js?v=mtk3zp27';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -868,13 +868,13 @@ function frame(now) {
       L.forEach((el, k) => {
         const e = easeInOut(clamp((p - k * 0.08) / 0.92));
         el.style.transition = p > 0 ? 'none' : '';
-        el.style.transform = p > 0 ? `translateY(${(-45 * e).toFixed(1)}%)` : '';
+        el.style.transform = p > 0 ? `translateY(${(-14 * e).toFixed(1)}%)` : '';
         el.style.opacity = p > 0 ? String((1 - e).toFixed(3)) : '';
       });
       R.forEach((el, k) => {
         const e = easeInOut(clamp((p - k * 0.08) / 0.92));
         el.style.transition = 'none';
-        el.style.transform = `translateY(${(45 * (1 - e)).toFixed(1)}%)`;
+        el.style.transform = `translateY(${(14 * (1 - e)).toFixed(1)}%)`;
         el.style.opacity = String(e.toFixed(3));
       });
     }
