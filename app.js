@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkgwzre';
-import { createRouterHero } from './router-hero.js?v=mtkgwzre';
+import { createBubble } from './bubble.js?v=mtkhm0et';
+import { createRouterHero } from './router-hero.js?v=mtkhm0et';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -368,10 +368,13 @@ function dedupeBrackets() {
     // ordinary cells: the classes are derived here, every time (a hand-placed collapse-r on a
     // cell that has no right neighbour in THIS layout — the phone's stacked stats — would
     // otherwise leave the edge open)
-    if (!lane) { c.classList.remove('collapse-r', 'collapse-b'); }
+    if (!lane) { c.classList.remove('collapse-r', 'collapse-b', 'collapse-l', 'collapse-t'); }
     const r = c.getBoundingClientRect();
     if (r.width < 4 || r.height < 4) continue;
-    items.push({ c, l: r.left, t: r.top, r: r.right, b: r.bottom, lane });
+    // an aperture's frame is on from the first paint, before its section activates: it keeps
+    // all four edges and the neighbour gives up the shared one instead (the hole used to
+    // show three sides until the cell beside it lit up — owner, 02.09.26)
+    items.push({ c, l: r.left, t: r.top, r: r.right, b: r.bottom, lane, always: Boolean(owner.closest('[data-aperture]')) });
   }
   for (const a of items) {
     if (a.lane) continue;
@@ -379,8 +382,8 @@ function dedupeBrackets() {
       if (a === b || b.lane) continue;
       const vov = Math.min(a.b, b.b) - Math.max(a.t, b.t);
       const hov = Math.min(a.r, b.r) - Math.max(a.l, b.l);
-      if (vov > 4 && Math.abs(a.r - b.l) <= 1.5) a.c.classList.add('collapse-r');
-      if (hov > 4 && Math.abs(a.b - b.t) <= 1.5) a.c.classList.add('collapse-b');
+      if (vov > 4 && Math.abs(a.r - b.l) <= 1.5) { if (a.always && !b.always) b.c.classList.add('collapse-l'); else a.c.classList.add('collapse-r'); }
+      if (hov > 4 && Math.abs(a.b - b.t) <= 1.5) { if (a.always && !b.always) b.c.classList.add('collapse-t'); else a.c.classList.add('collapse-b'); }
     }
   }
 }
@@ -413,7 +416,9 @@ let heroIntro = 0; // 0..1 after the loader
 function heroFrame(p) {
   const ap = byName.hero.ap;
   const w = ap.clientWidth / 2, h = ap.clientHeight / 2;
-  const e = clamp(heroIntro);
+  // desktop: short brackets at rest (a quarter of each half-side), the scroll grows them into
+  // the full square — the page does not move until it is built (owner, 02.09.26)
+  const e = MOBILE ? clamp(heroIntro) : 0.24 + 0.76 * clamp(heroIntro);
   const cw = Math.round((1 - e) * w), ch = Math.round((1 - e) * h);
   const q = heroCb.children;
   q[0].style.clipPath = `inset(0px ${cw}px ${ch}px 0px)`;
@@ -686,7 +691,7 @@ function updateServices(s, now) {
   const overflow = G.span * G.K;
   const sp = clamp((s.p - 0.6) / 0.25);
   const x = -overflow * (1 - easeOutQuint(sp));
-  svc.strip.style.transform = `translateX(${x.toFixed(1)}px)`;
+  svc.strip.style.transform = `translateX(${Math.round(x)}px)`;
   svc.stripCap.textContent = `translateX: ${Math.round(x)}px`;
   const rot = -s.p * 160;
   svc.gear.style.transform = `rotate(${rot.toFixed(1)}deg)`;
@@ -836,8 +841,12 @@ async function runLoader() {
     heroIntro = easeOutCubic(clamp((performance.now() - t1) / 700));
     if (heroIntro < 1) requestAnimationFrame(open);
   };
-  requestAnimationFrame(open);
-  activate(byName.hero, true);
+  if (MOBILE) {
+    requestAnimationFrame(open);
+    activate(byName.hero, true);
+  } else {
+    heroIntro = 0;
+  }
   probeAfterLoad();
 }
 
@@ -937,6 +946,8 @@ function frame(now) {
     for (const s of SEC) {
       if (s === byName.hero && !ready) continue;
       let on = s.pinned || (s === cur && s.name === 'footer');
+      // desktop hero: the labels and words arrive once the scroll has built the square
+      if (s === byName.hero && !MOBILE) on = ready && heroIntro >= 0.85;
       if (!on && s.active) {
         // keep the content while the block is still mostly on screen (leaving or re-entering)
         const br = s.blk.getBoundingClientRect();
@@ -969,8 +980,9 @@ function frame(now) {
     }
 
     // per-section behaviour
+    if (ready) heroIntro = clamp(byName.hero.p / 0.35);
     heroFrame(byName.hero.p);
-    if (ready && byName.hero.pinned) bubble.setHeroPath(clamp(byName.hero.p / 0.5));
+    if (ready && byName.hero.pinned) bubble.setHeroPath(clamp((byName.hero.p - 0.35) / 0.5));
     updateWork(byName.work);
     updateServices(byName.services, now);
     updateAbout(byName.about, dt);

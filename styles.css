@@ -112,6 +112,13 @@ h3{--grid-font-base:24;--grid-font-size-step:4;font-weight:300;text-transform:lo
 .cb.collapse-b>i:nth-child(3){box-shadow:inset 1px 0 0 0 var(--border-primary)}
 .cb.collapse-b>i:nth-child(4){box-shadow:inset -1px 0 0 0 var(--border-primary)}
 .cb.collapse-r.collapse-b>i:nth-child(4){box-shadow:none}
+.cb.collapse-l>i:nth-child(1){box-shadow:inset 0 1px 0 0 var(--border-primary)}
+.cb.collapse-l>i:nth-child(3){box-shadow:inset 0 -1px 0 0 var(--border-primary)}
+.cb.collapse-t>i:nth-child(1){box-shadow:inset 1px 0 0 0 var(--border-primary)}
+.cb.collapse-t>i:nth-child(2){box-shadow:inset -1px 0 0 0 var(--border-primary)}
+.cb.collapse-l.collapse-t>i:nth-child(1){box-shadow:none}
+.cb.collapse-l.collapse-b>i:nth-child(3){box-shadow:none}
+.cb.collapse-r.collapse-t>i:nth-child(2){box-shadow:none}
 
 /* ---------- reveals ---------- */
 .rw{overflow:hidden}
@@ -206,7 +213,8 @@ body.is-ready #header .cell{opacity:1}
    with it ("the grid is broken, the button is too narrow"). */
 .topbar .title{display:flex;flex-direction:column;justify-content:center;height:100%;padding-left:2px}
 .topbar>.ry{height:100%;flex:none}
-.topbar .cta.wide{width:calc(var(--k)*3 + 1px)}
+.topbar .cta.wide{width:calc(var(--k)*3 + 1px);gap:.5em}
+.topbar .cta .apple{width:1em;height:1em;flex:none;margin-top:-.1em}
 .topbar .title .tag{--grid-font-base:14;color:var(--text-tertiary);margin-bottom:2px}
 .topbar .cta{position:relative;height:100%;width:calc(var(--k)*2 + 1px);display:flex;align-items:center;justify-content:center;--grid-font-base:16;font-weight:200;transition:background-color .2s;cursor:pointer}
 .topbar .cta:hover{background:color-mix(in oklab,var(--accent-hover) 20%,transparent)}
@@ -384,6 +392,9 @@ body.is-ready #header .cell{opacity:1}
 .ft-box1 a{display:flex;align-items:center;gap:8px;width:fit-content}
 .ft-box1 a:hover{color:var(--text-primary)}
 .ft-box1 svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.2}
+.ft-box1 a.dl{display:inline-flex;align-items:center;gap:.5em;background:#fff;color:var(--background-primary);padding:.55em 1em .5em .9em;margin-top:.35em;font-weight:400;width:fit-content;width:-webkit-fit-content;transition:background-color .2s}
+.ft-box1 a.dl:hover{background:#e8e8e8;color:var(--background-primary)}
+.ft-box1 a.dl .apple{width:1em;height:1em;stroke:none;fill:currentColor;margin-top:-.1em}
 .ft-l2{grid-row:5;grid-column:1 / span 7}
 .ft-box2{grid-row:6 / span 2;grid-column:1 / span 7;position:relative;padding:calc(var(--k)*.2) calc(var(--k)*.3);display:flex;flex-direction:column;justify-content:center;gap:.45em;--grid-font-base:15;color:var(--text-secondary)}
 .ft-box2 .t4{--grid-font-base:13}
