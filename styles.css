@@ -259,10 +259,10 @@ body.is-ready #header .cell{opacity:1}
 .case .desk{padding:calc(var(--k)*.12) calc(var(--k)*.1) 0 calc(var(--k)*.1);display:grid;grid-template-rows:auto 1fr;gap:calc(var(--k)*.15)}
 .case .mob{padding:calc(var(--k)*.12) calc(var(--k)*.1) 0 0}
 .case .tech{position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;padding:0;overflow:hidden}
-.case .tech i{width:100%;height:var(--k);flex:none;display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);position:relative;box-shadow:inset 0 -1px 0 0 var(--border-primary)}
-.case .tech i svg{width:42%;height:42%}
-.case .tech i.hatch{box-shadow:none}
-.case .tech i.hatch svg{width:100%;height:100%;max-width:none;max-height:none}
+.case .tech>i{width:100%;height:var(--k);flex:none;display:flex;align-items:center;justify-content:center;color:var(--text-quaternary);position:relative;box-shadow:inset 0 -1px 0 0 var(--border-primary)}
+.case .tech>i svg{width:42%;height:42%}
+.case .tech>i.hatch{box-shadow:none}
+.case .tech>i.hatch svg{width:100%;height:100%;max-width:none;max-height:none}
 .case .txt{position:relative;padding:calc(var(--k)*.2) calc(var(--k)*.1) 0 calc(var(--k)*.25);color:var(--text-tertiary);--grid-font-base:14;line-height:1.5;font-weight:200}
 .case .txt .p+.p{margin-top:.9em}
 .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--k)*.2);align-items:stretch}
@@ -708,11 +708,11 @@ html.is-mobile .case-details.is-cur{display:flex}
 html.is-mobile .case-details .txt{position:relative;padding:calc(var(--k)*.3);flex:1;display:flex;align-items:center;--grid-font-base:13.5}
 html.is-mobile .case-details .txt .p+.p{display:none}
 html.is-mobile .case-details .tech{position:relative;display:flex;flex-direction:row;height:var(--k);flex:none;padding:0}
-html.is-mobile .case-details .tech i.hatch svg{width:100%;height:100%;max-width:none;max-height:none}
-html.is-mobile .case-details .tech i{display:flex;align-items:center;justify-content:center;position:relative;width:auto;flex:1;height:100%;aspect-ratio:auto;color:var(--text-quaternary);box-shadow:inset -1px 0 0 0 var(--border-primary),inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary)}
-html.is-mobile .case-details .tech i svg{width:38%;height:38%;max-width:26px;max-height:26px}
-html.is-mobile .case-details .tech i:first-child{box-shadow:inset -1px 0 0 0 var(--border-primary),inset 1px 0 0 0 var(--border-primary),inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary)}
-html.is-mobile .case-details .tech i.hatch{box-shadow:inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary),inset -1px 0 0 0 var(--border-primary)}
+html.is-mobile .case-details .tech>i.hatch svg{width:100%;height:100%;max-width:none;max-height:none}
+html.is-mobile .case-details .tech>i{display:flex;align-items:center;justify-content:center;position:relative;width:auto;flex:1;height:100%;aspect-ratio:auto;color:var(--text-quaternary);box-shadow:inset -1px 0 0 0 var(--border-primary),inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary)}
+html.is-mobile .case-details .tech>i svg{width:38%;height:38%;max-width:26px;max-height:26px}
+html.is-mobile .case-details .tech>i:first-child{box-shadow:inset -1px 0 0 0 var(--border-primary),inset 1px 0 0 0 var(--border-primary),inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary)}
+html.is-mobile .case-details .tech>i.hatch{box-shadow:inset 0 1px 0 0 var(--border-primary),inset 0 -1px 0 0 var(--border-primary),inset -1px 0 0 0 var(--border-primary)}
 /* services */
 /* ONE title→text distance on mobile (02.09.26): every heading sits at the foot of its
    row with --title-gap of air under it, and the text it introduces starts --title-gap
