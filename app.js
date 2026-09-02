@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js';
-import { createRouterHero } from './router-hero.js';
+import { createBubble } from './bubble.js?v=mtk2dg87';
+import { createRouterHero } from './router-hero.js?v=mtk2dg87';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -162,6 +162,23 @@ if (MOBILE) {
   const win = $('.svc-test .win');
   $('#test-prev').addEventListener('click', () => win.scrollBy({ left: -win.clientWidth, behavior: 'smooth' }));
   $('#test-next').addEventListener('click', () => win.scrollBy({ left: win.clientWidth, behavior: 'smooth' }));
+  // A sideways swipe on the bar or the text below it also turns the case.
+  let sx = 0, sy = 0;
+  for (const z of [$('#work-details'), $('.work-bar')]) {
+    z.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    z.addEventListener('touchend', (e) => {
+      const t = e.changedTouches[0];
+      const dx = t.clientX - sx, dy = t.clientY - sy;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) gotoCase(work.idx + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+  }
+}
+// The orb is anchored to the SCREEN on mobile too — the holes scroll over it, so
+// it sinks under one box's floor and rises through the next box's ceiling.
+let mobileAnchorY = 0;
+function measureMobileAnchor() {
+  const r = apertureRect(byName.hero);
+  mobileAnchorY = r.top + scrollY + r.height / 2;   // document y of the hero hole's centre
 }
 
 function measureSections() {
@@ -756,6 +773,7 @@ async function runLoader() {
   };
   requestAnimationFrame(open);
   activate(byName.hero, true);
+  probeAfterLoad();
 }
 
 // ---------------------------------------------------------------- main loop
@@ -799,7 +817,9 @@ function frame(now) {
       }
       if (best) {
         const r = apertureRect(best);
-        const c = { x: r.left + r.width / 2, y: r.top + r.height / 2, size: Math.min(r.width, r.height) };
+        // screen-fixed: the hero hole's centre height, clamped into the viewport
+        const ay = clamp(mobileAnchorY, G.vh * 0.3, G.vh * 0.6);
+        const c = { x: r.left + r.width / 2, y: ay, size: Math.min(r.width, r.height) };
         if (anchor.name !== best.name) { anchor.name = best.name; bubble.setTarget(c.x, c.y, c.size, true); bubble.setSection(best.name); }
         else bubble.trackTarget(c.x, c.y, c.size);
       }
@@ -862,10 +882,35 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+// ---------------------------------------------------------------- probe (verification only)
+// ?probe=1 paints script errors on screen and ?y=<px> / ?case=<i> place the page
+// after the loader — so a real WebKit (the iPhone simulator) can be photographed
+// at exact positions without gestures.
+const PROBE = new URLSearchParams(location.search);
+if (PROBE.has('probe')) {
+  const box = document.createElement('pre');
+  box.id = 'probe-errors';
+  box.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;margin:0;padding:6px 8px;background:#7f1d1d;color:#fff;font:11px/1.4 ui-monospace,monospace;white-space:pre-wrap;display:none;max-height:40vh;overflow:auto';
+  document.body.appendChild(box);
+  const log = (m) => { box.style.display = 'block'; box.textContent += m + '\n'; };
+  addEventListener('error', (e) => log(`ERR ${e.message} @${(e.filename || '').split('/').pop()}:${e.lineno}`));
+  addEventListener('unhandledrejection', (e) => log(`REJ ${e.reason && e.reason.message ? e.reason.message : e.reason}`));
+  log(`probe · ${innerWidth}×${innerHeight} · mobile=${MOBILE} · ua=${navigator.userAgent.slice(0, 60)}`);
+}
+function probeAfterLoad() {
+  if (!PROBE.has('y') && !PROBE.has('case')) return;
+  setTimeout(() => {
+    measureSections();
+    if (PROBE.has('case')) gotoCase(Number(PROBE.get('case')));
+    if (PROBE.has('y')) window.scrollTo(0, Number(PROBE.get('y')));
+  }, 1200);
+}
+
 // ---------------------------------------------------------------- boot
 function boot() {
   layoutGrid();
   measureSections();
+  if (MOBILE) measureMobileAnchor();
   buildRuler();
   buildLoaderGrid();
   setAnchor('hero', true);
@@ -874,7 +919,7 @@ function boot() {
   requestAnimationFrame(frame);
   runLoader();
 }
-addEventListener('resize', () => { layoutGrid(); measureSections(); buildRuler(); if (anchor.name) setAnchor(anchor.name, true); });
+addEventListener('resize', () => { layoutGrid(); measureSections(); buildRuler(); if (MOBILE) measureMobileAnchor(); if (anchor.name) setAnchor(anchor.name, true); });
 addEventListener('load', () => { measureSections(); });
 $('#brand')?.addEventListener('click', (e) => { e.preventDefault(); scrollTo0(0); });
 boot();
