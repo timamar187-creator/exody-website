@@ -1,27 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Exody is an AI coding agent app for Mac: describe a task and it writes real code in your projects — plans, edits files, runs tests, reports. It designs too, runs on your own API keys with smart per-task model routing, and pairs with an iPhone app." />
-    <title>Exody — AI coding agent for Mac</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-    <!-- persona-stage (EXO) is a vendored native ES module; it resolves
-         'three' through this map — same convention as the Exody design lib. -->
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-visual">
+  <title>Exody | Autonomous Coding Agent</title>
+  <meta name="description" content="Exody is an autonomous coding agent that runs on your Mac: it investigates, plans, ships and verifies — across desktop, mobile and a design studio.">
+  <link rel="icon" href="assets/favicon.svg">
+  <link rel="canonical" href="https://www.exody.ai/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Exody | Autonomous Coding Agent">
+  <meta property="og:description" content="An autonomous coding agent that runs on your Mac: it investigates, builds and verifies — across desktop, mobile, a design studio and a smart router.">
+  <meta property="og:url" content="https://www.exody.ai/">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-    <!-- Local-only live config (gitignored): EXO's model + voice key. The
-         page degrades to the curated bank + browser synth without it. -->
-    <script src="/exo/config.js"></script>
-    <script type="importmap">{"imports":{"three":"/lib/three.module.js","three/addons/":"/lib/addons/"}}</script>
-    <script type="module" src="/exo/boot.js"></script>
-    <script type="module" crossorigin src="/assets/main-CPyskEBv.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/index-CT4Nhwd_.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BKWdHUhI.css">
-  </head>
-  <body class="bg-[#0a0a0b] text-[#f4f4f5] antialiased selection:bg-white/10 selection:text-white overflow-x-hidden">
-    <div id="root"></div>
-  </body>
+<!-- ===== splash loader ===== -->
+<div id="loader" aria-hidden="true">
+  <div class="lgrid" id="loader-grid"></div>
+  <div class="cross"></div>
+  <div class="pbox-host"><div class="pbox"><div class="cb is-corner"><i></i><i></i><i></i><i></i></div></div></div>
+  <div class="word" id="loader-word"><div class="in">
+    <span class="ltr">E</span><span class="ltr">X</span><span class="ltr">O</span><span class="ltr">D</span><span class="ltr">Y</span>
+  </div></div>
+</div>
+
+<!-- ===== fixed layers ===== -->
+<div id="grid-bg"></div>
+<canvas id="bubble"></canvas>
+
+<header id="header">
+  <div class="in">
+    <div class="left"><a class="cell brand" id="brand" href="#hero-section" data-goto="hero">
+      <svg class="logo" viewBox="0 0 1024 1024" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M 215.8 252.3 L 384.1 507.8 L 383.5 517.5 L 216.7 772.0 L 444.9 772.0 L 585.9 566.0 L 593.1 566.0 L 596.7 570.2 L 681.8 690.4 L 690.9 704.1 L 690.9 711.2 L 608.7 711.5 L 568.4 653.0 L 534.3 704.7 L 580.1 772.0 L 807.9 771.7 L 629.2 518.2 L 627.2 508.4 L 808.2 252.0 L 581.4 252.0 L 533.6 320.6 L 568.4 370.9 L 608.7 312.4 L 690.9 312.8 L 690.9 319.9 L 688.3 323.8 L 593.1 458.7 L 585.9 458.7 L 583.0 455.1 L 443.6 252.0 Z M 329.8 312.4 L 415.0 312.4 L 551.2 509.1 L 550.5 516.9 L 416.3 711.5 L 330.5 711.5 L 330.2 704.1 L 435.5 542.9 L 490.4 541.9 L 510.9 511.7 L 489.7 482.1 L 436.4 482.1 L 434.8 480.5 L 329.5 319.9 Z"/></svg>
+      <span class="wm">EXODY</span></a></div>
+    <div class="cross"></div>
+    <nav class="right" aria-label="Sections">
+      <a class="cell nav" href="#work-section" data-goto="work"><div class="cb"><i></i><i></i><i></i><i></i></div>Product</a>
+      <a class="cell nav" href="#services-section" data-goto="services"><div class="cb"><i></i><i></i><i></i><i></i></div>Capabilities</a>
+      <a class="cell nav" href="#about-section" data-goto="about"><div class="cb"><i></i><i></i><i></i><i></i></div>About</a>
+      <a class="cell nav" href="#footer-section" data-goto="footer"><div class="cb"><i></i><i></i><i></i><i></i></div>Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="ruler" id="ruler"><div class="in"><div class="ticks" id="ruler-ticks"></div><div class="head" id="ruler-head"></div><div class="line" id="ruler-line"></div></div></div>
+<div id="scrollmeter" style="position:fixed;right:5px;top:5px;bottom:5px;width:4px;z-index:100;pointer-events:none"><div id="scrollthumb" style="position:absolute;left:0;width:4px;height:40px;background:rgba(250,250,250,.5);border:1px solid rgba(255,255,255,.2);border-radius:2px"></div></div>
+
+<div id="connector">
+  <div class="line" id="cn-line"></div>
+  <div class="node" id="cn-top"><i></i><span id="cn-label-top"></span></div>
+  <div class="node" id="cn-bottom"><i></i><span id="cn-label"></span></div>
+  <div class="cap v is-on" id="cn-cap">clip-path: inset(0% 0% 100% 0%)</div>
+</div>
+
+<div class="small-note">Exody<br>open on a desktop display<br>to run the full experience</div>
+
+<main id="main">
+
+  <!-- ===== 01 HERO ===== -->
+  <section class="sec" data-section="hero" id="hero-section">
+    <div class="pin">
+      <div class="blk">
+        <div class="hero-lbl tl"><div class="rw"><i><span data-tr>01. <b>AUTONOMOUS AGENT</b></span></i></div></div>
+        <div class="hero-lbl tr"><div class="rw"><i><span data-tr>02. <b>RUNS ON YOUR MAC</b></span></i></div></div>
+        <div class="hero-lbl bl">
+          <div class="rw"><i><span data-tr>03. <b>M: OPS@EXODY.AI</b></span></i></div>
+          <div class="rw"><i><span data-tr><b>W: EXODY.AI</b></span></i></div>
+        </div>
+        <div class="hero-lbl br"><div class="rw"><i><span data-tr>04. <b>AVAILABLE NOW</b></span></i></div></div>
+
+        <div class="hero-words l">
+          <div class="rw"><i>Autonomous</i></div>
+          <div class="rw"><i>Engineering</i></div>
+        </div>
+        <div class="hero-words r">
+          <div class="rw"><i>Shipping</i></div>
+          <div class="rw"><i>Software</i></div>
+        </div>
+
+        <div class="hero-ap ap" data-aperture="hero" id="hero-ap">
+          <div class="cb" id="hero-cb"><i></i><i></i><i></i><i></i></div>
+          <div class="cap tl" data-cap="tl">clip-path: inset(0px 0px 0px 0px)</div>
+          <div class="cap v tr" data-cap="tr">clip-path: inset(0px 0px 0px 0px)</div>
+          <div class="cap br" data-cap="br">clip-path: inset(0px 0px 0px 0px)</div>
+          <div class="cap v bl" data-cap="bl">clip-path: inset(0px 0px 0px 0px)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 02 SELECTED WORK ===== -->
+  <section class="sec" data-section="work" id="work-section">
+    <div class="pin">
+      <div class="blk" style="--off:2">
+        <div class="topbar">
+          <div class="title">
+            <div class="ry"><i><h2><span class="t2">The</span>&nbsp;&nbsp;<span class="t1">Product</span></h2></i></div>
+            <div class="ry d6"><i><span class="tag">Four surfaces of one autonomous coding agent</span></i></div>
+          </div>
+          <div class="ry"><i><a class="cta" href="https://github.com/timamar187-creator/exody-releases/releases/latest/download/Exody.dmg"><div class="cb"><i></i><i></i><i></i><i></i></div>Download for Mac</a></i></div>
+        </div>
+
+        <div class="work-ap ap" data-aperture="work">
+          <div class="cb"><i></i><i></i><i></i><i></i></div>
+          <div class="cap bl" data-cap="static">transform: translateX(0px)</div>
+        </div>
+
+        <div class="work-gal" id="work-gal">
+          <!-- case 1: Desktop -->
+          <div class="case is-cur" data-case="0" data-tint="#b8a4f8" data-name="Desktop">
+            <div class="hero-one">
+              <div class="film" data-film="desktop" data-frames="90" data-ease="2.2" data-seq="assets/film/desktop-open/f">
+                <canvas aria-hidden="true"></canvas>
+                <video muted loop playsinline preload="auto" poster="assets/film/desktop.png">
+                  <source src="assets/film/desktop.mov" type='video/mp4; codecs="hvc1"'>
+                  <source src="assets/film/desktop.webm" type="video/webm">
+                </video>
+              </div>
+            </div>
+            <div class="tech"><i title="TypeScript"><svg viewBox="0 0 24 24"><use href="#i-typescript"/></svg></i><i title="React"><svg viewBox="0 0 24 24"><use href="#i-react"/></svg></i><i title="Node.js"><svg viewBox="0 0 24 24"><use href="#i-nodedotjs"/></svg></i><i title="Tailwind CSS"><svg viewBox="0 0 24 24"><use href="#i-tailwindcss"/></svg></i><i title="Git"><svg viewBox="0 0 24 24"><use href="#i-git"/></svg></i><i class="hatch"><svg viewBox="0 0 100 100" preserveAspectRatio="none" data-hatch></svg></i></div>
+            <div class="txt"><div data-tr data-tr-manual>
+              <span class="p">The desktop app is where the agent lives: sessions, parallel task agents in isolated worktrees, a native PTY terminal, and deep diagnostics on your Mac.</span>
+              <span class="p">A local-first Electron shell around an agent core that investigates, plans, edits and verifies without cloud round-trips for your code.</span>
+            </div></div>
+          </div>
+
+          <!-- case 2: Mobile -->
+          <div class="case" data-case="1" data-tint="#57ded3" data-name="Mobile">
+            <div class="hero-one">
+              <div class="film" data-film="mobile" data-frames="96" data-ease="1.7" data-seq="assets/film/mobile-spin/f">
+                <canvas aria-hidden="true"></canvas>
+                <video muted loop playsinline preload="auto" poster="assets/film/mobile.png">
+                  <source src="assets/film/mobile.mov" type='video/mp4; codecs="hvc1"'>
+                  <source src="assets/film/mobile.webm" type="video/webm">
+                </video>
+              </div>
+            </div>
+            <div class="tech"><i title="TypeScript"><svg viewBox="0 0 24 24"><use href="#i-typescript"/></svg></i><i title="React"><svg viewBox="0 0 24 24"><use href="#i-react"/></svg></i><i title="Node.js"><svg viewBox="0 0 24 24"><use href="#i-nodedotjs"/></svg></i><i title="Git"><svg viewBox="0 0 24 24"><use href="#i-git"/></svg></i><i title="Figma"><svg viewBox="0 0 24 24"><use href="#i-figma"/></svg></i><i class="hatch"><svg viewBox="0 0 100 100" preserveAspectRatio="none" data-hatch></svg></i></div>
+            <div class="txt"><div data-tr data-tr-manual>
+              <span class="p">The mobile app is a real-time remote control for the same agent: start a run from your phone, watch it think, approve the risky step, and get notified on completion.</span>
+              <span class="p">A React Native client that joins the desktop's live run clock — one session, shared memory, and low-latency WebRTC streams.</span>
+            </div></div>
+          </div>
+
+          <!-- case 3: Design Studio -->
+          <div class="case" data-case="2" data-tint="#f99c00" data-name="Design Studio">
+            <div class="hero-one">
+              <div class="film" data-film="design" data-frames="90" data-ease="2.2" data-seq="assets/film/design-open/f">
+                <canvas aria-hidden="true"></canvas>
+                <video muted loop playsinline preload="auto" poster="assets/film/design.png">
+                  <source src="assets/film/design.mov" type='video/mp4; codecs="hvc1"'>
+                  <source src="assets/film/design.webm" type="video/webm">
+                </video>
+              </div>
+            </div>
+            <div class="tech"><i title="JavaScript"><svg viewBox="0 0 24 24"><use href="#i-javascript"/></svg></i><i title="React"><svg viewBox="0 0 24 24"><use href="#i-react"/></svg></i><i title="HTML5"><svg viewBox="0 0 24 24"><use href="#i-html5"/></svg></i><i title="CSS"><svg viewBox="0 0 24 24"><use href="#i-css"/></svg></i><i title="Figma"><svg viewBox="0 0 24 24"><use href="#i-figma"/></svg></i><i class="hatch"><svg viewBox="0 0 100 100" preserveAspectRatio="none" data-hatch></svg></i></div>
+            <div class="txt"><div data-tr data-tr-manual>
+              <span class="p">Design Studio turns the agent into an art director: websites, landing pages, 3D scenes and film — designed against real references, verified frame by frame before it signs off.</span>
+              <span class="p">A canvas-first workflow with a vendored kit of stage primitives, so motion is wired, never improvised.</span>
+            </div></div>
+          </div>
+
+          <!-- case 4: Smart Router -->
+          <div class="case" data-case="3" data-tint="#60a5fa" data-name="Smart Router">
+            <div class="hero-one">
+              <div class="rhero" data-rhero>
+                <canvas aria-hidden="true"></canvas>
+              </div>
+            </div>
+            <div class="tech"><i title="TypeScript"><svg viewBox="0 0 24 24"><use href="#i-typescript"/></svg></i><i title="Node.js"><svg viewBox="0 0 24 24"><use href="#i-nodedotjs"/></svg></i><i title="JavaScript"><svg viewBox="0 0 24 24"><use href="#i-javascript"/></svg></i><i title="Git"><svg viewBox="0 0 24 24"><use href="#i-git"/></svg></i><i class="hatch"><svg viewBox="0 0 100 100" preserveAspectRatio="none" data-hatch></svg></i><i class="hatch"><svg viewBox="0 0 100 100" preserveAspectRatio="none" data-hatch></svg></i></div>
+            <div class="txt"><div data-tr data-tr-manual>
+              <span class="p">The smart router picks the right brain per task, not per session: a hybrid tier that learns from outcomes, fails over on quota, and keeps a local tier at zero cost.</span>
+              <span class="p">Measured on 3,024 real turns: 76% lower cost than a flagship model, with the same deliverable at the end.</span>
+            </div></div>
+          </div>
+        </div>
+
+        <div class="work-bar">
+          <button class="btn" id="work-prev" aria-label="Previous case"><div class="cb"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+          <a class="btn" href="https://github.com/timamar187-creator/exody-releases/releases/latest" target="_blank" rel="noopener" aria-label="Latest release"><div class="cb"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+          <div class="name"><div class="cb"><i></i><i></i><i></i><i></i></div><div class="rw"><i><span class="t2" id="work-name" data-tr data-tr-manual>Desktop</span></i></div></div>
+          <button class="btn" id="work-next" aria-label="Next case"><div class="cb"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 03 SERVICES ===== -->
+  <section class="sec" data-section="services" id="services-section">
+    <div class="pin">
+      <div class="blk" style="--off:2">
+        <div class="topbar">
+          <div class="title">
+            <div class="ry"><i><span class="tag">Investigation, execution, and verification working together. <span class="t2">Without hand-holding.</span></span></i></div>
+            <div class="ry d6"><i><h2><span class="t3">Investigate</span>&nbsp;&nbsp;<span class="t2">Build</span>&nbsp;&nbsp;<span class="t3">Verify</span></h2></i></div>
+          </div>
+          <div class="ry"><i><a class="cta" href="#contact-form" data-goto="footer"><div class="cb"><i></i><i></i><i></i><i></i></div>Talk to us</a></i></div>
+        </div>
+
+        <div class="svc-list">
+          <div class="cb"><i></i><i></i><i></i><i></i></div>
+          <div class="svc-sq fade" id="svc-sq"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="svc-title fade" id="svc-title">
+            <span class="tt is-cur">Fullstack</span><span class="tt">Backend</span><span class="tt">Mobile</span><span class="tt">Website</span><span class="tt">Motion</span><span class="tt">3D</span>
+          </div>
+          <div class="ry"><i><span class="svc-kind" id="svc-kind"><span class="bg"></span><span class="word dev">Development</span><span class="word des">Design</span></span></i></div>
+          <div class="svc-desc fade" id="svc-desc">
+            <span class="dd is-cur" data-tr data-tr-manual>Features end to end: investigated in your codebase, built in an isolated worktree, and verified with your own test suite before it reports back.</span>
+            <span class="dd" data-tr data-tr-manual>Logic, data and integrations refactored with the tests as referee. The run is green, or the agent keeps going.</span>
+            <span class="dd" data-tr data-tr-manual>Native builds that ship: Exody installs to your iPhone, relaunches the app, and reads the result back from the device.</span>
+            <span class="dd" data-tr data-tr-manual>Sites built against real references: layout, motion and tokens measured from the source, never guessed.</span>
+            <span class="dd" data-tr data-tr-manual>Scroll-driven stages, transitions and micro-animations wired from a vendored kit and verified frame by frame.</span>
+            <span class="dd" data-tr data-tr-manual>Marks, product scenes and film elements rendered in Blender and assembled where editors work.</span>
+          </div>
+        </div>
+
+        <div class="svc-window" id="svc-window">
+          <div class="svc-strip" id="svc-strip">
+            <div class="svc-stats" id="svc-stats">
+              <div class="cell lead"><div class="cb collapse-r collapse-b"><i></i><i></i><i></i><i></i></div><div class="fade" data-tr><b>Building</b> and verifying</div></div>
+              <div class="cell s1"><div class="cb collapse-r collapse-b"><i></i><i></i><i></i><i></i></div><div class="n fade"><span data-count="76">0</span><span>%</span></div><div class="lb fade"><span data-tr>Lower cost than flagship</span></div></div>
+              <div class="cell s2"><div class="cb collapse-r collapse-b"><i></i><i></i><i></i><i></i></div><div class="n fade"><span data-count="3024">0</span><span>+</span></div><div class="lb fade"><span data-tr>Turns benchmarked</span></div></div>
+              <div class="cell h1 hatch"><svg viewBox="0 0 100 100" preserveAspectRatio="none" data-hatch></svg></div>
+              <div class="cell s3"><div class="cb collapse-r collapse-b"><i></i><i></i><i></i><i></i></div><div class="n fade"><span data-count="100">0</span><span>%</span></div><div class="lb fade"><span data-tr>Local &amp; private</span></div></div>
+              <div class="cell h2 hatch"><svg viewBox="0 0 100 100" preserveAspectRatio="none" data-hatch></svg></div>
+            </div>
+            <div class="svc-bubble ap" data-aperture="services"><div class="cb collapse-r collapse-b"><i></i><i></i><i></i><i></i></div></div>
+            <div class="svc-gears">
+              <div class="cb collapse-r collapse-b"><i></i><i></i><i></i><i></i></div>
+              <div class="gear" id="gear"><svg viewBox="0 0 200 200" class="gr">
+                <circle cx="100" cy="100" r="88"/><circle cx="100" cy="100" r="62"/><circle cx="100" cy="100" r="34"/>
+                <circle cx="64" cy="72" r="26"/><circle cx="140" cy="126" r="20"/><circle cx="130" cy="64" r="14"/>
+                <path d="M12 100h176M100 12v176"/>
+                <circle class="dot" cx="100" cy="12" r="1.8"/><circle class="dot" cx="162" cy="100" r="1.8"/><circle class="dot" cx="64" cy="46" r="1.8"/><circle class="dot" cx="140" cy="146" r="1.8"/><circle class="dot" cx="130" cy="50" r="1.5"/>
+              </svg></div>
+              <div class="cap bl" data-cap="gear">transform: translate3d(0px, 0px, 0) rotate(0deg)</div>
+            </div>
+          </div>
+          <div class="cap br" data-cap="strip">translateX: 0px</div>
+        </div>
+
+        <div class="svc-test">
+          <div class="nav">
+            <button id="test-prev" aria-label="Previous note"><div class="cb"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+            <button id="test-next" aria-label="Next note"><div class="cb"><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+          <div class="win"><div class="cb"><i></i><i></i><i></i><i></i></div>
+            <div class="track" id="test-track">
+              <div class="tq"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div><p data-tr>It investigated a socket-pool exhaustion I had been chasing for a week, patched it in a worktree, and handed me a green suite. I reviewed a diff, not a story.</p><div class="who" data-tr>Maya R. <span>· Founder · Fintech</span></div></div>
+              <div class="tq"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div><p data-tr>The router is the quiet hero. Same quality of work, a fraction of the invoice, and when a provider ran dry it just moved on without losing the turn.</p><div class="who" data-tr>Daniel K. <span>· Staff Engineer</span></div></div>
+              <div class="tq"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div><p data-tr>I approve the risky step from my phone on the train and the build is installed on my laptop when I sit down. That loop changed how I work.</p><div class="who" data-tr>Noa L. <span>· Indie developer</span></div></div>
+              <div class="tq"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div><p data-tr>Design Studio built our landing page against the reference we sent — measured the type, the grid, the motion — and refused to sign off until the frames matched.</p><div class="who" data-tr>Tomer S. <span>· Product Lead</span></div></div>
+              <div class="tq"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div><p data-tr>Everything stays on my Mac. The code never leaves, the memory is mine, and the agent keeps learning from the corrections I make outside of it.</p><div class="who" data-tr>Lior A. <span>· CTO · Health</span></div></div>
+              <div class="tq"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div><p data-tr>It investigated a socket-pool exhaustion I had been chasing for a week, patched it in a worktree, and handed me a green suite. I reviewed a diff, not a story.</p><div class="who" data-tr>Maya R. <span>· Founder · Fintech</span></div></div>
+              <div class="tq"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div><p data-tr>The router is the quiet hero. Same quality of work, a fraction of the invoice, and when a provider ran dry it just moved on without losing the turn.</p><div class="who" data-tr>Daniel K. <span>· Staff Engineer</span></div></div>
+            </div>
+            <div class="cap br" data-cap="test">translateX: 0px</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 04 ABOUT ===== -->
+  <section class="sec" data-section="about" id="about-section">
+    <div class="pin">
+      <div class="blk" style="--off:2">
+        <div class="topbar">
+          <div class="title">
+            <div class="ry"><i><h2 class="t2">About</h2></i></div>
+            <div class="ry d6"><i><span class="tag">From the first question to the verified result, Exody does the engineering on your Mac.</span></i></div>
+          </div>
+          <div class="ry"><i><a class="cta" href="#contact-form" data-goto="footer"><div class="cb"><i></i><i></i><i></i><i></i></div>Talk to us</a></i></div>
+        </div>
+        <div class="about-bio"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div>
+          <p data-tr style="margin:0;max-width:400px">Exody is an autonomous coding agent that lives on your Mac. It reads the codebase, investigates the real cause, edits in isolated worktrees, runs the tests, and reports what it verified — then keeps learning from how you correct it.</p>
+        </div>
+        <div class="about-ap ap" data-aperture="about"><div class="cb collapse-r"><i></i><i></i><i></i><i></i></div></div>
+        <div class="about-img"><div class="cb"><i></i><i></i><i></i><i></i></div>
+          <div class="img-reveal" style="position:absolute;inset:calc(var(--k)*.12)"><i>
+            <div class="frame" style="inset:0"><div class="term" id="about-term"></div></div>
+          </i></div>
+        </div>
+        <div class="about-ticker" id="about-ticker"><div class="cb"><i></i><i></i><i></i><i></i></div>
+          <div class="track" id="ticker-track"></div>
+          <div class="cap bl" data-cap="ticker">translateX: 0px</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 05 CONTACT ===== -->
+  <section class="sec" data-section="footer" id="footer-section">
+    <div class="pin">
+      <div class="blk" style="--off:2">
+        <div class="ft-l1"><div class="ry"><i><h2 class="ft-h smaller">Contact</h2></i></div></div>
+        <div class="ft-box1"><div class="cb"><i></i><i></i><i></i><i></i></div>
+          <a data-tr href="mailto:ops@exody.ai">ops@exody.ai</a>
+          <a data-tr href="https://exody.ai" target="_blank" rel="noopener">exody.ai</a>
+          <a data-tr href="https://github.com/timamar187-creator/exody-releases/releases/latest/download/Exody.dmg"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Download for Mac</a>
+        </div>
+        <div class="ft-l2"><div class="ry"><i><h2 class="ft-h smaller">Information</h2></i></div></div>
+        <div class="ft-box2"><div class="cb"><i></i><i></i><i></i><i></i></div>
+          <p data-tr style="margin:0">Exody Inc. · Tel Aviv</p>
+          <p data-tr style="margin:0">macOS universal binary · Apple Silicon &amp; Intel</p>
+          <span class="t4" data-tr>local-first · zero telemetry</span>
+        </div>
+        <div class="ft-ap ap" data-aperture="footer"><div class="cb"><i></i><i></i><i></i><i></i></div></div>
+        <div class="ft-r"><div class="ry"><i><h2 class="ft-h smaller">Connect</h2></i></div></div>
+        <form class="ft-form" id="contact-form" onsubmit="return false">
+          <div class="fld"><div class="cb"><i></i><i></i><i></i><i></i></div><input type="text" name="name" placeholder="Your name" autocomplete="name" required></div>
+          <div class="fld"><div class="cb"><i></i><i></i><i></i><i></i></div><input type="email" name="email" placeholder="your.email@company.com" autocomplete="email" required></div>
+          <div class="fld"><div class="cb"><i></i><i></i><i></i><i></i></div><input type="text" name="team" placeholder="Team size (optional)"></div>
+          <div class="fld ta"><div class="cb"><i></i><i></i><i></i><i></i></div><textarea name="message" placeholder="Tell us about your codebase..." rows="6" required></textarea></div>
+        </form>
+        <div class="ft-bar">
+          <div class="left">
+            <div class="cell"><div class="cb"><i></i><i></i><i></i><i></i></div><span class="fade">Exody © 2026</span></div>
+            <a class="cell" href="/privacy"><div class="cb"><i></i><i></i><i></i><i></i></div><span class="fade">Privacy policy</span></a>
+            <a class="cell" href="/terms"><div class="cb"><i></i><i></i><i></i><i></i></div><span class="fade">Terms of service</span></a>
+          </div>
+          <button class="send" type="submit" form="contact-form"><div class="cb"><i></i><i></i><i></i><i></i></div><span class="fade">Send Message</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-typescript" viewBox="0 0 24 24"><path fill="currentColor" d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 0 1 1.306.34v2.458a3.95 3.95 0 0 0-.643-.361 5.093 5.093 0 0 0-.717-.26 5.453 5.453 0 0 0-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 0 0-.623.242c-.17.104-.3.229-.393.374a.888.888 0 0 0-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.423.276.696.41c.273.135.582.274.926.416.47.197.892.407 1.266.628.374.222.695.473.963.753.268.279.472.598.614.957.142.359.214.776.214 1.253 0 .657-.125 1.21-.373 1.656a3.033 3.033 0 0 1-1.012 1.085 4.38 4.38 0 0 1-1.487.596c-.566.12-1.163.18-1.79.18a9.916 9.916 0 0 1-1.84-.164 5.544 5.544 0 0 1-1.512-.493v-2.63a5.033 5.033 0 0 0 3.237 1.2c.333 0 .624-.03.872-.09.249-.06.456-.144.623-.25.166-.108.29-.234.373-.38a1.023 1.023 0 0 0-.074-1.089 2.12 2.12 0 0 0-.537-.5 5.597 5.597 0 0 0-.807-.444 27.72 27.72 0 0 0-1.007-.436c-.918-.383-1.602-.852-2.053-1.405-.45-.553-.676-1.222-.676-2.005 0-.614.123-1.141.369-1.582.246-.441.58-.804 1.004-1.089a4.494 4.494 0 0 1 1.47-.629 7.536 7.536 0 0 1 1.77-.201zm-15.113.188h9.563v2.166H9.506v9.646H6.789v-9.646H3.375z"/></symbol>
+  <symbol id="i-react" viewBox="0 0 24 24"><path fill="currentColor" d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38a2.167 2.167 0 0 0-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44a23.476 23.476 0 0 0-3.107-.534A23.892 23.892 0 0 0 12.769 4.7c1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442a22.73 22.73 0 0 0-3.113.538 15.02 15.02 0 0 1-.254-1.42c-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.345-.034-.46 0-.915.01-1.36.034.44-.572.895-1.096 1.345-1.565zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87a25.64 25.64 0 0 1-4.412.005 26.64 26.64 0 0 1-1.183-1.86c-.372-.64-.71-1.29-1.018-1.946a25.17 25.17 0 0 1 1.013-1.954c.38-.66.773-1.286 1.18-1.868A25.245 25.245 0 0 1 12 8.098zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933a25.952 25.952 0 0 0-1.345-2.32zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493a23.966 23.966 0 0 0-1.1-2.98c.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98a23.142 23.142 0 0 0-1.086 2.964c-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39a25.819 25.819 0 0 0 1.341-2.338zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143a22.005 22.005 0 0 1-2.006-.386c.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295a1.185 1.185 0 0 1-.553-.132c-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.345.034.46 0 .915-.01 1.36-.034-.44.572-.895 1.095-1.345 1.565-.455-.47-.91-.993-1.36-1.565z"/></symbol>
+  <symbol id="i-nodedotjs" viewBox="0 0 24 24"><path fill="currentColor" d="M11.998 24c-.321 0-.641-.084-.922-.247l-2.936-1.737c-.438-.245-.224-.332-.08-.383.585-.203.703-.25 1.328-.604.065-.037.151-.023.218.017l2.256 1.339c.082.045.197.045.272 0l8.795-5.076c.082-.047.134-.141.134-.238V6.921c0-.099-.053-.192-.137-.242l-8.791-5.072c-.081-.047-.189-.047-.271 0L3.075 6.68c-.085.05-.139.144-.139.241v10.15c0 .097.054.189.139.235l2.409 1.392c1.307.654 2.108-.116 2.108-.89V7.787c0-.142.114-.253.256-.253h1.115c.139 0 .255.111.255.253v10.021c0 1.745-.95 2.745-2.604 2.745-.508 0-.909 0-2.026-.551L2.28 18.675c-.57-.329-.922-.945-.922-1.604V6.921c0-.659.352-1.275.922-1.603l8.795-5.082c.557-.315 1.296-.315 1.848 0l8.794 5.082c.57.329.924.944.924 1.603v10.15c0 .659-.354 1.273-.924 1.604l-8.794 5.078c-.28.163-.6.247-.925.247zm2.717-6.977c-3.85 0-4.657-1.767-4.657-3.25 0-.14.114-.253.256-.253h1.136c.127 0 .233.092.253.217.171 1.155.681 1.738 3.012 1.738 1.855 0 2.644-.419 2.644-1.402 0-.567-.224-.987-3.104-1.269-2.408-.238-3.896-.77-3.896-2.696 0-1.775 1.497-2.833 4.005-2.833 2.818 0 4.212.978 4.389 3.078a.253.253 0 0 1-.253.278h-1.14a.25.25 0 0 1-.243-.196c-.273-1.216-.939-1.605-2.753-1.605-2.027 0-2.263.706-2.263 1.235 0 .642.278.829 3.008 1.19 2.702.357 3.985.864 3.985 2.766 0 1.917-1.598 3.014-4.386 3.014z"/></symbol>
+  <symbol id="i-tailwindcss" viewBox="0 0 24 24"><path fill="currentColor" d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/></symbol>
+  <symbol id="i-git" viewBox="0 0 24 24"><path fill="currentColor" d="M23.546 10.93 13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.217-.091-.424-.222-.6-.401-.545-.545-.676-1.342-.396-2.009L7.636 3.7.45 10.881c-.6.605-.6 1.584 0 2.189l10.48 10.477c.604.604 1.582.604 2.186 0l10.43-10.43c.605-.603.605-1.582 0-2.187"/></symbol>
+  <symbol id="i-figma" viewBox="0 0 24 24"><path fill="currentColor" d="M15.852 8.981h-4.588V0h4.588c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.491-4.49 4.491zM12.735 7.51h3.117c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-3.117V7.51zm0 1.471H8.148c-2.476 0-4.49-2.014-4.49-4.49S5.672 0 8.148 0h4.588v8.981zm-4.587-7.51c-1.665 0-3.019 1.355-3.019 3.019s1.354 3.02 3.019 3.02h3.117V1.471H8.148zm4.587 15.019H8.148c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h4.588v8.98zM8.148 8.981c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h3.117V8.981H8.148zM8.172 24c-2.489 0-4.515-2.014-4.515-4.49s2.014-4.49 4.49-4.49h4.588v4.441c0 2.503-2.047 4.539-4.563 4.539zm-.024-7.51a3.023 3.023 0 0 0-3.019 3.019c0 1.665 1.365 3.019 3.044 3.019 1.705 0 3.093-1.376 3.093-3.068v-2.97H8.148zm7.704 0h-.098c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h.098c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.49-4.49 4.49zm-.097-7.509c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h.098c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-.098z"/></symbol>
+  <symbol id="i-javascript" viewBox="0 0 24 24"><path fill="currentColor" d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></symbol>
+  <symbol id="i-html5" viewBox="0 0 24 24"><path fill="currentColor" d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></symbol>
+  <symbol id="i-css" viewBox="0 0 24 24"><path fill="currentColor" d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.414z"/></symbol>
+</svg>
+
+<script type="module" src="app.js"></script>
+</body>
 </html>

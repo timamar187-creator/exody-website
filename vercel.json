@@ -2,6 +2,9 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/((?!api/|assets/|lib/|exo/|logo|privacy|terms|refunds).*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api/|assets/|.*\\..*).*)",
+      "destination": "/index.html"
+    }
   ]
 }
