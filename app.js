@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkaiplk';
-import { createRouterHero } from './router-hero.js?v=mtkaiplk';
+import { createBubble } from './bubble.js?v=mtkcu5i0';
+import { createRouterHero } from './router-hero.js?v=mtkcu5i0';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -604,12 +604,21 @@ const svc = {
   counted: false,
   stripX: null,
 };
+
+// the white block behind Development/Design is measured to the word that is showing
+function fitKind() {
+  const k = svc.kind;
+  if (!k) return;
+  const w = k.querySelector(k.classList.contains('is-design') ? '.word.des' : '.word.dev');
+  if (w) k.style.setProperty('--kind-w', w.getBoundingClientRect().width + 'px');
+}
 function setService(i) {
   if (i === svc.idx) return;
   svc.idx = i;
   svc.sq.forEach((el, k) => el.classList.toggle('on', k === i));
   svc.titles.forEach((el, k) => el.classList.toggle('is-cur', k === i));
   svc.kind.classList.toggle('is-design', i >= 3);
+  fitKind();
   svc.descs.forEach((el, k) => { el.classList.toggle('is-cur', k === i); trSet(el, k === i); });
 }
 function runCounters() {
@@ -775,7 +784,7 @@ async function runLoader() {
   requestAnimationFrame(() => requestAnimationFrame(() => word.classList.add('is-visible')));
   setTimeout(() => word.classList.add('is-pulsing'), 800);
   const t0 = performance.now();
-  await Promise.all([document.fonts.ready.catch(() => {}), new Promise((r) => setTimeout(r, 1500))]);
+  await Promise.all([document.fonts.ready.then(() => fitKind()).catch(() => {}), new Promise((r) => setTimeout(r, 1500))]);
   await new Promise((r) => setTimeout(r, Math.max(0, 1800 - (performance.now() - t0))));
   word.classList.add('is-exiting');
   const loader = $('#loader');
