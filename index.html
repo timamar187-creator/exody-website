@@ -14,17 +14,29 @@
   <meta property="og:description" content="An autonomous coding agent that runs on your Mac: it investigates, builds and verifies — across desktop, mobile, a design studio and a smart router.">
   <meta property="og:url" content="https://www.exody.ai/">
   <meta name="twitter:card" content="summary">
-  <link rel="stylesheet" href="styles.css?v=mtlp44n5">
+  <link rel="stylesheet" href="styles.css?v=mtlselvu">
 </head>
 <body>
 
 <!-- ===== splash loader ===== -->
+<!-- the splash is drawn twice, clipped to its left and right half, so the exit can cut it
+     down the middle and slide each half off its own side -->
 <div id="loader" aria-hidden="true">
-  <div class="lgrid" id="loader-grid"></div>
-  <div class="cross"></div>
-  <div class="pbox-host"><div class="pbox"><div class="cb is-corner"><i></i><i></i><i></i><i></i></div></div></div>
-  <div class="word" id="loader-word"><div class="in">
-    <span class="ltr">E</span><span class="ltr">X</span><span class="ltr">O</span><span class="ltr">D</span><span class="ltr">Y</span>
+  <div class="half l"><div class="sheet">
+      <div class="lgrid"></div>
+      <div class="cross"></div>
+      <div class="pbox-host"><div class="pbox"><div class="cb is-corner"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="word"><div class="in">
+        <span class="ltr">E</span><span class="ltr">X</span><span class="ltr">O</span><span class="ltr">D</span><span class="ltr">Y</span>
+      </div></div>
+  </div></div>
+  <div class="half r"><div class="sheet">
+      <div class="lgrid"></div>
+      <div class="cross"></div>
+      <div class="pbox-host"><div class="pbox"><div class="cb is-corner"><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="word"><div class="in">
+        <span class="ltr">E</span><span class="ltr">X</span><span class="ltr">O</span><span class="ltr">D</span><span class="ltr">Y</span>
+      </div></div>
   </div></div>
 </div>
 
@@ -79,8 +91,8 @@
           <div class="rw"><i>Engineering</i></div>
         </div>
         <div class="hero-words r">
-          <div class="rw"><i>Shipping</i></div>
-          <div class="rw"><i>Software</i></div>
+          <div class="rw"><i>Shipping, not</i></div>
+          <div class="rw"><i>storytelling</i></div>
         </div>
 
         <div class="hero-ap ap" data-aperture="hero" id="hero-ap">
@@ -315,9 +327,9 @@
         </div>
         <div class="ft-l2"><div class="ry"><i><h2 class="ft-h smaller">First run</h2></i></div></div>
         <div class="ft-box2"><div class="cb"><i></i><i></i><i></i><i></i></div>
-          <p data-tr style="margin:0"><b>01</b> Drag Exody to Applications and open it.</p>
-          <p data-tr style="margin:0"><b>02</b> Paste the API keys you already have, or point it at Ollama.</p>
-          <p data-tr style="margin:0"><b>03</b> Open a repo, say what you need, watch it work.</p>
+          <p data-tr style="margin:0"><b>01</b> Drag Exody to Applications, open it.</p>
+          <p data-tr style="margin:0"><b>02</b> Add your keys, or point it at Ollama.</p>
+          <p data-tr style="margin:0"><b>03</b> Open a repo. Say what you need.</p>
         </div>
         <div class="ft-ap ap" data-aperture="footer"><div class="cb"><i></i><i></i><i></i><i></i></div></div>
         <div class="ft-r"><div class="ry"><i><h2 class="ft-h smaller">In the box</h2></i></div></div>
@@ -356,6 +368,6 @@
   <symbol id="i-css" viewBox="0 0 24 24"><path fill="currentColor" d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.414z"/></symbol>
 </svg>
 
-<script type="module" src="app.js?v=mtlp44n5"></script>
+<script type="module" src="app.js?v=mtlselvu"></script>
 </body>
 </html>

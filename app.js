@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtlp44n5';
-import { createRouterHero } from './router-hero.js?v=mtlp44n5';
+import { createBubble } from './bubble.js?v=mtlselvu';
+import { createRouterHero } from './router-hero.js?v=mtlselvu';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -379,6 +379,13 @@ function activate(s, on) {
 const heroCb = $('#hero-cb');
 const heroCaps = Object.fromEntries($$('#hero-ap .cap').map((c) => [c.dataset.cap, c]));
 let heroIntro = 0; // 0..1 after the loader
+let heroSwapped = false; // phone: which of the two hero phrases is showing
+function splitHeroLetters() {
+  for (const el of $$('.hero-words .rw > i')) {
+    const t = el.textContent; el.textContent = '';
+    [...t].forEach((c, i) => { const s = document.createElement('span'); s.className = 'ch'; s.style.setProperty('--i', String(i)); s.textContent = c; el.appendChild(s); });
+  }
+}
 function heroFrame(p) {
   const ap = byName.hero.ap;
   const w = ap.clientWidth / 2, h = ap.clientHeight / 2;
@@ -572,7 +579,13 @@ filmInit();
 filmPreload(0);
 function workActivate(on) {
   if (on) { setCase(work.idx, true); }
-  else { clearTimeout(work.chatTimer); bubble.setTint(null); filmPause(null); }
+  else {
+    clearTimeout(work.chatTimer); bubble.setTint(null); filmPause(null);
+    // the case copy and the case name fold away with the section (they used to stay lit through nav travel)
+    trSet(work.name, false);
+    for (const c of work.cases) { const t = $('[data-tr]', c); if (t) trSet(t, false); }
+    $$('.case-details [data-tr]').forEach((t) => trSet(t, false));
+  }
   if (on) { for (let k = 0; k < 4; k++) filmPreload(k); }
 }
 function updateWork(s) {
@@ -685,6 +698,7 @@ $('#svc-desc').style.position = 'relative';
 // ---------------------------------------------------------------- ABOUT
 const about = { track: $('#ticker-track'), cap: $('[data-cap=ticker]'), x: 0, stages: $$('#loop-list .stage') };
 about.stages.forEach((el, i) => el.style.setProperty('--i', String(i)));
+$$('.ft-list .fld').forEach((el, i) => el.style.setProperty('--i', String(i)));
 function updateAbout(s, dt) {
   // the five stages light up one after another: with the scroll on desktop, with a stagger on a phone
   const lit = !s.active ? -1 : MOBILE ? 4 : Math.floor(clamp((s.p - 0.04) / 0.62) * 4.999);
@@ -780,33 +794,38 @@ $$('[data-goto]').forEach((a) => a.addEventListener('click', (e) => {
 // ---------------------------------------------------------------- loader
 let ready = false;
 function buildLoaderGrid() {
-  const grid = $('#loader-grid');
+  // the splash is drawn twice (one copy per half), so every grid gets the same cells
   const K = G.K;
   const left = ((G.vw / 2) % K) - K;
   const colsN = Math.ceil((G.vw + K) / K) + 1;
   const rowsN = G.rows;
-  grid.style.left = px(left);
-  grid.style.width = px(colsN * K);
-  grid.style.gridTemplateRows = `repeat(${rowsN}, ${K}px)`;
   let h = '';
   for (let r = 0; r < rowsN; r++) {
     h += `<div class="lrow" style="grid-template-columns:repeat(${colsN}, ${K}px)">`;
     for (let c = 0; c < colsN; c++) h += `<div class="lcell" style="width:${K}px;height:${K}px"></div>`;
     h += '</div>';
   }
-  grid.innerHTML = h;
+  for (const grid of $$('#loader .lgrid')) {
+    grid.style.left = px(left);
+    grid.style.width = px(colsN * K);
+    grid.style.gridTemplateRows = `repeat(${rowsN}, ${K}px)`;
+    grid.innerHTML = h;
+  }
 }
 async function runLoader() {
-  const word = $('#loader-word');
-  requestAnimationFrame(() => requestAnimationFrame(() => word.classList.add('is-visible')));
-  setTimeout(() => word.classList.add('is-pulsing'), 800);
+  const words = $$('#loader .word');
+  requestAnimationFrame(() => requestAnimationFrame(() => words.forEach((w) => w.classList.add('is-visible'))));
+  setTimeout(() => words.forEach((w) => w.classList.add('is-pulsing')), 800);
   const t0 = performance.now();
   await Promise.all([document.fonts.ready.then(() => fitKind()).catch(() => {}), new Promise((r) => setTimeout(r, 1500))]);
   await new Promise((r) => setTimeout(r, Math.max(0, 1800 - (performance.now() - t0))));
-  word.classList.add('is-exiting');
+  words.forEach((w) => w.classList.add('is-exiting'));
   const loader = $('#loader');
-  setTimeout(() => loader.classList.add('is-exiting'), 250);
-  setTimeout(() => { loader.remove(); }, 900);
+  // the cut: once the word has folded, the splash splits down the middle and each half slides off
+  // its own side; the site is uncovered as they go and builds underneath (header brackets, hero frame)
+  await new Promise((r) => setTimeout(r, 300));
+  loader.classList.add('is-exiting');
+  setTimeout(() => { loader.remove(); }, 1050);
   document.body.classList.add('is-ready');
   ready = true;
   $$('#header .cb').forEach((c) => c.classList.add('is-full'));
@@ -891,26 +910,12 @@ function frame(now) {
       bubble.setHeroPath(clamp(y / (G.vh * 0.9)));
     }
     heroFrame(0);
-    // the word swap: "Autonomous Engineering" leaves upward as the page scrolls and
-    // "Shipping Software" rises into the same slot (each line a beat behind the first)
+    // the word swap (phone only — the desktop shows both phrases at once, either side of the hole):
+    // a split-flap roll. Time-driven from a scroll threshold, because a flick crosses a scrubbed
+    // swap band inside one frame, which is why the old version only ever read as a fade (03.09.26)
     {
-      // a phone scrolls the words away within ~200px: the swap has to land within the first
-      // 40px of travel or the second phrase is never seen (owner, 02.09.26)
-      const p = MOBILE ? clamp((y - 6) / (G.K * 0.6)) : clamp((y - G.K * 0.3) / (G.vh * 0.4));
-      const L = $$('.hero-words.l .rw > i'), R = $$('.hero-words.r .rw > i');
-      // a short lift with a fade, not a full roll: the two phrases never read as four lines
-      L.forEach((el, k) => {
-        const e = easeInOut(clamp((p - k * 0.08) / 0.92));
-        el.style.transition = p > 0 ? 'none' : '';
-        el.style.transform = p > 0 ? `translateY(${(-14 * e).toFixed(1)}%)` : '';
-        el.style.opacity = p > 0 ? String((1 - e).toFixed(3)) : '';
-      });
-      R.forEach((el, k) => {
-        const e = easeInOut(clamp((p - k * 0.08) / 0.92));
-        el.style.transition = 'none';
-        el.style.transform = `translateY(${(14 * (1 - e)).toFixed(1)}%)`;
-        el.style.opacity = String(e.toFixed(3));
-      });
+      const swapped = y > 8;
+      if (swapped !== heroSwapped) { heroSwapped = swapped; byName.hero.blk.classList.toggle('is-swapped', swapped); }
     }
     filmTick(now);
     updateServices(byName.services, now);
@@ -1007,6 +1012,7 @@ function boot() {
   if (MOBILE) measureMobileAnchor();
   buildRuler();
   buildLoaderGrid();
+  if (MOBILE) splitHeroLetters();
   setAnchor('hero', true);
   $$('[data-aperture] .cb').forEach((c) => { if (c.id !== 'hero-cb') c.classList.add('is-full'); });
   bubble.setVisible(true);
