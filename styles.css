@@ -418,7 +418,10 @@ body.is-ready #header .cell{opacity:1}
 .sec[data-section=footer] .blk{--off:2;grid-template-rows:repeat(9,var(--k))}
 
 /* ---------- LOADER ---------- */
-#loader{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:#f3f3f1;--border-primary:rgba(0,0,0,.42);--grid-line-large:rgba(0,0,0,.08);transition:clip-path .5s var(--ease-std)}
+/* The element itself stays dark: iOS Safari samples the fixed full-viewport element's own background-color
+   for its toolbar tint at load and keeps it for the session. The light sheet is painted by ::before. */
+#loader{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:var(--background-primary);--border-primary:rgba(0,0,0,.42);--grid-line-large:rgba(0,0,0,.08);transition:clip-path .5s var(--ease-std)}
+#loader::before{content:"";position:absolute;inset:0;background:#f3f3f1}
 #loader.is-exiting{clip-path:inset(50% 0 50% 0)}
 #loader .lgrid{position:absolute;top:0;height:100svh;pointer-events:none;display:grid;overflow:hidden}
 #loader .lrow{display:grid}
