@@ -773,7 +773,9 @@ html.is-mobile .about-img{grid-row:span 6;grid-column:1 / -1}
 html.is-mobile .about-ticker{grid-row:span 2;grid-column:1 / -1}
 /* footer */
 html.is-mobile .ft-l1,html.is-mobile .ft-l2,html.is-mobile .ft-r{grid-row:auto;grid-column:1 / -1}
-html.is-mobile .ft-box1,html.is-mobile .ft-box2{grid-row:span 2;grid-column:1 / -1}
+html.is-mobile .ft-box1{grid-row:span 2;grid-column:1 / -1}
+html.is-mobile .ft-box2{grid-row:span 3;grid-column:1 / -1;--grid-font-base:12.5;gap:.55em}
+html.is-mobile .ft-box2 p{line-height:1.4}
 html.is-mobile .ft-ap{grid-row:span 5;grid-column:1 / -1}
 html.is-mobile .ft-form{grid-row:span 6;grid-column:1 / -1;grid-template-rows:repeat(3,var(--k)) 1fr}
 html.is-mobile .ft-bar{grid-row:span 2;grid-column:1 / -1;flex-direction:column-reverse;justify-content:flex-start}
@@ -853,10 +855,12 @@ html.is-mobile #header .brand{width:auto;padding:0 calc(var(--k)*.25)}
 .stage.is-on .num{color:var(--accent-primary)}
 .stage.is-on .name{color:var(--text-primary)}
 .stage.is-on .desc{opacity:1;transform:none;color:var(--text-tertiary)}
-html.is-mobile .loop-list{grid-row:span 5;grid-column:1 / -1}
-html.is-mobile .stage{grid-template-columns:calc(var(--k)*.45) calc(var(--k)*1.5) 1fr;padding:0 calc(var(--k)*.2) 0 calc(var(--k)*.22)}
-html.is-mobile .stage .name{--grid-font-base:12;letter-spacing:.06em}
-html.is-mobile .stage .desc{--grid-font-base:11.5;line-height:1.35}
+html.is-mobile .loop-list{grid-row:span 10;grid-column:1 / -1;grid-template-rows:repeat(5,calc(var(--k)*2))}
+html.is-mobile .stage{display:flex;flex-wrap:wrap;align-content:center;align-items:baseline;column-gap:.9em;row-gap:.3em;padding:0 calc(var(--k)*.3);text-align:left}
+html.is-mobile .stage .num{flex:none}
+html.is-mobile .stage .name{flex:none;--grid-font-base:12.5;letter-spacing:.08em}
+html.is-mobile .stage .desc{flex-basis:100%}
+html.is-mobile .stage .desc{--grid-font-base:11.5;line-height:1.4;padding-right:calc(var(--k)*.2)}
 html.is-mobile .stage.is-on .desc{transition-delay:calc(var(--i,0) * 90ms)}
 /* ── GET EXODY (03.09.26): the download is the point of the page; the form is gone ── */
 .ft-box1{gap:.5em}
