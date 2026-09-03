@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtkw3nu9';
-import { createRouterHero } from './router-hero.js?v=mtkw3nu9';
+import { createBubble } from './bubble.js?v=mtln6frq';
+import { createRouterHero } from './router-hero.js?v=mtln6frq';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -22,7 +22,7 @@ const HERO_PLACEMENT = { 16: [1, 2, 2, 4], 18: [2, 3, 3, 5], 20: [2, 3, 3, 5], 2
 const DIST = { hero: 2.2, work: 5, services: 5, about: 3, footer: 1.6 };
 // mobile: only Product and Capabilities pin (their rails), the rest flows
 const DIST_M = { work: 3.2, services: 4.2 };
-const LABEL = { hero: '', work: 'Product', services: 'Capabilities', about: 'About', footer: 'Contact' };
+const LABEL = { hero: '', work: 'Product', services: 'Capabilities', about: 'The loop', footer: 'Get Exody' };
 // ── MOBILE FLOW (02.09.26): the reference's non-pinning layout. Sections run in
 // normal flow, one column of blocks; the orb docks in whichever aperture is on
 // screen; the work heroes play their move on entry instead of on scroll.
@@ -136,6 +136,7 @@ if (MOBILE) {
   menu.setAttribute('aria-label', 'Sections');
   menu.innerHTML = ['work', 'services', 'about', 'footer'].map((n, i) =>
     `<a href="#${n}-section" data-goto="${n}"><div class="cb is-full"><i></i><i></i><i></i><i></i></div><span class="n">0${i + 1}</span>${LABEL[n]}</a>`).join('') +
+    `<a class="dl" href="https://github.com/timamar187-creator/exody-releases/releases/latest/download/Exody.dmg"><div class="cb is-full"><i></i><i></i><i></i><i></i></div><span class="n">↓</span>Download for Mac</a>` +
     '<div class="foot">Exody · autonomous coding agent</div>';
   document.body.appendChild(menu);
   btn.addEventListener('click', () => document.body.classList.toggle('menu-open'));
@@ -682,8 +683,12 @@ svc.descs.forEach((d, k) => { d.style.position = k ? 'absolute' : 'relative'; d.
 $('#svc-desc').style.position = 'relative';
 
 // ---------------------------------------------------------------- ABOUT
-const about = { track: $('#ticker-track'), cap: $('[data-cap=ticker]'), x: 0 };
+const about = { track: $('#ticker-track'), cap: $('[data-cap=ticker]'), x: 0, stages: $$('#loop-list .stage') };
+about.stages.forEach((el, i) => el.style.setProperty('--i', String(i)));
 function updateAbout(s, dt) {
+  // the five stages light up one after another: with the scroll on desktop, with a stagger on a phone
+  const lit = !s.active ? -1 : MOBILE ? 4 : Math.floor(clamp((s.p - 0.04) / 0.62) * 4.999);
+  about.stages.forEach((el, i) => el.classList.toggle('is-on', i <= lit));
   const half = about.track.scrollWidth / 2 || 1;
   const drive = (s.pinned || (MOBILE && s.active)) ? 22 : 0;
   about.x = (about.x + dt * drive + (s.pinned ? 0 : 0)) % half;
@@ -749,11 +754,18 @@ function stepScroll() {
   if (Math.abs(scroll.target - scroll.cur) < 0.4) { scroll.cur = scroll.target; scroll.animating = false; }
   window.scrollTo(0, scroll.cur);
 }
+let travel = null;
+function travelTo(y) {
+  if (MOBILE) { scrollTo0(y); return; }
+  for (const s of SEC) if (s.active) activate(s, false);
+  travel = { t0: performance.now() };
+  setTimeout(() => scrollTo0(y), 420);
+}
 $$('[data-goto]').forEach((a) => a.addEventListener('click', (e) => {
   e.preventDefault();
   const s = byName[a.dataset.goto];
   measureSections();
-  scrollTo0(MOBILE ? s.top - G.K * 0.5 : s.top + 0.12 * (s.h - G.vh));
+  travelTo(MOBILE ? s.top - G.K * 0.5 : s.top + 0.12 * (s.h - G.vh));
 }));
 
 // ---------------------------------------------------------------- header + hover corners
@@ -906,8 +918,11 @@ function frame(now) {
     updateFooter(byName.footer);
   } else {
     // activation (hero activates via the loader)
+    const travelling = travel && (scroll.animating || performance.now() - travel.t0 < 520);
+    if (travel && !travelling) travel = null;
     for (const s of SEC) {
       if (s === byName.hero && !ready) continue;
+      if (travelling) { activate(s, false); continue; }
       let on = s.pinned || (s === cur && s.name === 'footer');
       // desktop hero: the labels and words arrive once the scroll has built the square
       if (s === byName.hero && !MOBILE) on = ready && heroIntro >= 0.85;
@@ -1000,7 +1015,7 @@ function boot() {
 }
 addEventListener('resize', () => { layoutGrid(); measureSections(); buildRuler(); if (MOBILE) measureMobileAnchor(); if (anchor.name) setAnchor(anchor.name, true); });
 addEventListener('load', () => { measureSections(); });
-$('#brand')?.addEventListener('click', (e) => { e.preventDefault(); scrollTo0(0); });
+$('#brand')?.addEventListener('click', (e) => { e.preventDefault(); travelTo(0); });
 boot();
 
 // ---------------------------------------------------------------- cursor

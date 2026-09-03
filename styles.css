@@ -418,12 +418,12 @@ body.is-ready #header .cell{opacity:1}
 .sec[data-section=footer] .blk{--off:2;grid-template-rows:repeat(9,var(--k))}
 
 /* ---------- LOADER ---------- */
-#loader{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:var(--background-primary);transition:clip-path .5s var(--ease-std)}
+#loader{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:#f3f3f1;--border-primary:rgba(0,0,0,.42);--grid-line-large:rgba(0,0,0,.08);transition:clip-path .5s var(--ease-std)}
 #loader.is-exiting{clip-path:inset(50% 0 50% 0)}
 #loader .lgrid{position:absolute;top:0;height:100svh;pointer-events:none;display:grid;overflow:hidden}
 #loader .lrow{display:grid}
-#loader .lcell{box-shadow:inset 1px 1px 0 0 var(--grid-line-large);background:var(--background-primary)}
-#loader .word{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);text-transform:uppercase;color:var(--text-primary);font-weight:100;line-height:1;transform-origin:50%;transition:transform .5s var(--ease-std),opacity .5s var(--ease-std);pointer-events:none}
+#loader .lcell{box-shadow:inset 1px 1px 0 0 var(--grid-line-large);background:#f3f3f1}
+#loader .word{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);text-transform:uppercase;color:#161616;font-weight:100;line-height:1;transform-origin:50%;transition:transform .5s var(--ease-std),opacity .5s var(--ease-std);pointer-events:none}
 #loader .word .in{width:100%;max-width:var(--max-w);display:flex;justify-content:space-between;padding:0 calc(var(--k)*.5)}
 #loader .word .ltr{opacity:0;display:flex;align-items:center;height:100%;font-size:max(50px,min(1.5rem + 1vw,222px));transition:opacity .2s}
 #loader .word.is-visible .ltr{opacity:1}
@@ -445,7 +445,7 @@ body.is-ready #header .cell{opacity:1}
 #loader .pbox{width:calc(var(--k)*6);height:calc(var(--k)*6);position:relative;transform-origin:50%;--cl:33.333%;animation:.8s forwards activate-box;transform:scale(.6667)}
 #loader .pbox .cb{--cd:0s}
 #loader .cross{position:absolute;left:50%;top:calc(var(--k)/2);width:var(--k);height:var(--k);transform:translate(-50%,-50%);z-index:3}
-#loader .cross:before,#loader .cross:after{content:"";position:absolute;background:var(--border-primary)}
+#loader .cross:before,#loader .cross:after{content:"";position:absolute;background:rgba(0,0,0,.4)}
 #loader .cross:before{left:50%;top:40%;width:1px;height:20%}
 #loader .cross:after{top:50%;left:40%;height:1px;width:20%}
 
@@ -840,3 +840,48 @@ html.is-mobile #header .in{padding-left:1px}
 html.exo-cursor-on,html.exo-cursor-on *{cursor:none!important}
 #cursor{position:fixed;left:0;top:0;width:20px;height:20px;border-radius:50%;background:#fff;mix-blend-mode:difference;pointer-events:none;z-index:10000;will-change:transform;opacity:0;transition:opacity .25s}
 html.exo-cursor-on #cursor{opacity:1}
+/* the top bar sits on the grid (03.09.26): every cell is a whole number of squares */
+#header .nav.dl{width:calc(var(--k)*3);gap:.5em;color:var(--text-primary)}
+#header .nav.dl .apple{width:1em;height:1em;margin-top:-.1em}
+html.is-mobile #header .brand{width:auto;padding:0 calc(var(--k)*.25)}
+/* ── THE LOOP (03.09.26): five stages light up as the pinned scroll advances; the terminal plays the run ── */
+.loop-list{position:relative;grid-row:2 / span 5;grid-column:1 / span 8;display:grid;grid-template-rows:repeat(5,var(--k))}
+.stage{position:relative;display:grid;grid-template-columns:calc(var(--k)*.6) calc(var(--k)*1.95) 1fr;align-items:center;padding:0 calc(var(--k)*.3) 0 calc(var(--k)*.32);color:var(--text-quaternary)}
+.stage .num{font-family:var(--font-mono);--grid-font-base:11;letter-spacing:.14em;color:var(--text-quaternary);transition:color .5s}
+.stage .name{--grid-font-base:15;font-weight:300;letter-spacing:.08em;text-transform:uppercase;color:var(--text-quaternary);transition:color .5s}
+.stage .desc{--grid-font-base:13;line-height:1.45;color:var(--text-quaternary);opacity:0;transform:translateY(8px);transition:opacity .6s var(--ease-house),transform .6s var(--ease-house),color .5s}
+.stage.is-on .num{color:var(--accent-primary)}
+.stage.is-on .name{color:var(--text-primary)}
+.stage.is-on .desc{opacity:1;transform:none;color:var(--text-tertiary)}
+html.is-mobile .loop-list{grid-row:span 5;grid-column:1 / -1}
+html.is-mobile .stage{grid-template-columns:calc(var(--k)*.45) calc(var(--k)*1.5) 1fr;padding:0 calc(var(--k)*.2) 0 calc(var(--k)*.22)}
+html.is-mobile .stage .name{--grid-font-base:12;letter-spacing:.06em}
+html.is-mobile .stage .desc{--grid-font-base:11.5;line-height:1.35}
+html.is-mobile .stage.is-on .desc{transition-delay:calc(var(--i,0) * 90ms)}
+/* ── GET EXODY (03.09.26): the download is the point of the page; the form is gone ── */
+.ft-box1{gap:.5em}
+.ft-box1 .ry{height:auto;margin-bottom:.35em}
+.ft-box1 .mono{font-family:var(--font-mono);--grid-font-base:11;letter-spacing:.08em;color:var(--text-quaternary);line-height:1.6}
+.ft-box2 p b{font-family:var(--font-mono);--grid-font-base:11;letter-spacing:.12em;font-weight:400;color:var(--text-quaternary);margin-right:.6em}
+.ft-list{grid-row:2 / span 6;grid-column:var(--ft-form-c,15) / span calc(var(--cols) - var(--ft-form-c,15) + 1);position:relative;display:grid;grid-template-rows:repeat(6,var(--k))}
+.ft-list .fld{position:relative;display:flex;align-items:center;gap:calc(var(--k)*.35);padding:0 calc(var(--k)*.35);color:var(--text-tertiary);--grid-font-base:14;font-weight:300}
+.ft-list .n{font-family:var(--font-mono);--grid-font-base:11;letter-spacing:.14em;color:var(--text-quaternary)}
+.ft-bar .cell.w3{width:calc(var(--k)*3)}
+.ft-bar .send .apple{width:1em;height:1em;margin-right:.5em;margin-top:-.1em}
+.ft-bar .send .fade{display:inline-flex;align-items:center}
+html.is-mobile .ft-list{grid-row:span 6;grid-column:1 / -1}
+html.is-mobile .ft-list .fld{--grid-font-base:13;padding:0 calc(var(--k)*.3);gap:calc(var(--k)*.3)}
+html.is-mobile .ft-bar .cell.w3{flex:1;width:auto}
+/* ── everything builds with its section (03.09.26): icons, the device films, the model logos ── */
+.case .tech>i{opacity:0;transform:translateY(6px);transition:opacity .5s var(--ease-house),transform .5s var(--ease-house)}
+.blk.is-active .case .tech>i,.blk.is-active .case-details .tech>i{opacity:1;transform:none}
+.blk.is-active .tech>i:nth-child(3){transition-delay:.08s}
+.blk.is-active .tech>i:nth-child(4){transition-delay:.16s}
+.blk.is-active .tech>i:nth-child(5){transition-delay:.24s}
+.blk.is-active .tech>i:nth-child(6){transition-delay:.32s}
+.blk.is-active .tech>i:nth-child(7){transition-delay:.4s}
+.blk.is-active .tech>i:nth-child(8){transition-delay:.48s}
+.hero-one>div{clip-path:inset(100% 0 0);transition:clip-path .9s var(--ease-house) .15s}
+.blk.is-active .hero-one>div{clip-path:inset(0)}
+.about-ticker .track{opacity:0;transition:opacity .9s .35s}
+.blk.is-active .about-ticker .track{opacity:1}
