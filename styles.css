@@ -10,7 +10,7 @@
 
 :root{
   /* dark theme tokens (the reference's [data-theme=dark]) */
-  --background-primary:#1c1c1c;
+  --background-primary:#131313;
   --background-secondary:rgba(73,73,73,.2);
   --background-tertiary:#27272a;
   --background-inverse:#fafafa;
@@ -22,9 +22,9 @@
   --border-primary:#404040;
   --border-secondary:#3f3f46;
   --border-light:#4d4d4d;
-  --grid-background:#1c1c1c;
-  --grid-line-small:rgba(255,255,255,.05);
-  --grid-line-large:#282727;
+  --grid-background:#131313;
+  --grid-line-small:rgba(255,255,255,.04);
+  --grid-line-large:#1f1f1f;
   --accent-primary:#57ded3;
   --accent-hover:#43cabc;
   --logo-accent:#2fc5b1;
@@ -572,8 +572,8 @@ body.is-ready #header .cell{opacity:1}
 .xstudio em{font-style:normal;color:var(--xdim)}
 .xstudio .r{margin-left:auto}.xstudio .r+.r{margin-left:0}
 .xcanvascol{grid-template-rows:auto auto 1fr}
-.xcanvas{position:relative;background:#1c1c1c;overflow:hidden;min-height:0}
-.xsite{position:absolute;inset:0;background-image:linear-gradient(to right,#282727 1px,transparent 1px),linear-gradient(to bottom,#282727 1px,transparent 1px);background-size:11% 14%;font-family:var(--font-sans);color:#a1a1aa}
+.xcanvas{position:relative;background:#131313;overflow:hidden;min-height:0}
+.xsite{position:absolute;inset:0;background-image:linear-gradient(to right,#1f1f1f 1px,transparent 1px),linear-gradient(to bottom,#1f1f1f 1px,transparent 1px);background-size:11% 14%;font-family:var(--font-sans);color:#a1a1aa}
 .xsite-hd{position:absolute;left:0;right:0;top:0;height:14%;display:flex;align-items:center;gap:0;padding-left:10%;--grid-font-base:7;letter-spacing:.14em;color:#d4d4d8;font-weight:300}
 .xsite-hd b{font-weight:300;color:#2fc5b1}
 .xsite-hd i,.xsite-hd em{font-style:normal;color:#71717a;margin-left:10%;--grid-font-base:7}
