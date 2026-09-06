@@ -10,7 +10,7 @@
   "redirects": [
     {
       "source": "/download",
-      "destination": "https://github.com/timamar187-creator/exody-releases/releases/latest/download/Exody.dmg",
+      "destination": "https://github.com/timamar187-creator/exody-releases/releases/latest/download/Exody.zip",
       "permanent": false
     }
   ]

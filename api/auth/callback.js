@@ -23,6 +23,19 @@ export default async function handler(req, res) {
   const code = String(req.query?.code || "");
   const state = String(req.query?.state || "");
   const m = state.match(/^([A-Za-z0-9_-]{8,64})\.(\d{2,5})$/);
+  // Google refused — the user cancelled, or the consent screen is still in
+  // testing mode and this account is not a listed tester. Hand the reason
+  // back to the app: a bare "bad request" here left a friend's install
+  // waiting five minutes with nothing on screen (06.09.26).
+  const refused = String(req.query?.error || "").replace(/[^a-z_]/gi, "").slice(0, 40);
+  if (refused && m) {
+    const [, nonce, port] = m;
+    res.writeHead(302, {
+      Location: `http://127.0.0.1:${port}/done?state=${nonce}&error=${encodeURIComponent(refused)}`,
+    });
+    res.end();
+    return;
+  }
   if (!code || !m) {
     res.status(400).send("bad request");
     return;
