@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtqcn5ns';
-import { createRouterHero } from './router-hero.js?v=mtqcn5ns';
+import { createBubble } from './bubble.js?v=mtqd64bd';
+import { createRouterHero } from './router-hero.js?v=mtqd64bd';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -136,7 +136,7 @@ if (MOBILE) {
   menu.setAttribute('aria-label', 'Sections');
   menu.innerHTML = ['work', 'services', 'about', 'footer'].map((n, i) =>
     `<a href="#${n}-section" data-goto="${n}"><div class="cb is-full"><i></i><i></i><i></i><i></i></div><span class="n">0${i + 1}</span>${LABEL[n]}</a>`).join('') +
-    `<a class="dl" href="https://github.com/timamar187-creator/exody-releases/releases/latest/download/Exody.dmg"><div class="cb is-full"><i></i><i></i><i></i><i></i></div><span class="n">↓</span>Download for Mac</a>` +
+    `<a class="dl" href="/download"><div class="cb is-full"><i></i><i></i><i></i><i></i></div><span class="n">↓</span>Download for Mac</a>` +
     '<div class="foot">Exody · autonomous coding agent</div>';
   document.body.appendChild(menu);
   btn.addEventListener('click', () => document.body.classList.toggle('menu-open'));
