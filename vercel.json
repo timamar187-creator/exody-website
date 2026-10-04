@@ -12,6 +12,16 @@
       "source": "/download",
       "destination": "https://github.com/timamar187-creator/exody-releases/releases/latest/download/Exody.zip",
       "permanent": false
+    },
+    {
+      "source": "/story",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/story/:path*",
+      "destination": "/",
+      "permanent": false
     }
   ]
 }

@@ -704,7 +704,7 @@ html.is-mobile .sec[data-section=footer] .blk{margin-bottom:calc(var(--k)*1)}
 html.is-mobile .topbar{grid-column:1 / -1;grid-row:auto;height:var(--k)}
 html.is-mobile .topbar .cta{display:none}
 html.is-mobile h2{--grid-font-base:30}
-html.is-mobile .topbar .title .tag{--grid-font-base:12;white-space:normal}
+html.is-mobile .topbar .title .tag{--grid-font-base:12;white-space:normal;text-wrap:balance}
 html.is-mobile .cap{--grid-font-base:10}
 /* hero */
 html.is-mobile .hero-lbl{--grid-font-base:10;letter-spacing:.1em;white-space:normal}
@@ -812,7 +812,7 @@ html.is-mobile .svc-bubble .cb>i:nth-child(4){box-shadow:inset 0 -1px 0 0 var(--
 /* ── ROUTER HERO (02.09.26): the switchboard, no device ── */
 .hero-one .rhero{position:absolute;inset:calc(var(--k)*.06) calc(var(--k)*.04)}
 .hero-one .rhero canvas{width:100%;height:100%;display:block}
-/* the hatched filler cells beside the figures are gone (owner, 02.09.26); the 3,024 cell takes the column */
+/* the hatched filler cells beside the figures are gone (owner, 02.09.26); the second figure's cell takes the column */
 .svc-stats .h1,.svc-stats .h2{display:none}
 .svc-stats .s2{grid-column:1 / span 4}
 /* WebKit gave the card's kind pill an 8px box: the main size is stated as a flex basis, not a height */
@@ -931,3 +931,32 @@ html.is-mobile .hero-words.l .ch{transition-delay:var(--in)}
 html.is-mobile .hero-words.r .ch{transform:translateY(112%);transition-delay:var(--out)}
 html.is-mobile .is-swapped .hero-words.l .ch{transform:translateY(-112%);transition-delay:var(--out)}
 html.is-mobile .is-swapped .hero-words.r .ch{transform:none;transition-delay:var(--in)}
+
+/* ===== Why Exody (16.09.26): the rival word in the title, the comparison cards ===== */
+.rival{display:inline-block;transition:opacity .22s var(--ease-house),transform .22s var(--ease-house)}
+.rival.is-swap{opacity:0;transform:translateY(.18em)}
+.svc-test.is-cmp .tq.cmp{justify-content:flex-start;gap:.3em;padding-top:calc(var(--k)*.12);padding-bottom:calc(var(--k)*.1)}
+.svc-test.is-cmp .tq.cmp .h{--grid-font-base:15;font-weight:300;color:var(--text-primary);line-height:1.15;letter-spacing:-.01em}
+.svc-test.is-cmp .tq.cmp .h b{font-weight:300;color:var(--text-tertiary)}
+.svc-test.is-cmp .tq.cmp .lg{display:grid;grid-template-columns:4.2em 1fr 1fr;gap:.7em;--grid-font-base:8;font-family:var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-quaternary)}
+.svc-test.is-cmp .tq.cmp .lg span:first-child{grid-column:2;color:var(--text-secondary)}
+.svc-test.is-cmp .tq.cmp .rows{list-style:none;margin:0;padding:0;display:grid;gap:.15em;--grid-font-base:10;line-height:1.25}
+.svc-test.is-cmp .tq.cmp .rows li{display:grid;grid-template-columns:4.2em 1fr 1fr;gap:.7em;align-items:baseline;border-top:1px solid var(--border-primary);padding-top:.15em}
+.svc-test.is-cmp .tq.cmp .k{color:var(--text-quaternary);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;--grid-font-base:8}
+.svc-test.is-cmp .tq.cmp .x{color:var(--text-primary)}
+.svc-test.is-cmp .tq.cmp .o{color:var(--text-quaternary)}
+html.is-mobile .svc-test.is-cmp{grid-row:span 6}
+html.is-mobile .svc-test.is-cmp .tq.cmp{padding:calc(var(--k)*.3) calc(var(--k)*.3)}
+html.is-mobile .svc-test.is-cmp .tq.cmp .h{--grid-font-base:20}
+html.is-mobile .svc-test.is-cmp .tq.cmp .rows{--grid-font-base:12;gap:.35em}
+html.is-mobile .svc-test.is-cmp .tq.cmp .rows li{grid-template-columns:5em 1fr;gap:.5em .7em}
+html.is-mobile .svc-test.is-cmp .tq.cmp .rows li .o{grid-column:2;--grid-font-base:11}
+html.is-mobile .svc-test.is-cmp .tq.cmp .lg{display:none}
+html.is-mobile .svc-test.is-cmp .tq.cmp .rows li .o::before{content:"vs · ";color:var(--text-quaternary)}
+
+/* desktop: the pinned strip has room for the three decisive rows; the phone shows all five */
+html:not(.is-mobile) .svc-test.is-cmp .tq.cmp .rows li:nth-child(n+4){display:none}
+
+/* ── no one-word last lines (04.10.26): the copy is rewritten for the measured claims, and a
+   paragraph that ends on a lone "API." or "tests." reads as a mistake on a phone ── */
+.case .txt .p,html.is-mobile .svc-card .cd,html.is-mobile .stage .desc{text-wrap:pretty}

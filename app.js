@@ -3,8 +3,8 @@
  * anchor + aperture mask, section connectors, corner marks, text reveals,
  * printed captions, loader, rulers.  One requestAnimationFrame drives it all.
  */
-import { createBubble } from './bubble.js?v=mtqd64bd';
-import { createRouterHero } from './router-hero.js?v=mtqd64bd';
+import { createBubble } from './bubble.js?v=mut6wibl';
+import { createRouterHero } from './router-hero.js?v=mut6wibl';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -22,7 +22,7 @@ const HERO_PLACEMENT = { 16: [1, 2, 2, 4], 18: [2, 3, 3, 5], 20: [2, 3, 3, 5], 2
 const DIST = { hero: 2.2, work: 5, services: 5, about: 3, footer: 1.6 };
 // mobile: only Product and Capabilities pin (their rails), the rest flows
 const DIST_M = { work: 3.2, services: 4.2 };
-const LABEL = { hero: '', work: 'Product', services: 'Capabilities', about: 'The loop', footer: 'Get Exody' };
+const LABEL = { hero: '', work: 'Product', services: 'Why Exody', about: 'The loop', footer: 'Get Exody' };
 // ── MOBILE FLOW (02.09.26): the reference's non-pinning layout. Sections run in
 // normal flow, one column of blocks; the orb docks in whichever aperture is on
 // screen; the work heroes play their move on entry instead of on scroll.
@@ -170,7 +170,7 @@ if (MOBILE) {
     `<div class="svc-card"><div class="cb is-full"><i></i><i></i><i></i><i></i></div>` +
     `<div class="svc-sq">${titles.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>` +
     `<div class="ct">${t}</div>` +
-    `<div class="svc-kind${i >= 3 ? ' is-design' : ''}"><span class="bg"></span><span class="word dev">Development</span><span class="word des">Design</span></div>` +
+    `<div class="svc-kind${i >= 3 ? ' is-design' : ''}"><span class="bg"></span><span class="word dev">Engine</span><span class="word des">Agents</span></div>` +
     `<p class="cd">${descs[i]}</p><span class="hint">${i + 1} / ${titles.length}${i < titles.length - 1 ? ' · scroll' : ''}</span></div>`).join('');
   list.after(cards);
   // Testimonials: swipe, with the arrows as a fallback.
@@ -283,7 +283,7 @@ const TERM_SCRIPT = [
   ['out', '› patch in worktree fix/auth-clock · 3 edits'],
   ['out', '› node --test · <span class="ok">21 passed</span> · 0 failed'],
   ['out', '› verified in browser · screenshot attached'],
-  ['ok', '<b>✓</b> done in 3m 41s · cost <span class="ok">$0.19</span>'],
+  ['ok', '<b>✓</b> <span class="ok">diff reviewed</span> · done in 3m 41s'],
 ];
 function termStop() { term.running = false; clearTimeout(term.timer); }
 function termRun() {
@@ -694,6 +694,15 @@ $('#test-next').addEventListener('click', () => { svc.testIdx = clamp(svc.testId
 // service descs: the current one only
 svc.descs.forEach((d, k) => { d.style.position = k ? 'absolute' : 'relative'; d.style.left = 0; d.style.top = 0; });
 $('#svc-desc').style.position = 'relative';
+// the title names a rival in turn: "Like Claude. Only better." → Cursor → Codex
+(() => {
+  const el = $('#rival'); if (!el) return;
+  const names = ['Claude', 'Cursor', 'Codex']; let i = 0;
+  setInterval(() => {
+    el.classList.add('is-swap');
+    setTimeout(() => { i = (i + 1) % names.length; el.textContent = names[i]; el.classList.remove('is-swap'); }, 240);
+  }, 2600);
+})();
 
 // ---------------------------------------------------------------- ABOUT
 const about = { track: $('#ticker-track'), cap: $('[data-cap=ticker]'), x: 0, stages: $$('#loop-list .stage') };

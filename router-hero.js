@@ -3,7 +3,9 @@
  *
  * No device. A living switchboard drawn in the site's own language: incoming
  * tasks as cornered chips, a dotted core that decides, four tier nodes that
- * light up as the tasks land, counters and a savings figure that climb.
+ * light up as the tasks land, and counters that climb. (04.10.26: the savings
+ * figure is gone. Measured against the raw API, Exody does not cost less; the
+ * router is about fit, so the footer counts routed tasks and their spend.)
  * The scroll scrubs the first tasks; once the move completes it runs live.
  */
 const TIERS = [
@@ -13,16 +15,16 @@ const TIERS = [
   { id: 'ultra',  name: 'Ultra',  model: 'claude-fable-5-1',     tint: '#f99c00', y: 0.785 },
 ];
 const TASKS = [
-  ['Explore the repo · 14 files', 'fast', 0.004, 0.19],
-  ['Refactor retry backoff · 3 modules', 'strong', 0.31, 3.4],
-  ['Run the test suite · 42 tests', 'local', 0, 0.9],
-  ['Design the landing hero', 'ultra', 1.12, 0],
-  ['Rename a config flag', 'fast', 0.002, 0.12],
-  ['Audit the auth flow · 9 files', 'strong', 0.27, 2.6],
-  ['Summarize the diff', 'local', 0, 0.4],
-  ['Plan the schema migration', 'ultra', 0.84, 0],
-  ['Fix a flaky timeout', 'strong', 0.22, 1.9],
-  ['Explain a stack trace', 'fast', 0.003, 0.15],
+  ['Explore the repo · 14 files', 'fast', 0.004],
+  ['Refactor retry backoff · 3 modules', 'strong', 0.31],
+  ['Run the test suite · 42 tests', 'local', 0],
+  ['Design the landing hero', 'ultra', 1.12],
+  ['Rename a config flag', 'fast', 0.002],
+  ['Audit the auth flow · 9 files', 'strong', 0.27],
+  ['Summarize the diff', 'local', 0],
+  ['Plan the schema migration', 'ultra', 0.84],
+  ['Fix a flaky timeout', 'strong', 0.22],
+  ['Explain a stack trace', 'fast', 0.003],
 ];
 // Two compositions: the full switchboard, and a compact one for narrow hosts
 // (the mobile work box), where the same drawing would shrink its type to 4px.
@@ -34,7 +36,6 @@ let L = FULL;
 let W = L.W, H = L.H, CORE = L.CORE, CHIP = L.CHIP, NODE = L.NODE;
 const CYCLE_S = 2.7;          // seconds per task when live
 const SCRUB_TASKS = 3.0;      // tasks routed across the scrub
-const SAVED_BASE = 101.84;
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = (t) => 1 - Math.pow(1 - t, 3);
@@ -94,12 +95,12 @@ export function createRouterHero(host) {
     const phase = p - done;
     const settled = done + (phase >= 0.92 ? 1 : 0);   // tasks whose landing already counted
     const counts = { local: 0, fast: 0, strong: 0, ultra: 0 };
-    let saved = SAVED_BASE, spent = 0;
+    let spent = 0;
     for (let k = 0; k < settled; k++) {
       const t = TASKS[k % TASKS.length];
-      counts[t[1]] += 1; saved += t[3]; spent += t[2];
+      counts[t[1]] += 1; spent += t[2];
     }
-    return { done, phase, settled, counts, saved, spent, task: TASKS[done % TASKS.length] };
+    return { done, phase, settled, counts, spent, task: TASKS[done % TASKS.length] };
   }
 
   // ---------------------------------------------------------------- drawing
@@ -297,10 +298,10 @@ export function createRouterHero(host) {
 
     // ---- footer figures
     ctx.strokeStyle = border; ctx.beginPath(); ctx.moveTo(mx, H - 62 * L.F + 0.5); ctx.lineTo(mr, H - 62 * L.F + 0.5); ctx.stroke();
-    text(`saved $${S.saved.toFixed(2)}`, mx, H - 36 * L.F, SANS(17, 300), '#dfff3f');
+    text(`${S.settled} task${S.settled === 1 ? '' : 's'} routed`, mx, H - 36 * L.F, SANS(17, 300), '#dfff3f');
     text(`spent $${S.spent.toFixed(2)}`, mx + 200 * L.F, H - 36 * L.F, MONO(12), mid);
-    if (L.footerRight) text('76% LOWER COST · 3,024 TURNS BENCHMARKED', mr, H - 36 * L.F, MONO(10), dim, 'right', 1.8);
-    else text('76% LOWER COST', mr, H - 36 * L.F, MONO(10), dim, 'right', 1.8);
+    if (L.footerRight) text('RIGHT MODEL PER TASK · YOUR OWN KEYS', mr, H - 36 * L.F, MONO(10), dim, 'right', 1.8);
+    else text('YOUR OWN KEYS', mr, H - 36 * L.F, MONO(10), dim, 'right', 1.8);
   }
 
   // ---------------------------------------------------------------- loop
